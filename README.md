@@ -1,4 +1,6 @@
-bp-overlay
+BombParty Overlay
 ==========
 
-Overlay + Utilities for BombParty
+A script that adds score-tracking and other utilities for BombParty.
+
+http://bombparty.sparklinlabs.com/
