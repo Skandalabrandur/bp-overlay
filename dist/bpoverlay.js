@@ -1,3 +1,6 @@
+// Hmm, github won't let you run javascript files directly from their servers.
+// I've just packed the entire thing into the user.js script for now.
+
 // If the window already has a BPOverlay, don't run again
 if (window.hasOwnProperty('BPOverlayHasRun')) {
 }
@@ -6,7 +9,7 @@ else {
     
     var main = function () {
         
-        // Since this is running via a script loaded on page load, it's difficlt ensure the overlay runs after everything has loaded
+        // Since this is running via a script loaded on page load, it's difficult ensure the overlay runs after everything has loaded
         // This piece of code makes sure that all relevant things are loaded before executing the rest of the code
         // We may need to add more to this long-ass if statement if we add more features in the future
         if (!(window.hasOwnProperty("channel") && channel.socket && channel.data && channel.appendToChat && channel.socket.listeners("setActivePlayerIndex").length && channel.socket.listeners("winWord").length && channel.socket.listeners("setPlayerLives").length && channel.socket.listeners("setPlayerState").length && channel.socket.listeners("endGame").length)) {
