@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.0
+// @version      1.1.1
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
+// @downloadURL  https://github.com/MrInanimated/bp-overlay/raw/master/dist/bpoverlay.user.js
 // @author       Tianlin Zhang
 // @match        http://bombparty.sparklinlabs.com/play/*
 // @grant        none
@@ -776,6 +777,10 @@ var source = function () {
                                 bpOverlay.focusNext = false;
                             }
                         }
+                        
+                        // Update the time timer as it might be 1 second behind
+                        updateTime();
+                        
                     }
                     finally {
                         // Call the actual game function

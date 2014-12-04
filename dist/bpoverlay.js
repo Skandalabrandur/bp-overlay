@@ -767,6 +767,9 @@ else {
                             bpOverlay.focusNext = false;
                         }
                     }
+                    
+                    // Update the time timer as it might be 1 second behind
+                    updateTime();
                 }
                 finally {
                     // Call the actual game function
