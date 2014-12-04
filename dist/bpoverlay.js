@@ -826,7 +826,7 @@ else {
         setInterval(updateTime, 1000);
 
         // "Update Text"
-        channel.appendToChat("Info", "New Update! (2014-12-04):<br />Added automatic linking in chat messages, thanks to https://github.com/gregjacobs/Autolinker.js.<br />Added option to hide dead players in scoreboard.<br />You can now switch between a drag vs docked mode by clicking the D");
+        channel.appendToChat("Info", "New Update! (12/02/2014):<br />Added automatic linking in chat messages, thanks to https://github.com/gregjacobs/Autolinker.js.<br />Added option to hide dead players in scoreboard.<br />(2014-12-04 ISO STANDARD YEAH) You can now switch between a drag vs docked mode by clicking the D");
     }
     main();
 }
