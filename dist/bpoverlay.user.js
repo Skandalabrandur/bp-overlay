@@ -840,7 +840,7 @@ var source = function () {
             setInterval(updateTime, 1000);
 
             // "Update Text"
-            channel.appendToChat("Info", "New Update! (2014-12-04):You can now switch between a drag vs docked mode by clicking the drag icon.");
+            channel.appendToChat("Info", "New Update! (2014-12-04):<br />You can now switch between a drag vs docked mode by clicking the drag icon.");
         }
         main();
     }
