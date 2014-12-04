@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.0.1
+// @version      1.0.2
 // @description  Overlay + Utilities for BombParty!
-// @icon         https://dl.dropboxusercontent.com/u/9328924/BPOverlay/icon.png
-// @icon64       https://dl.dropboxusercontent.com/u/9328924/BPOverlay/icon64.png
+// @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
+// @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
 // @author       MrInanimated
 // @match        http://bombparty.sparklinlabs.com/play/*
 // @grant        none
@@ -19,7 +19,7 @@
 // Have fun playing BombParty!
 
 var s = document.createElement('script');
-s.src = "https://dl.dropboxusercontent.com/u/9328924/BPOverlay/bpoverlay.js";
+s.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/bpoverlay.js";
 s.onload = function() {
     this.parentNode.removeChild(this);
 };
