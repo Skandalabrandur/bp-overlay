@@ -49,6 +49,7 @@ var source = function () {
                 startTime : 0,      // Stores (in milliseconds since the epoch) the starting time of the round
                 timeText : "",      // Stores the text used to display the time on the overlay
                 
+                dragBoxHasBeenCreated: false,	//Indicates that the dragbox is 4 real
                 boxHasBeenCreated : false,  // True when a DOM object with the id "infoBox" exists
                 firstRun : true,            // Set to true every time a game ends. If this is true a new infoBox is created, and this is set to false
 
@@ -60,6 +61,8 @@ var source = function () {
                 prevWordCount : 0,     // Stores the word count for the last round
                 
                 hideDead : false,  // If true, hides dead players' rows on the scoreboard table
+                dragonDrop: false, // If true, indicates that the user has a wish to become or remain a dragon.
+                                   // dragBoxHasBeenCreated will not replace this
                 
                 autoScroll : true,  // If true, automatically scrolls that chat down whenever there is a new chat message.
                 autoFocus: true,    // If true, automatically switches focus to the chatbox after the user's turn
@@ -76,15 +79,78 @@ var source = function () {
                 autoFocusOff: null,  // AutoFocus button off state
                 hideDeadOn: null,    // HideDead button on state
                 hideDeadOff: null,   // HideDead button off state
+            dragOff: null,	 // dragOn button off state
+            dragOn: null,	 // dragOn button On state
             };
+
+
+            //START - A collection of functions for the dragonDrop
+            //The functions basically name themselves and do what they're told
+            //They are then activated by listeneres when 	a)User starts dragging the 'draggable'
+            //												b)User drags over to somewhere (not default behaviour of linkamajigging)
+            //												c)User drops the box.
+
+            //a: establish the drag and the starting parameters
+            function drag_start(event) {	
+                var style = window.getComputedStyle(event.target, null);
+                event.dataTransfer.setData("text/plain", (parseInt(style.getPropertyValue("left"),10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"),10) - event.clientY));
+            } 
+
+            //b: strange shit wont happen because things wont interact
+            //   you can however act as if you're dropping the boxonto the ad and it will revert
+            //	so this bug is now a feature: "CANNOT ADBLOCK BY DESIGN"
+            function drag_over(event) { 	
+                event.preventDefault(); 
+                return false; 
+            } 
+            
+            //c: computes the offset from the drag and adds it to the style.top & style.left
+            function drop(event) { 			
+                var offset = event.dataTransfer.getData("text/plain").split(',');
+                var dm = document.getElementById('dragonDrop');
+                dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
+                dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
+                event.preventDefault();
+                return false;
+            }	 
+            
+            //The body needs to be able to accept the new positions
+            //So naturally the listeners are added to the body
+            //(Imagine how weird this paragraph above would be in a medical paper)
+            document.body.addEventListener('dragover',drag_over,false); 
+            document.body.addEventListener('drop',drop,false); 
+
+
+            //Configure and style the draggable box, then add to the body
+            var dragAside = document.createElement("whatever");
+            dragAside.id="dragonDrop";
+            dragAside.draggable="true";
+            dragAside.style.position="absolute";
+            dragAside.style.left="100px";	//starting coordinates
+            dragAside.style.top="100px";	//eh whatevs, nice round number
+            dragAside.style.width="300px";
+            dragAside.style.background="rgb(20, 20, 20)";
+            dragAside.addEventListener('dragstart', drag_start, false);
+            document.body.appendChild(dragAside);
+        
+            //This may be trivial
+            //var dAss = document.getElementById('dragonDrop'); 
+            //dAss.addEventListener('dragstart',drag_start,false); 
+        
 
             // This function is called whenever a new round begins.
             var generateActorConditions = function () {
                 // If there is already a box, get rid of it
-                if (bpOverlay.boxHasBeenCreated) {
+                if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
                     var infoBox = document.getElementById("infoBox");
-                    document.getElementById("Sidebar").removeChild(infoBox);
+
+                    //remove infoBox from wherever it is
+                    var meow = infoBox.parentNode;
+                    meow.removeChild(infoBox);
+
+                    //If if then more lines hence both.
                     bpOverlay.boxHasBeenCreated = false;
+                    bpOverlay.dragBoxHasBeenCreated = false;
                 }
 
                 // Shift current round's variables onto previous round's variables
@@ -127,16 +193,20 @@ var source = function () {
                 // Create the time text display
                 var timeElement = document.createElement("H2");
                 timeElement.id = "infoBoxTimer";
+                timeElement.align="center";		//Might get overridden if not in drag-mode but who cares :D
+                timeElement.style.color="rgb(200,200,200)";		//this as well but that's a good thing
                 timeElement.textContent = bpOverlay.timeText;
                 infoBox.appendChild(timeElement);
 
                 // Create the word counter display
                 var wordCounterElement = document.createElement("H2");
+                wordCounterElement.align="center";
                 wordCounterElement.id = "infoWordCounter";
+                wordCounterElement.style.color="rgb(200,200,200)";
                 wordCounterElement.textContent = "Word Count: 0";
                 infoBox.appendChild(wordCounterElement);
 
-                // Oh boy, a horizontal rule!
+                // Oh boy, a horizontal rule!	Gee willikers!
                 var horizontalRule = document.createElement("hr");
                 infoBox.appendChild(horizontalRule);
 
@@ -224,6 +294,7 @@ var source = function () {
                 // Make headers for the columns, and append to the first row
                 var flipColumnHeader = document.createElement("td");
                 flipColumnHeader.textContent = "Flips";
+                flipColumnHeader.style.color="rgb(200,200,200)";
                 flipColumnHeader.align = "center";
                 flipColumnHeader.style.padding = "2px";
                 flipColumnHeader.style.fontSize = "11px";
@@ -232,6 +303,7 @@ var source = function () {
                 firstRow.appendChild(flipColumnHeader);
                 var uFlipColumnHeader = document.createElement("td");
                 uFlipColumnHeader.textContent = "U-Flips";
+                uFlipColumnHeader.style.color="rgb(200,200,200)";
                 uFlipColumnHeader.align = "center";
                 uFlipColumnHeader.style.padding = "2px";
                 uFlipColumnHeader.style.fontSize = "11px";
@@ -240,6 +312,7 @@ var source = function () {
                 firstRow.appendChild(uFlipColumnHeader);
                 var lostLivesColumnHeader = document.createElement("td");
                 lostLivesColumnHeader.textContent = "Deaths";
+                lostLivesColumnHeader.style.color="rgb(200,200,200)";
                 lostLivesColumnHeader.align = "center";
                 lostLivesColumnHeader.style.padding = "2px";
                 lostLivesColumnHeader.style.fontSize = "11px";
@@ -260,6 +333,8 @@ var source = function () {
                         if (bpOverlay.hideDead) {
                             playerRow.style.display = "none";
                         }
+                    } else {
+                        playerRow.style.color="rgb(210,210,210)";
                     }
 
                     // Make the cell containing the name
@@ -303,13 +378,19 @@ var source = function () {
                 // Append the table to the container...
                 infoBox.appendChild(infoTableDiv);
                 
-                // ...then append the infoBox to the sidebar...
-                var sideBar = document.getElementById("Sidebar");
-                sideBar.insertBefore(infoBox, sideBar.firstChild);
+                //Creates either a docked infoBox or a draggable one
+                if(bpOverlay.dragonDrop) {
+                    //Created if user wishes dragonDrop
+                    var deDragonDrop = document.getElementById("dragonDrop");
+                    deDragonDrop.appendChild(infoBox);
+                    bpOverlay.dragBoxHasBeenCreated = true;
+                } else {
+                    //otherwise this is created
+                    var sideBar = document.getElementById("Sidebar");
+                    sideBar.insertBefore(infoBox, sideBar.firstChild);
 
-                // ...and set boxHasBeenCreated to be true...
-                bpOverlay.boxHasBeenCreated = true;
-                
+                    bpOverlay.boxHasBeenCreated = true;
+                }
                 // ..and finally, if autoScrolling is on, scroll the chat back down since this would've caused the chat to scroll up
                 if (bpOverlay.autoScroll) {
                     var chatLog = document.getElementById("ChatLog");
@@ -423,10 +504,77 @@ var source = function () {
                 buttonDiv.appendChild(button);
             };
 
+            //TODO: Create a new icon for the dragon
+            //This code is not commented unless we see something new (it's basically the same as the buttons above)
+            var makeDragButton = function () {
+                var dragOnImage = document.createElement("img");
+                dragOnImage.width = 30;
+                dragOnImage.height = 30;
+                dragOnImage.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/dragOn.png";
+                bpOverlayImgs.dragOn = dragOnImage;
+                
+                var dragOffImage = document.createElement("img");
+                dragOffImage.width = 30;
+                dragOffImage.height = 30;
+                dragOffImage.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/dragOff.png";
+                bpOverlayImgs.dragOff = dragOffImage;
+                
+                var button = document.createElement("BUTTON");
+                var buttonDiv = document.createElement("DIV");
+                buttonDiv.className = "headerButtonDiv";
+                var header = document.getElementsByTagName("header")[0];
+                var lastChild = header.lastChild;
+                header.insertBefore(buttonDiv, lastChild);
+                button.id = "dragButton";
+                button.className = "headerButton";
+                button.title = "Have the info be in a draggable container instead";
+                
+                button.onclick = function () {
+                    //We don't want the button to react if the neither of the boxes have been created
+                    if(bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+                        bpOverlay.dragonDrop = !bpOverlay.dragonDrop;	//Flippety flop the boolean be bop
+        
+                        //In short, this is a switch between docked and dragon mode. Ugly and intuitive                
+                        if (bpOverlay.dragonDrop) {
+                            var sideBar = document.getElementById("Sidebar");
+                            var infoBox = document.getElementById("infoBox");
+                            var dragOnDrop = document.getElementById("dragonDrop");
+                    
+                            sideBar.removeChild(infoBox);		    
+                            dragOnDrop.appendChild(infoBox);
+                    
+                            button.removeChild(bpOverlayImgs.dragOff);
+                            button.appendChild(bpOverlayImgs.dragOn);
+                            bpOverlay.dragBoxHasBeenCreated = true;
+                            bpOverlay.boxHasBeenCreated = false;
+        
+                        } else {
+                            var sideBar = document.getElementById("Sidebar");
+                            var infoBox = document.getElementById("infoBox");
+                            var dragOnDrop = document.getElementById("dragonDrop");
+                    
+                            dragOnDrop.removeChild(infoBox);		    
+                            sideBar.insertBefore(infoBox, sideBar.firstChild);
+                            bpOverlay.dragBoxHasBeenCreated = false;
+                            bpOverlay.boxHasBeenCreated = true;
+                                    
+                            button.removeChild(bpOverlayImgs.dragOn);
+                            button.appendChild(bpOverlayImgs.dragOff);
+                        }
+                    } else {
+                        alert("Didn't find the infoBox.\n\nIf you're running this for the first time and the round hasn't started or if it's the same player's turn from when you started the overlay then this is normal.\n\nYou impatient flap :D");
+                    }                
+                };
+                
+                button.appendChild(bpOverlayImgs.dragOff);
+                buttonDiv.appendChild(button);
+            };
+
+
             // This function is called regularly to update the time text
             var updateTime = function () {
                 // Don't bother doing anything if there's no game or the infoBox hasn't been created
-                if (channel.data.state === 'playing' && bpOverlay.boxHasBeenCreated) {
+                if (channel.data.state === 'playing' && (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated)) {
                     // Timer code
                     // Copied directly from Ice's bot
                     var d = new Date();
@@ -441,10 +589,11 @@ var source = function () {
 
                     // Umm, hmm, this if statement is redundant.
                     // It looks like it anyway.
-                    if (bpOverlay.boxHasBeenCreated) {
+                    // Yus - It most certainly is. I don't know what was going on
+                    //if (bpOverlay.boxHasBeenCreated) {
                         // Update the infoBox timer text
                         document.getElementById("infoBoxTimer").textContent = bpOverlay.timeText;
-                    }
+                    //}
                 }
             }
 
@@ -537,7 +686,7 @@ var source = function () {
                             bpOverlay.flips[playerNum] += 1;
                             
                             // If the box is created, update it too
-                            if (bpOverlay.boxHasBeenCreated) {
+                            if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
                                 document.getElementById(playerNum + " flips").textContent = bpOverlay.flips[playerNum];
                             }
                             
@@ -546,7 +695,7 @@ var source = function () {
                                 // If the flip happened when the player's lives is already at three, it's an u-flip
                                 // Increment and update
                                 bpOverlay.uFlips[playerNum] += 1;
-                                if (bpOverlay.boxHasBeenCreated) {
+                                if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
                                     document.getElementById(playerNum + " uFlips").textContent = bpOverlay.uFlips[playerNum];
                                 }
                             }
@@ -554,7 +703,7 @@ var source = function () {
 
                         // Add one to the word count, and update the box if it's been created
                         bpOverlay.wordCount += 1;
-                        if (bpOverlay.boxHasBeenCreated) {
+                        if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
                             document.getElementById("infoWordCounter").textContent = "Word Count: " + bpOverlay.wordCount;
                         }
                     }
@@ -577,7 +726,7 @@ var source = function () {
                         if (t.lives > actor.lives) {
                             // Increment and update
                             bpOverlay.lostLives[playerNum] += 1;
-                            if (bpOverlay.boxHasBeenCreated) {
+                            if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
                                 document.getElementById(playerNum + " lives").textContent = bpOverlay.lostLives[playerNum];
                             }
                         }
@@ -593,7 +742,7 @@ var source = function () {
                 channel.socket.on("setPlayerState", function (actor) {
                     // setPlayerState is really only used to make a player dead.
                     try {
-                        if (bpOverlay.boxHasBeenCreated) {
+                        if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
                             if (actor.state == "dead") {
                                 // This code basically just greys out the dead player's row on the scoreboard
                                 var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
@@ -655,6 +804,7 @@ var source = function () {
             var firstRunProcs = function () {
                 // The entire styleshee for the bot is wrapper up in this long string.
                 // Probably a better way of doing this
+                // Lol. TFW web-console css is hard
                 var style = document.createElement('style');
                 style.appendChild(document.createTextNode('.headerButtonDiv {  display: -webkit-box;  display: -moz-box;  display: -webkit-flex;  display: -ms-flexbox;  display: box;  display: flex;  opacity: 0.3;  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";  filter: alpha(opacity=30);} .headerButtonDiv:hover {  opacity: 1;  -ms-filter: none;  filter: none;} button.headerButton {  border: none;  background: none;  cursor: pointer;  opacity: 0.5;  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";  filter: alpha(opacity=50);  display: -webkit-box;  display: -moz-box;  display: -webkit-flex;  display: -ms-flexbox;  display: box;  display: flex;} button.headerButton:hover {  opacity: 0.8;  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";  filter: alpha(opacity=80);} button.headerButton:active {  opacity: 1;  -ms-filter: none;  filter: none;} .infoTableDiv::-webkit-scrollbar { width: 15px; height: 15px; } .infoTableDiv::-webkit-scrollbar-button { height: 0px; width: 0px; } .infoTableDiv::-webkit-scrollbar-track { background-color: rgba(0,0,0,0.05); } .infoTableDiv::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,0.1); border: 3px solid transparent; -webkit-border-radius: 6px; border-radius: 6px; -webkit-background-clip: content; -moz-background-clip: content; background-clip: content-box; } .infoTableDiv::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,0.15); } .infoTableDiv::-webkit-scrollbar-corner { background-color: rgba(255,255,255,0.1); }'));
                 document.getElementsByTagName('head')[0].appendChild(style);
@@ -676,6 +826,7 @@ var source = function () {
                 wrapGameFunctions();
                 makeAutoScrollButton();
                 makeAutoFocusButton();
+                makeDragButton();
             };
 
             firstRunProcs();
@@ -684,7 +835,7 @@ var source = function () {
             setInterval(updateTime, 1000);
 
             // "Update Text"
-            channel.appendToChat("Info", "New Update! (12/02/2014):<br />Added automatic linking in chat messages, thanks to https://github.com/gregjacobs/Autolinker.js.<br />Added option to hide dead players in scoreboard.");
+            channel.appendToChat("Info", "New Update! (2014-12-04):<br />Added automatic linking in chat messages, thanks to https://github.com/gregjacobs/Autolinker.js.<br />Added option to hide dead players in scoreboard.<br />You can now switch between a drag vs docked mode by clicking the D");
         }
         main();
     }
