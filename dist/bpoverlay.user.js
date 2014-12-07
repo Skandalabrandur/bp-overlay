@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.1
+// @version      1.1.2
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -645,7 +645,7 @@ var source = function () {
                             else if (bpOverlay.focusNext) {
                                 // If focusNext is true (i.e. it's immediately after the player's turn)
                                 // We set the focus to the chatbox, and reset focusNext.
-                                document.getElementById("ChatInputBox").focus()
+                                setTimeout(function() { document.getElementById("ChatInputBox").focus(); }, 400);
                                 bpOverlay.focusNext = false;
                             }
                         }
@@ -773,7 +773,7 @@ var source = function () {
                         // Oh, and set the focus to the chatBox if you need to as well
                         if (bpOverlay.autoFocus) {
                             if (bpOverlay.focusNext) {
-                                document.getElementById("ChatInputBox").focus()
+                                setTimeout(function() { document.getElementById("ChatInputBox").focus(); }, 400);
                                 bpOverlay.focusNext = false;
                             }
                         }
