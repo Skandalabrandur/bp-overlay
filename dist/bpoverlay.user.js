@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.2
+// @version      1.1.3
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -109,8 +109,30 @@ var source = function () {
             function drop(event) { 			
                 var offset = event.dataTransfer.getData("text/plain").split(',');
                 var dm = document.getElementById('dragonDrop');
-                dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
-                dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
+		var addLeft = event.clientX + parseInt(offset[0],10);
+		var addTop = event.clientY + parseInt(offset[1],10);
+           
+		//Let's see if we can prevent the jigger to fly offscreen by doing something lazy
+		//heigt and width answer "what is the area considered not to be outside of the game?"
+		var height = window.innerHeight, width = window.innerWidth;
+		
+		//((Resize friendly, that is, if we want to make this resizable in the future this should hold)).
+		//We seem to need to acquire this through the document.getElementById, it returns 0 otherwise
+		var dragH = document.getElementById("infoBox").clientHeight;
+		var dragW = document.getElementById("infoBox").clientWidth;
+
+
+		if(addLeft + dragW > width) {
+			dm.style.left = (width - dragW) + 'px';
+		} else {
+			dm.style.left = addLeft + 'px';
+		}
+
+		if(addTop + dragH > height) {
+			dm.style.top = (height - dragH) + 'px';		
+		} else {
+                	dm.style.top = addTop + 'px';
+		}
                 event.preventDefault();
                 return false;
             }	 
@@ -840,7 +862,7 @@ var source = function () {
             setInterval(updateTime, 1000);
 
             // "Update Text"
-            channel.appendToChat("Info", "New Update! (2014-12-04):<br />You can now switch between a drag vs docked mode by clicking the drag icon.");
+            channel.appendToChat("Info", "New Update! (2014-12-07):<br />The drag jigger shouldn't go offscreen anymore");
         }
         main();
     }
