@@ -112,7 +112,7 @@ var source = function () {
 		var addLeft = event.clientX + parseInt(offset[0],10);
 		var addTop = event.clientY + parseInt(offset[1],10);
            
-		//Let's see if we can prevent the jigger to fly offscreen by doing something lazy
+		//Let's see if we can prevent the jigger from flying offscreen by doing something lazy
 		//heigt and width answer "what is the area considered not to be outside of the game?"
 		var height = window.innerHeight, width = window.innerWidth;
 		
@@ -121,21 +121,34 @@ var source = function () {
 		var dragH = document.getElementById("infoBox").clientHeight;
 		var dragW = document.getElementById("infoBox").clientWidth;
 
+		//TODO: add an eventListener to window.onresize to prevent the user from  getting the dragonDrop out of bounds by
+		//	resizing the browser.
 
-		if(addLeft + dragW > width) {
+		//If the drag sends the dragon offscreen, put it to the edge instead
+		//Otherwise let the user do whatever
+		if(addLeft < 0) {
+			dm.style.left = "0px";
+		} else if (addLeft + dragW > width) {
 			dm.style.left = (width - dragW) + 'px';
 		} else {
 			dm.style.left = addLeft + 'px';
 		}
 
-		if(addTop + dragH > height) {
+		//Same but for the height
+		if(addTop < 0) {
+			dm.style.top = "0px";
+		} else if(addTop + dragH > height) {
 			dm.style.top = (height - dragH) + 'px';		
 		} else {
                 	dm.style.top = addTop + 'px';
 		}
                 event.preventDefault();
                 return false;
-            }	 
+            }
+
+	    	 
+
+	
             
             //The body needs to be able to accept the new positions
             //So naturally the listeners are added to the body
