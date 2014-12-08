@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.3
+// @version      1.1.4
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -144,6 +144,41 @@ var source = function() {
 			//They are then activated by listeneres when 	a)User starts dragging the 'draggable'
 			//												b)User drags over to somewhere (not default behaviour of linkamajigging)
 			//												c)User drops the box.
+
+			//window resize meow
+			window.onresize = resize;
+			
+			//Called when browser is resized
+			function resize() {
+				//Let's get the window size
+				var height = window.innerHeight,
+					width = window.innerWidth;
+
+				//Let's get the dragOn size
+				var infoBox = document.getElementById("infoBox");
+				var dragW = infoBox.clientWidth;
+				var dragH = infoBox.clientHeight;
+				
+				//Let's get the dragOn... wrawrrr
+				var dragOn = document.getElementById("dragonDrop");
+
+				//... and his coordinates. Nifty. We can use parseInt direclty. directly*
+				var dragX = parseInt(dragOn.style.left);
+				var dragY = parseInt(dragOn.style.top);
+
+				//Resize widthwise
+				if(dragW + dragX > width) {
+					dragOn.style.left = width - dragW + 'px';
+				}
+
+				//Resize heightwise (also pushing it beyond check which isn't needed on the widthwise
+				if(dragY < 0) {
+					dragOn.style.top = "0px";
+				} else if (dragH + dragY > height) {
+					dragOn.style.top = height - dragH + 'px';
+				}
+				
+			}
 
 			//a: establish the drag and the starting parameters
 			function drag_start(event) {
@@ -882,7 +917,7 @@ var source = function() {
 			setInterval(updateTime, 1000);
 
 			// "Update Text"
-			channel.appendToChat("Info", "New Update! (2014-12-07):<br />The drag jigger shouldn't go offscreen anymore");
+			channel.appendToChat("Info", "New Update! (2014-12-08):<br />The drag jigger shouldn't go offscreen anymore, even if you resize the window");
 		}
 		main();
 	}
