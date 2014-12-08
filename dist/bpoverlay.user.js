@@ -71,17 +71,73 @@ var source = function () {
                 focusNext : false,  // If true, it is the user's turn (and so we should focus to the chatBox if autoFocus is true after the user's turn)
             };
 
-            // Storage of images used by the overlay.
-            // In hindsight probably not necessary...
+            //I'm so proud of this ugly node constructor
+	    //I'm certain it's unconventional, but it works so... yippee
+	    //It allows for creating images as nodes within an object and
+	    //defining attributes at the same time. LALALALALALALAL HAPPY HAPPY THIS
+	    //TOOK SO LONG TO FIGURE OUT!!!! AAAAAH. I'M DUMB AND SMART
+	    
+	    //USAGE: x = imNodeConstructor(type, attributes);
+	    //		'type' is the type of element on the form document.createElement("whatever");
+	    //		'attributes' are a list of attributes on the object form { att1: value1, att2: value2, ... , attN: valueN }
+	    // Post: x is of the type "whatever" with the attributes att1, att2, ... , attN
+	    var imgNodeConstructor = function (node, attributes) {
+		for(x in attributes) {
+			node[x] = attributes[x];	
+		}
+		return node;
+	    };
+
+	    // Storage of images and their attributes used by the overlay.
             bpOverlayImgs = {
-                on: null,            // AutoScroll button on state
-                off: null,           // AutoScroll button off state
-                autoFocusOn: null,   // AutoFocus button on state
-                autoFocusOff: null,  // AutoFocus button off state
-                hideDeadOn: null,    // HideDead button on state
+		
+		//AutoScroll button on state
+                on: imgNodeConstructor(document.createElement("img"), {
+			width: 30,
+			height: 30,
+			src: "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/chatdown.png",
+		}),            
+	
+		//AutoScroll button off state
+		off: imgNodeConstructor(document.createElement("img"), {
+			width: 30,
+			height: 30,
+			src: "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/chatdownoff.png",
+		}),           
+
+		//AutoFocus button on state
+		autoFocusOn: imgNodeConstructor(document.createElement("img"), {
+			width: 30,
+			height: 30,
+			src: "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/focusOn.png",
+		}),          
+
+		//AutoFocus button off state
+                autoFocusOff: imgNodeConstructor(document.createElement("img"), {
+			width: 30,
+			height: 30,
+			src: "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/focusOff.png",
+		}),          
+                
+		//Dragon button off state
+	        dragOff: imgNodeConstructor(document.createElement("img"), {
+			width: 30,
+			height: 30,
+			src: "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/dragOff.png",
+		}),          
+		
+		//Dragon button on state                
+		dragOn: imgNodeConstructor(document.createElement("img"), {
+			width: 30,
+			height: 30,
+			src: "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/dragOn.png",
+		}),
+
+		//These buttons not constructed because they appear solidary and have already been coded with the old method
+		//No changes necessary unless we intend to add more buttons in the players window
+		hideDeadOn: null,    // HideDead button on state
                 hideDeadOff: null,   // HideDead button off state
-            dragOff: null,	 // dragOn button off state
-            dragOn: null,	 // dragOn button On state
+                      
             };
 
 
@@ -435,176 +491,48 @@ var source = function () {
                 
             }
 
-            // Called to make the autoScroll button.
-            // This will be inevitably replaced with some sort of general button-adding procedure
-            // Until then, yay for inefficient code!
-            var makeAutoScrollButton = function () {
-                // Load up the on and off images
-                var onImg = document.createElement("img");
-                onImg.width = 30;
-                onImg.height = 30;
-                onImg.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/chatdown.png";
-                bpOverlayImgs.on = onImg;
-                
-                var offImg = document.createElement("img");
-                offImg.width = 30;
-                offImg.height = 30;
-                offImg.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/chatdownoff.png";
-                bpOverlayImgs.off = offImg;
 
-                // Actually make the button, and its container div
-                var button = document.createElement("BUTTON");
-                var buttonDiv = document.createElement("DIV");
-                buttonDiv.className = "headerButtonDiv";
-                
-                // Insert the button container div into the header
-                var header = document.getElementsByTagName("header")[0];
-                var lastChild = header.lastChild;
-                header.insertBefore(buttonDiv, lastChild);
-                
-                // General "stylistic touches"
-                button.id = "chatDownButton";
-                button.className = "headerButton";
-                button.title = "Automatically scroll the chat down whenever there is a new message.";
-                
-                button.onclick = function () {
-                    // Flip the autoScroll property
-                    bpOverlay.autoScroll = !bpOverlay.autoScroll;
-                    
-                    if (bpOverlay.autoScroll) {
-                        // if autoScroll is true, remove the off image and add the on image...
-                        button.removeChild(bpOverlayImgs.off);
-                        button.appendChild(bpOverlayImgs.on);
-                    }
-                    else {
-                        // ...and vice versa if autoScroll is false
-                        button.removeChild(bpOverlayImgs.on);
-                        button.appendChild(bpOverlayImgs.off);
-                    }
-                };
-                
-                // Append the on state because autoScroll is by default true
-                button.appendChild(bpOverlayImgs.on);
-                buttonDiv.appendChild(button);
-            };
-            
-            // See what I mean?
-            // Two buttons made using two different functions with virtually identical code
-            var makeAutoFocusButton = function () {
-                // Load up the on and off images
-                var focusOnImage = document.createElement("img");
-                focusOnImage.width = 30;
-                focusOnImage.height = 30;
-                focusOnImage.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/focusOn.png";
-                bpOverlayImgs.autoFocusOn = focusOnImage;
-                
-                var focusOffImage = document.createElement("img");
-                focusOffImage.width = 30;
-                focusOffImage.height = 30;
-                focusOffImage.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/focusOff.png";
-                bpOverlayImgs.autoFocusOff = focusOffImage;
-                
-                // Actually make the button, and its container div
-                var button = document.createElement("BUTTON");
-                var buttonDiv = document.createElement("DIV");
-                buttonDiv.className = "headerButtonDiv";
-                
-                // Insert the button container div into the header
-                var header = document.getElementsByTagName("header")[0];
-                var lastChild = header.lastChild;
-                header.insertBefore(buttonDiv, lastChild);
-                
-                // General "stylistic touches"
-                button.id = "autoFocusButton";
-                button.className = "headerButton";
-                button.title = "Automatically focus the chat box after your turn.";
-                
-                button.onclick = function () {
-                    // Flip the autoFocus property
-                    bpOverlay.autoFocus = !bpOverlay.autoFocus;
-                    
-                    if (bpOverlay.autoFocus) {
-                        // You must know the drill by now
-                        button.removeChild(bpOverlayImgs.autoFocusOff);
-                        button.appendChild(bpOverlayImgs.autoFocusOn);
-                    }
-                    else {
-                        // I'm not even going to bother
-                        button.removeChild(bpOverlayImgs.autoFocusOn);
-                        button.appendChild(bpOverlayImgs.autoFocusOff);
-                    }
-                };
-                
-                // Again, autoFocus is by default true, so we use the on image first
-                button.appendChild(bpOverlayImgs.autoFocusOn);
-                buttonDiv.appendChild(button);
-            };
+	//Usage: function(onSrc, offSrc, buttonId, buttonMessage, defaultState, buttonFunction)
+	//img		onSrc  is the image for the on- state
+	//img		offSrc is the image for the off-state
+	//string	buttonId is the id for the created button item in the header
+	//string	buttonMessage is the hovermessage presented by the button
+	//boolean	defaultState: if true, then the button is created with the onSrc image, else the offSrc image
+	//function	buttonFunction is the function that is called when the button is clicked
+	var makeHeaderButton = function (onSrc, offSrc, buttonId, buttonMessage, defaultState, buttonFunction) {
+	                		
+	                // Actually make the button, and its container div
+	                var button = document.createElement("BUTTON");
+	                var buttonDiv = document.createElement("DIV");
+	                buttonDiv.className = "headerButtonDiv";
+	                
+	                // Insert the button container div into the header
+	                var header = document.getElementsByTagName("header")[0];
+	                var lastChild = header.lastChild;
+	                header.insertBefore(buttonDiv, lastChild);
 
-            //TODO: Create a new icon for the dragon
-            //This code is not commented unless we see something new (it's basically the same as the buttons above)
-            var makeDragButton = function () {
-                var dragOnImage = document.createElement("img");
-                dragOnImage.width = 30;
-                dragOnImage.height = 30;
-                dragOnImage.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/dragOn.png";
-                bpOverlayImgs.dragOn = dragOnImage;
-                
-                var dragOffImage = document.createElement("img");
-                dragOffImage.width = 30;
-                dragOffImage.height = 30;
-                dragOffImage.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/dragOff.png";
-                bpOverlayImgs.dragOff = dragOffImage;
-                
-                var button = document.createElement("BUTTON");
-                var buttonDiv = document.createElement("DIV");
-                buttonDiv.className = "headerButtonDiv";
-                var header = document.getElementsByTagName("header")[0];
-                var lastChild = header.lastChild;
-                header.insertBefore(buttonDiv, lastChild);
-                button.id = "dragButton";
-                button.className = "headerButton";
-                button.title = "Have the info be in a draggable container instead";
-                
-                button.onclick = function () {
-                    //We don't want the button to react if the neither of the boxes have been created
-                    if(bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
-                        bpOverlay.dragonDrop = !bpOverlay.dragonDrop;	//Flippety flop the boolean be bop
-        
-                        //In short, this is a switch between docked and dragon mode. Ugly and intuitive                
-                        if (bpOverlay.dragonDrop) {
-                            var sideBar = document.getElementById("Sidebar");
-                            var infoBox = document.getElementById("infoBox");
-                            var dragOnDrop = document.getElementById("dragonDrop");
-                    
-                            sideBar.removeChild(infoBox);		    
-                            dragOnDrop.appendChild(infoBox);
-                    
-                            button.removeChild(bpOverlayImgs.dragOff);
-                            button.appendChild(bpOverlayImgs.dragOn);
-                            bpOverlay.dragBoxHasBeenCreated = true;
-                            bpOverlay.boxHasBeenCreated = false;
-        
-                        } else {
-                            var sideBar = document.getElementById("Sidebar");
-                            var infoBox = document.getElementById("infoBox");
-                            var dragOnDrop = document.getElementById("dragonDrop");
-                    
-                            dragOnDrop.removeChild(infoBox);		    
-                            sideBar.insertBefore(infoBox, sideBar.firstChild);
-                            bpOverlay.dragBoxHasBeenCreated = false;
-                            bpOverlay.boxHasBeenCreated = true;
-                                    
-                            button.removeChild(bpOverlayImgs.dragOn);
-                            button.appendChild(bpOverlayImgs.dragOff);
-                        }
-                    } else {
-                        alert("Didn't find the infoBox.\n\nIf you're running this for the first time and the round hasn't started or if it's the same player's turn from when you started the overlay then this is normal.\n\nYou impatient flap :D");
-                    }                
-                };
-                
-                button.appendChild(bpOverlayImgs.dragOff);
-                buttonDiv.appendChild(button);
-            };
+			var onElement = document.createElement("img");
+			onElement = onSrc;
+
+			var offElement = document.createElement("img");
+			offElement = offSrc;			
+
+	                // General "stylistic touches"
+	                button.id = buttonId;
+	                button.className = "headerButton";
+	                button.title = buttonMessage; 
+	                
+	                button.onclick = buttonFunction;
+	                
+			//Depending on defaultState, have the button start with the "on" image or the "off"
+			if(defaultState) {
+				button.appendChild(onSrc);
+			} else {
+				button.appendChild(offSrc);
+			}           
+
+			buttonDiv.appendChild(button);
+	};   
 
 
             // This function is called regularly to update the time text
@@ -864,11 +792,96 @@ var source = function () {
                 
                 // Wrap game functions, make the autoscroll/focus buttons.
                 wrapGameFunctions();
-                makeAutoScrollButton();
-                makeAutoFocusButton();
-                makeDragButton();
-            };
 
+		//AutoScrollButton made with makeHeaderButton Function
+		//See usage in the declaration-meow for makeHeaderButton
+		makeHeaderButton(	bpOverlayImgs.on, 
+					bpOverlayImgs.off, 
+					"chatDownButton",
+					"Automatically scroll the chat down whenever there is a new message.",
+					true,	//Because we want the onImg displayed at creation
+					//Then the function within this function
+					function() {
+						// Flip the autoScroll property
+					        bpOverlay.autoScroll = !bpOverlay.autoScroll;
+			                    
+				                if (bpOverlay.autoScroll) {
+				        	        // if autoScroll is true, remove the off image and add the on image...
+				                        document.getElementById("chatDownButton").removeChild(bpOverlayImgs.off);
+				                        document.getElementById("chatDownButton").appendChild(bpOverlayImgs.on);
+				                } else {
+				                        // ...and vice versa if autoScroll is false
+				                        document.getElementById("chatDownButton").removeChild(bpOverlayImgs.on);
+				                        document.getElementById("chatDownButton").appendChild(bpOverlayImgs.off);
+                    				}	
+					}
+		);
+
+		//autoFocus button made 
+	    	makeHeaderButton(	bpOverlayImgs.autoFocusOn, 
+					bpOverlayImgs.autoFocusOff, 
+					"autoFocusButton",
+					"Automatically focus the chat box after your turn.",
+					true, 
+					function () {
+                    				// Flip the autoFocus property
+                    				bpOverlay.autoFocus = !bpOverlay.autoFocus;
+                    
+			                    if (bpOverlay.autoFocus) {
+			                        // You must know the drill by now
+			                        document.getElementById("autoFocusButton").removeChild(bpOverlayImgs.autoFocusOff);
+			                        document.getElementById("autoFocusButton").appendChild(bpOverlayImgs.autoFocusOn);
+			                    } else {
+			                        // I'm not even going to bother
+			                        document.getElementById("autoFocusButton").removeChild(bpOverlayImgs.autoFocusOn);
+			                        document.getElementById("autoFocusButton").appendChild(bpOverlayImgs.autoFocusOff);
+			                    }
+			                }
+		);
+
+		//dragOn button made                
+            	makeHeaderButton(	bpOverlayImgs.dragOn, 
+					bpOverlayImgs.dragOff, 
+					"dragButton",
+					"Have the info be in a draggable container instead", 
+					false,
+					function () {
+			                    //We don't want the button to react if the neither of the boxes have been created
+			                    if(bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+			                        bpOverlay.dragonDrop = !bpOverlay.dragonDrop;	//Flippety flop the boolean be bop
+					         
+						var button = document.getElementById("dragButton");
+			                        var sideBar = document.getElementById("Sidebar");
+			                        var infoBox = document.getElementById("infoBox");
+			                        var dragOnDrop = document.getElementById("dragonDrop");
+                    
+			                        //In short, this is a switch between docked and dragon mode. Ugly and intuitive                
+			                        if (bpOverlay.dragonDrop) {
+						   
+			                            sideBar.removeChild(infoBox);		    
+			                            dragOnDrop.appendChild(infoBox);
+                    
+			                            button.removeChild(bpOverlayImgs.dragOff);
+						    button.appendChild(bpOverlayImgs.dragOn);
+			                            bpOverlay.dragBoxHasBeenCreated = true;
+			                            bpOverlay.boxHasBeenCreated = false;
+        
+			                        } else {
+						   
+			                            dragOnDrop.removeChild(infoBox);		    
+			                            sideBar.insertBefore(infoBox, sideBar.firstChild);
+			                            bpOverlay.dragBoxHasBeenCreated = false;
+			                            bpOverlay.boxHasBeenCreated = true;
+                                    
+			                            button.removeChild(bpOverlayImgs.dragOn);
+			                            button.appendChild(bpOverlayImgs.dragOff);
+			                        }
+		                  	    } else {
+		                        	alert("Didn't find the infoBox.\n\nIf you're running this for the first time and the round hasn't started or if it's the same player's turn from when you started the overlay then this is normal.\n\nYou impatient flap :D");
+		                    	    }                
+                		        }
+		);
+	    }
             firstRunProcs();
             
             // Make updateTime fire every second.
