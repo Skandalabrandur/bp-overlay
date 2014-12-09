@@ -513,12 +513,16 @@ var source = function() {
 				// Append the table to the container...
 				infoBox.appendChild(infoTableDiv);
 
+
+
 				//Creates either a docked infoBox or a draggable one
 				if (bpOverlay.dragonDrop) {
 					//Created if user wishes dragonDrop
 					var deDragonDrop = document.getElementById("dragonDrop");
 					deDragonDrop.appendChild(infoBox);
 					bpOverlay.dragBoxHasBeenCreated = true;
+					
+
 				} else {
 					//otherwise this is created
 					var sideBar = document.getElementById("Sidebar");
@@ -526,6 +530,13 @@ var source = function() {
 
 					bpOverlay.boxHasBeenCreated = true;
 				}
+
+				//And yet another check of overflow needed in case the dragon is on the bottom and a new round starts
+				//with more players than the previous round. This is outside the if(bpOverlay.dragonDrop) because the user might wish
+				//to switch sides after starting a new round in docked mode. Bugfixes ahoy hoy yay yay
+				var funky = window.onresize;
+				funky();
+
 				// ..and finally, if autoScrolling is on, scroll the chat back down since this would've caused the chat to scroll up
 				if (bpOverlay.autoScroll) {
 					var chatLog = document.getElementById("ChatLog");
