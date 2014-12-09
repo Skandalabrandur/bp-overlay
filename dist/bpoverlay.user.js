@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.4
+// @version      1.1.5
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -339,7 +339,14 @@ var source = function() {
 				var infoTableDiv = document.createElement("DIV");
 				infoTableDiv.className = "infoTableDiv";
 				infoTableDiv.align = "center"
-				infoTableDiv.style.maxHeight = "100px";
+				
+				//Retain choices between rounds from the settings meow
+				var cont = document.getElementById("containerSelect");
+				if(cont.value === "fitToPlayers") {
+					infoTableDiv.style.maxHeight = "1000px"; //autoflow hinders big meow meow meow yappety yak
+				} else {
+					infoTableDiv.style.maxHeight = "100px";				
+				}
 				infoTableDiv.style.overflowY = "auto";
 
 				// Make the actual scoreboard table
@@ -377,7 +384,7 @@ var source = function() {
 								rows[i].style.display = "none";
 							}
 						}
-					} else {
+					} else {			
 						// if hideDead is false, remove the on state image and add the off state image
 						showHideButton.removeChild(bpOverlayImgs.hideDeadOn);
 						showHideButton.appendChild(bpOverlayImgs.hideDeadOff);
@@ -394,6 +401,11 @@ var source = function() {
 								rows[i].style.display = "table-row";
 							}
 						}
+
+						//Let's add a call to the window.onresize if this is done while the dragon is at the bottom
+						//This prevents overflow
+						var funky = window.onresize;
+						funky();
 
 						// If the chat does need scrolling down then scroll it down
 						if (scrollDown) {
@@ -522,6 +534,49 @@ var source = function() {
 
 			}
 
+			//Usage: 	generateSettingsElement(itemText, options, selectId, settingsFunction)
+			//string	'itemText' is the text to the right of the drop down options pane
+			//object	'options' is an object {value: Text, value2: Text2, ... , valueN: TextN}
+			//			'value, ..., valueN' are the value we can compare from selectElement.value
+			//			'Text, ..., TextN' are the strings that the user see when selecting options
+			//string	'selectId': for your function you probably want to use document.getElementById(selectId)
+			//function	'settingsFunction' is the function that is called on selectElement.onchange
+			var generateSettingsElement = function(itemText, options, selectId, settingsFunction) {
+				//Locate the settings tab
+				var settingsTab = document.getElementById("SettingsTab");
+	
+				//Create the text item
+				//Oh god the horrors of navigating the dom DOM DOOOOM
+				var sTabTable = document.createElement("TABLE");
+				settingsTab.appendChild(sTabTable);	
+				var sTabTbody = document.createElement("TBODY");
+				sTabTable.appendChild(sTabTbody);
+				var sTabTr = document.createElement("TR");
+				sTabTbody.appendChild(sTabTr);
+				var sTabTd = document.createElement("TD");
+				sTabTd.textContent = itemText;
+				sTabTr.appendChild(sTabTd);
+		
+				//Create the options DOM DOM POMPOM
+				var sTabOptionsTd = document.createElement("TD");
+				sTabTr.appendChild(sTabOptionsTd);
+				var sTabSelect = document.createElement("SELECT");
+				sTabSelect.id = selectId;
+				sTabOptionsTd.appendChild(sTabSelect);
+	
+				//Populate the select field with {Value: text} from options which is an object
+				for(x in options) {
+					var op = document.createElement("OPTION");
+					op.textContent = options[x];
+					op.value = x;
+					sTabSelect.appendChild(op);	
+				}
+
+				//Add the function to the onchange listener for the newly created select
+				sTabSelect.onchange = settingsFunction;
+			
+				//OPTIONAL: Reflect on your lifechoices, such as programming when you should be studying	
+			}
 
 			//Usage: function(onSrc, offSrc, buttonId, buttonMessage, defaultState, buttonFunction)
 			//img		onSrc  is the image for the on- state
@@ -911,13 +966,44 @@ var source = function() {
 					}
 				);
 			}
+
+			//We only want this once (I believe) so this is outside of a function
+			//Generate the overlay section and append it to the SettingsTab
+			var bpOverlayH2 = document.createElement("H2");
+			bpOverlayH2.textContent = "Overlay Settings";
+			var settingsTab = document.getElementById("SettingsTab");
+			settingsTab.appendChild(bpOverlayH2);
+
+			generateSettingsElement("Container Size", {compact: "Compact size", fitToPlayers: "Fit To Players"}, "containerSelect", 
+						function () {
+							//Get the infoTableDiv element and the selector created with the id 'containerSelect'
+							var infoTableDiv = document.getElementsByClassName("infoTableDiv")[0];
+							var sTabSelect = document.getElementById("containerSelect");
+							
+							//Change container.style.maxHeight depending on user choice
+							if(sTabSelect.value === "compact") {
+								infoTableDiv.style.maxHeight = "100px";					
+							} else if (sTabSelect.value === "fitToPlayers") {
+								infoTableDiv.style.maxHeight = "1000px";	//The autoflow whatever takes care of this.
+								
+								//Prevent flowing out of page
+								//Let's be lazy and get the window.onresize and run it.
+								var funky = window.onresize;
+								funky();
+							} else {
+								//Do nothing
+							}
+						}
+			);
+
+
 			firstRunProcs();
 
 			// Make updateTime fire every second.
 			setInterval(updateTime, 1000);
 
 			// "Update Text"
-			channel.appendToChat("Info", "New Update! (2014-12-08):<br />The drag jigger shouldn't go offscreen anymore, even if you resize the window");
+			channel.appendToChat("Info", "New Update! (2014-12-09):<br />More bugfixes on the draggable container<br /><br \>Added the option to configure the vertical size of the overlay. This option can be found at the bottom in the \"Settings\" tab under \"Overlay Settings\"");
 		}
 		main();
 	}
