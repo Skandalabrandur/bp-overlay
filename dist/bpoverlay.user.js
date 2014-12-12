@@ -1,14 +1,58 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.6
+// @version      1.1.7
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
 // @downloadURL  https://github.com/MrInanimated/bp-overlay/raw/master/dist/bpoverlay.user.js
 // @author       Tianlin Zhang
 // @match        http://bombparty.sparklinlabs.com/play/*
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
+
+// Grab the twitch global emotes
+GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://twitchemotes.com/global.json",
+	onload: function(response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'var twitch_global = ' + response.responseText + ';';
+
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+	onerror : function (response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'channel.appendToChat("Info", "Couldn\'t fetch twitch global emotes :(");';
+		
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+});
+
+// Grab the twitch subscriber emote
+GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://twitchemotes.com/subscriber.json",
+	onload: function(response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'var twitch_subscriber = ' + response.responseText + ';';
+
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+	onerror : function (response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'channel.appendToChat("Info", "Couldn\'t fetch twitch subscriber emotes :(");';
+		
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+});
 
 var source = function() {
 	// If the window already has a BPOverlay, don't run again
@@ -68,8 +112,7 @@ var source = function() {
 
 				focusNext: false, // If true, it is the user's turn (and so we should focus to the chatBox if autoFocus is true after the user's turn)
 				
-				twitchOn: false,
-				twitch : {"4Head":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-76292ac622b0fc38-20x30.png","ANELE":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-3792-src-1504dbbe3760173a-28x28.png","ArsonNoSexy":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-e13a8382e40b19c7-18x27.png","AsianGlow":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-a3708d1e15c3f197-24x30.png","AtGL":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9809-src-52738249ed340b6a-28x28.png","AtIvy":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9800-src-b27b39cd614d1791-28x28.png","AtWW":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9801-src-3d2087b69c5c5c6b-28x28.png","BabyRage":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-22639-src-94b8bc8feebf46d1-28x28.png","BatChest":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-df8ac34ab89d8c0c-18x28.png","BCWarrior":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-1e3ccd969459f889-29x27.png","BibleThump":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-f6c13c7fc0a5c93d-36x30.png","BigBrother":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-63c10b84aaddd77c-24x30.png","BionicBunion":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-740242272832a108-30x30.png","BlargNaut":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-a5293e92212cadd9-21x27.png","BloodTrail":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-f124d3a96eff228a-41x28.png","BORT":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-6f9fa95e9e3d6a69-19x30.png","BrainSlug":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-d8eee0a259b7dfaa-30x30.png","BrokeBack":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-4057-src-770e3d6c306dda14-28x28.png","BuddhaBar":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-27602-src-df6fa003c23fa1ab-28x28.png","CougarHunt":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-551cd64fc3d4590a-21x27.png","DAESuppy":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-ef2a16bdc037bc91-28x28.png","DansGame":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-ce52b18fccf73b29-25x32.png","DatSheffy":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-bf13a0595ecf649c-24x30.png","DBstyle":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-1752876c0d0ec35f-21x30.png","DendiFace":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-29695-src-319e02947bcc6738-28x28.png","DogFace":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-d0134a612162a147-22x28.png","EagleEye":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-95eb8045e7ae63b8-18x27.png","EleGiggle":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-4339-src-07433e94eae8754e-28x28.png","EvilFetus":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-484439fc20e0d36d-29x30.png","FailFish":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-c8a77ec0c49976d3-22x30.png","FlowerPower":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-30260-src-b2b1bbb600982c17-28x28.png","FPSMarksman":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-6c26a3f04616c4bf-20x27.png","FrankerZ":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-3b96527b46b1c941-40x30.png","FreakinStinkin":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-d14278fea8fad146-19x27.png","FUNgineer":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-731296fdc2d37bea-24x30.png","FunRun":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-a204e65775b969c5-27x27.png","FuzzyOtterOO":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-d141fc57f627432f-26x26.png","GasJoker":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9802-src-6e8eaf7c9777fbf8-28x28.png","GingerPower":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-2febb829eae08b0a-21x27.png","GrammarKing":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-3632-src-c3bf1bef4de9bb99-28x28.png","HassaanChop":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-20225-src-cf62346ed09bb4c3-28x28.png","HassanChop":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-22c6299e539344a9-19x28.png","HeyGuys":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-30259-src-d34a2f6288366129-28x28.png","HotPokket":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-55873089390f4a10-28x30.png","HumbleLife":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-27301-src-d6355396402a85ed-28x28.png","ItsBoshyTime":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-e8e0b0c4e70c4fb8-18x18.png","Jebaited":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-39dff1bb9b42cf38-21x30.png","JKanStyle":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-3a7ee1bc0e5c9af0-21x27.png","JonCarnage":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-6aaca644ea5374c6-20x27.png","KAPOW":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9803-src-4b786d2bb9b6162a-28x28.png","Kappa":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-ddc6e3a8732cb50f-25x28.png","Keepo":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-8eed21805f6217ce-27x29.png","KevinTurtle":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-d530ef454aa17093-21x27.png","Kippa":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-56a84f0e87c3d3a5-24x28.png","Kreygasm":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-3a624954918104fe-19x27.png","KZassault":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-5248-src-914192574ba9feec-28x28.png","KZcover":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-5249-src-c649b1d10e887587-28x28.png","KZguerilla":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-5250-src-da9dd1029955070e-28x28.png","KZhelghast":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-5251-src-a1596431098da5d4-28x28.png","KZowl":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-5252-src-437c1b59f74e39bc-28x28.png","KZskull":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-5253-src-7358e7adaec32ecc-28x28.png","Mau5":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-30134-src-c384036a3da3c193-28x28.png","MechaSupes":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9804-src-5b096e8d2ec67fbf-28x28.png","MrDestructoid":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-ac61a7aeb52a49d3-39x27.png","MVGame":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-1a1a8bb5cdf6efb9-24x32.png","NightBat":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9805-src-5346ae35c2a450e5-28x28.png","NinjaTroll":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-89e474822a976928-19x27.png","NoNoSpot":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-179f310b0746584d-23x27.png","noScope":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-13084-src-d20453d53c23a780-28x28.png","OMGScoots":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-e01723a9ae4fbd8b-22x28.png","OneHand":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-b6d67569a0c6340a-20x27.png","OpieOP":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-21e708123d6a896d-21x30.png","OptimizePrime":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-41f8a86c4b15b5d8-22x27.png","panicBasket":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-22998-src-455abddea2b94cc1-28x28.png","PanicVis":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-3668-src-f36f5a70b1c93a29-28x28.png","PazPazowitz":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-521420789e1e93ef-18x27.png","PeoplesChamp":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-3412-src-76b6e3c79b31b696-28x28.png","PermaSmug":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-27509-src-52f53f81026dc98a-28x28.png","PicoMause":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-ce027387c35fb601-22x27.png","PipeHype":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-4240-src-d0c560fa27408dc7-28x28.png","PJHarley":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9808-src-e9e3212e738f3370-28x28.png","PJSalt":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-18be1a297459453f-36x30.png","PMSTwin":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-a33f6c484c27e249-23x30.png","PogChamp":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-60aa1af305e32d49-23x30.png","Poooound":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-61a08075ecef6afa-21x30.png","PRChase":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-28328-src-d1495f33f6f326ec-28x28.png","PunchTrees":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-b85003ffba04e03e-24x24.png","PuppeyFace":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-30252-src-9b9821fcb97d39ac-28x28.png","RaccAttack":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-27679-src-71f75b8964568211-28x28.png","RalpherZ":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-3d9b59b17687288c-33x30.png","RedCoat":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-6b8d1be08f244e92-19x27.png","ResidentSleeper":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-1ddcc54d77fc4a61-28x28.png","RitzMitz":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-4338-src-a741c02562405936-28x28.png","RuleFive":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-4e65703c52fb67b5-20x30.png","Shazam":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9807-src-4444736c1440cb77-28x28.png","shazamicon":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-9806-src-973c438f0fd31151-28x28.png","ShazBotstix":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-ccaf06d02a01a804-24x30.png","ShibeZ":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-27903-src-31f47f7b73ff8cef-28x28.png","SMOrc":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-9f276ed33053ec70-32x32.png","SMSkull":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-50b9867ba05d1ecc-24x24.png","SoBayed":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-efca3da7a499ac81-24x30.png","SoonerLater":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-696192d9891880af-23x30.png","SriHead":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-14706-src-0867051c194fc3f1-28x28.png","SSSsss":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-5d019b356bd38360-24x24.png","StoneLightning":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-8b5aaae6e2409deb-20x27.png","StrawBeary":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-3dac9659e838fab2-20x27.png","SuperVinlin":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-92a1b848540e9347-23x27.png","SwiftRage":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-680b6b3887ef0d17-21x28.png","TF2John":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-ffa884123ef70519-22x30.png","TheRinger":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-1903cc415afc404c-20x27.png","TheTarFu":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-1fcfa48228bbd6ea-25x28.png","TheThing":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-7427-src-f1278d0b66848536-28x28.png","ThunBeast":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-1bae8ebfe6209a0c-26x28.png","TinyFace":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-b93007bc230754e1-19x30.png","TooSpicy":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-f193772ca6e512f2-23x30.png","TriHard":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-6407e6947eb69e21-24x30.png","UleetBackup":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-5342e829290d1af0-17x27.png","UncleNox":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-3666-src-19af357000ae2b42-28x28.png","UnSane":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-4eea6f01e372a996-28x30.png","Volcania":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-efbcc231b2d2d206-27x28.png","WholeWheat":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-89a30a213fe46f49-20x30.png","WinWaker":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-d4e971f7a6830e95-30x30.png","WTRuck":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/chansub-global-emoticon-f9ee1c9eb52375de-28x28.png","WutFace":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-28087-src-839c7612f8489616-28x28.png","YouWHY":"\/\/static-cdn.jtvnw.net\/jtv_user_pictures\/emoticon-4337-src-abba134ff81d77c7-28x28.png"},
+				twitchOn: false,  // If true, twitch emoticons will be displayed.
 			};
 
 			//I'm so proud of this ugly node constructor
@@ -676,9 +719,36 @@ var source = function() {
 						});
 
 						if (bpOverlay.twitchOn) {
-							for (i in bpOverlay.twitch) {
-								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + bpOverlay.twitch[i]+"\"><\/img>");
+							for (i in twitch_global) {
+								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + twitch_global[i].url + "\"><\/img>");
 							}
+							
+							// Match subscriber emote patterns
+							var matches = [];
+							var found;
+							var reg = /\b\w+:\w+\b/g
+							while (found = reg.exec(message)) {
+								matches.push(found[0]);
+							}
+							
+							// Check if any of the patterns we've found are actual emotes
+							toReplace = {};
+							for (i = 0; i < matches.length; i++) {
+								var split = matches[i].split(":");
+								if (!toReplace[matches[i]]) {
+									if (twitch_subscriber[split[0]]) {
+										if (twitch_subscriber[split[0]].emotes[split[1]]) {
+											toReplace[matches[i]] = twitch_subscriber[split[0]].emotes[split[1]];
+										}
+									}
+								}
+							}
+							
+							// Finally, do any replacements
+							for (i in toReplace) {
+								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\"><\/img>");
+							}
+							
 						}
 						
 						// Scroll the chat down.
@@ -1038,7 +1108,7 @@ var source = function() {
 			setInterval(updateTime, 1000);
 
 			// "Update Text"
-			channel.appendToChat("Info", "New Update! (2014-12-11):<br />Twitch emotes. Because why not. (Turn them on in the settings tab)");
+			channel.appendToChat("Info", "New Update! (2014-12-12):<br />Twitch subscriber emotes! Use them like this: channel_name:emote_name<br />(Turn twitch emotes on in the settings tab)");
 		}
 		main();
 	}
