@@ -1,14 +1,60 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.5
+// @version      1.1.8
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
 // @downloadURL  https://github.com/MrInanimated/bp-overlay/raw/master/dist/bpoverlay.user.js
 // @author       Tianlin Zhang
 // @match        http://bombparty.sparklinlabs.com/play/*
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
+
+
+// Grab the twitch global emotes
+GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://twitchemotes.com/global.json",
+	onload: function(response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'var twitch_global = ' + response.responseText + ';';
+
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+	onerror : function (response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'channel.appendToChat("Info", "Couldn\'t fetch twitch global emotes :(");';
+		
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+});
+
+// Grab the twitch subscriber emote
+GM_xmlhttpRequest({
+	method: "GET",
+	url: "http://twitchemotes.com/subscriber.json",
+	onload: function(response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'var twitch_subscriber = ' + response.responseText + ';';
+
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+	onerror : function (response) {
+		var s = document.createElement('script');
+		s.setAttribute("type", "application/javascript");
+		s.textContent = 'channel.appendToChat("Info", "Couldn\'t fetch twitch subscriber emotes :(");';
+		
+		document.body.appendChild(s);
+		document.body.removeChild(s);
+	},
+});
+
 
 var source = function() {
 	// If the window already has a BPOverlay, don't run again
@@ -67,6 +113,14 @@ var source = function() {
 				autoFocus: true, // If true, automatically switches focus to the chatbox after the user's turn
 
 				focusNext: false, // If true, it is the user's turn (and so we should focus to the chatBox if autoFocus is true after the user's turn)
+
+				twitchOn: false,  // If true, twitch emoticons will be displayed.				
+
+				adventureTextMode: false,	//Self explanatory boolean for text adventure toggle
+				
+				adventureFirstRun: false,
+				adventureLevels: [" noob", " beginner", " novice", " student of flips", " graduated student of flips", "n expert flipper", "n incredible flipper", " master flipper", " scrub tier immortal", " near immortal", "n immortal", " massive flipping faggot", " strong contender to the 'hang in there kitty'", "n immeasurable faggot of flips", " blackhole tier faggot", " legendary immortal faggot flipper", " supermassive faggot with more flips than a herd of dolphins", "ha! Silly rabbit. Flips are for kids!", "n undefeatable flipping gaylord of +5 anal strength", "n ascended immortal queen faggot cockmunch godly overlord of flips"],
+
 			};
 
 			//I'm so proud of this ugly node constructor
@@ -211,8 +265,6 @@ var source = function() {
 				var dragH = document.getElementById("infoBox").clientHeight;
 				var dragW = document.getElementById("infoBox").clientWidth;
 
-				//TODO: add an eventListener to window.onresize to prevent the user from  getting the dragonDrop out of bounds by
-				//	resizing the browser.
 
 				//If the drag sends the dragon offscreen, put it to the edge instead
 				//Otherwise let the user do whatever
@@ -258,10 +310,217 @@ var source = function() {
 			dragAside.addEventListener('dragstart', drag_start, false);
 			document.body.appendChild(dragAside);
 
-			//This may be trivial
-			//var dAss = document.getElementById('dragonDrop'); 
-			//dAss.addEventListener('dragstart',drag_start,false); 
+			//BEGIN: Functions for the adventureText thing
+			//////////////////////////////////////////////
 
+			var toggleTextAdventure = function(toggle) {
+
+				if(toggle) {
+	
+					bpOverlay.adventureFirstRun = true;
+					bpOverlay.adventureTextMode = true;
+
+					//Hide the old
+					var gameCanvas = document.getElementById("GameCanvas");
+					gameCanvas.parentNode.style.backgroundColor="rgb(20,20,20)";
+					gameCanvas.style.display="none";
+
+					//In with the new
+					var textAdventureDiv = document.createElement("DIV");
+					textAdventureDiv.id="adventure";
+					textAdventureDiv.className="adventureMeow";
+					textAdventureDiv.style="position: relative; padding: 0.25em; -webkit-box-flex: 1; -moz-box-flex: 1; -o-box-flex: 1; box-flex: 1;  -webkit-flex: 1;  -ms-flex: 1;  flex: 1;   -webkit-box-orient: vertical; -moz-box-orient: vertical; -o-box-orient: vertical; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; text-align: left;";
+					textAdventureDiv.style.backgroundColor="rgb(20,20,20)";
+
+					
+
+					//Player info
+					var textAdventurePINFO = document.createElement("P");
+					textAdventurePINFO.id = "adventurePINFO";
+					textAdventurePINFO.className = "adventureMeow";
+					var playerLives=0;
+					var playerLetters=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v"];					
+					//What level? How many letters?
+					var playerIndex = 200;	//for undefined
+					for(i=0; i < channel.data.actors.length; i++) {
+						if(channel.data.actors[i].authId === window.app.user.authId) {
+							playerLives = channel.data.actors[i].lives;
+							playerLetters = channel.data.actors[i].lockedLetters;
+							playerIndex = i;
+						}
+					}
+
+					if(playerIndex == 200) {
+						var level = 0;
+					} else if(bpOverlay.flips[playerIndex] > 18) {
+						var level = 18;
+					} else {
+						var level = bpOverlay.flips[playerIndex];
+					}
+
+					textAdventurePINFO.innerHTML = window.app.user.displayName + " : a" + bpOverlay.adventureLevels[level];
+					textAdventurePINFO.style.color="rgb(255, 255, 51)";
+
+					var remaining="";					
+					//Player remaining letters
+					for(i in playerLetters) {
+						remaining+=playerLetters[i].toUpperCase();
+					}
+
+					var textAdventureEXPINFO = document.createElement("DIV");
+					textAdventureEXPINFO.id="adventureEXPINFO";
+					textAdventureEXPINFO.className = "adventureMeow";
+					
+					textAdventureEXPINFO.innerHTML = "Experience needed: " + remaining;
+					textAdventureEXPINFO.style.color="rgb(20,20, 200)";
+
+
+					textAdventureDiv.appendChild(textAdventureEXPINFO);
+					textAdventureDiv.appendChild(textAdventurePINFO);
+
+					//Player Container
+					var textAdventurePlayer = document.createElement("DIV");
+					textAdventurePlayer.id = "adventurePlayer";
+					textAdventurePlayer.className="adventureMeow";
+					textAdventurePlayer.style = "position: relative";
+					textAdventureDiv.appendChild(textAdventurePlayer);
+
+					//Player image container
+					var textAdventureAvatar = document.createElement("IMG");
+					textAdventureAvatar.id = "adventureAvatar";
+					textAdventureAvatar.className = "adventureMeow";
+					if(typeof window.app.user.pictureURL === "undefined") {
+						textAdventureAvatar.src = "http://bombparty.sparklinlabs.com/images/AvatarPlaceholder.png";					
+					} else {
+						textAdventureAvatar.src = window.app.user.pictureURL;
+					}					
+					textAdventureAvatar.style = "position: relative; float: right";
+					textAdventurePlayer.appendChild(textAdventureAvatar);
+
+					//Player bar container
+					var textAdventureBars = document.createElement("DIV");
+					textAdventureBars.id = "adventureBars";
+					textAdventureBars.className = "adventureMeow";
+					textAdventureBars.style="position: relative; float: right;";
+					textAdventurePlayer.appendChild(textAdventureBars);
+
+					//Player health bar
+					var textAdventureHealth = document.createElement("DIV");
+					textAdventureHealth.id = "adventureHealth";
+					textAdventureHealth.className = "adventureMeow";
+					textAdventureHealth.style="position: absolute;";
+					textAdventureHealth.style.width= (10 + playerLives * 70) + "px";
+					textAdventureBars.appendChild(textAdventureHealth);
+
+					//Player exp bar
+					var textAdventureExp = document.createElement("DIV");
+					textAdventureExp.id = "adventureExp";
+					textAdventureExp.className = "adventureMeow";
+					textAdventureExp.style="position: absolute;";
+					textAdventureExp.style.width= (10 + (21 - playerLetters.length) * 10) + "px";
+					textAdventureBars.appendChild(textAdventureExp);
+
+					//Turn container
+					var textAdventureTurns = document.createElement("DIV");
+					textAdventureTurns.id = "adventureTurns";
+					textAdventureTurns.className = "adventureMeow";
+					textAdventureTurns.style = "position: relative; float: right; color: #FFF";
+					textAdventurePlayer.appendChild(textAdventureTurns);
+
+					//Message container
+					var textAdventureMessages = document.createElement("DIV");
+					textAdventureMessages.id = "adventureMessages";
+					textAdventureMessages.className="adventureMeow";
+					textAdventureMessages.align="center";
+					textAdventureMessages.style="position: relative;";
+					textAdventureDiv.appendChild(textAdventureMessages);
+
+					//We need input... and on the project too. Like, comment and subscribe. How? Magic.
+					//Or maybe not. Let's keep this though if we wanna customize more later.					
+					//var textAdventureInput = document.createElement("INPUT");
+					//textAdventureInput.id="adventureInput";
+					//textAdventureInput.className="adventureMeow";
+					//textAdventureInput.style.outline="none";
+					//textAdventureInput.style.border="none";
+					//textAdventureInput.style.backgroundColor="rgb(20,20,20)";
+					//textAdventureInput.style.color="rgb(90, 249, 12)";
+					//textAdventureMessages.appendChild(textAdventureInput);
+				
+					gameCanvas.parentNode.insertBefore(textAdventureDiv, gameCanvas);
+
+					//I hate CSS. This seems to only work after
+					textAdventureMessages.style.marginLeft="40px";
+					textAdventureMessages.style.marginTop="40px";
+					textAdventureMessages.style.clear="both";
+					textAdventurePlayer.style.marginLeft="40px";
+					textAdventurePlayer.style.marginTop="5px"
+					textAdventurePlayer.style.overflow="hidden";
+					textAdventurePINFO.style.marginLeft="40px";
+					textAdventureEXPINFO.style.marginLeft="40px";
+					textAdventureEXPINFO.style.marginTop="40px";
+					textAdventureAvatar.style.height="76px";
+					textAdventureAvatar.style.width="76px";		
+					textAdventureAvatar.style.float="left";
+					textAdventureBars.style.marginLeft="10px";
+					textAdventureBars.style.height="75px";
+					textAdventureBars.style.width="400px";
+					textAdventureBars.style.border="1px solid #141414";
+					textAdventureBars.style.float="left";
+					textAdventureHealth.style.backgroundColor="rgb(255,255,0)";
+					textAdventureHealth.style.border="10px solid red";
+					textAdventureHealth.style.marginTop="8px";
+					textAdventureHealth.style.marginBottom="14px";
+					textAdventureExp.style.backgroundColor="rgb(0,0,204)";
+					textAdventureExp.style.border="10px solid blue";
+					textAdventureExp.style.marginTop="14px";
+					textAdventureExp.style.marginBottom="8px";
+					textAdventureTurns.style.marginLeft="20px";
+					textAdventureTurns.style.float="left";		
+					
+				} else {
+					
+					bpOverlay.adventureTextMode = false;
+					bpOverlay.adventureFirstRun = false; //Probably not needed but I like symmetry					
+					
+					//Out with the old
+					var old = document.getElementsByClassName("adventureMeow");
+					for(i = 0; i < old.length; i++) {	
+						old[i].parentNode.removeChild(old[i]);
+					}
+
+					//In with the previously old, ehhh.... default.
+					//Pretty neat that you can reset this with an empty string. Oh boy.		
+					var gameCanvas = document.getElementById("GameCanvas");
+					gameCanvas.parentNode.style.backgroundColor="";
+					gameCanvas.style.display="";
+				
+	}
+
+
+}
+
+//msg is the string to be displayed
+//formatter is a color code on the form "rgb(x,y,z)" where 0<=x,y,z<=255
+var sendAdventureMessage = function(msg, formatter) {
+	if(bpOverlay.adventureTextMode) {
+		var textAdventureMessages = document.getElementById("adventureMessages");	
+		var textAdventureMsg = document.createElement("P");
+		textAdventureMsg.style.color=formatter;
+		textAdventureMsg.innerHTML=msg;
+	
+		//We don't want the messages to extend out of the page... now do we?
+		if(textAdventureMessages.children.length > 10) {
+			textAdventureMessages.appendChild(textAdventureMsg);	
+			textAdventureMessages.removeChild(textAdventureMessages.firstChild);
+		} else {
+			textAdventureMessages.appendChild(textAdventureMsg);
+		}
+	
+
+	}
+}
+			//////////////////////////////////////////////
+			//END functions for the adventure text thing
 
 			// This function is called whenever a new round begins.
 			var generateActorConditions = function() {
@@ -672,6 +931,39 @@ var source = function() {
 							className: "chatMessageLink"
 						});
 
+						if (bpOverlay.twitchOn) {
+							for (i in twitch_global) {
+								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + twitch_global[i].url + "\"><\/img>");
+							}
+							// Match subscriber emote patterns
+							var matches = [];
+							var found;
+							var reg = /\b\w+:\w+\b/g
+							while (found = reg.exec(message)) {
+								matches.push(found[0]);
+							}
+							
+							// Check if any of the patterns we've found are actual emotes
+							toReplace = {};
+							for (i = 0; i < matches.length; i++) {
+								var split = matches[i].split(":");
+								if (!toReplace[matches[i]]) {
+									if (twitch_subscriber[split[0]]) {
+										if (twitch_subscriber[split[0]].emotes[split[1]]) {
+											toReplace[matches[i]] = twitch_subscriber[split[0]].emotes[split[1]];
+										}
+									}
+								}
+							}
+							
+							// Finally, do any replacements
+							for (i in toReplace) {
+								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\"><\/img>");
+							}
+							
+						}
+						
+
 						// Scroll the chat down.
 						if (bpOverlay.autoScroll) {
 							var chatLog = document.getElementById("ChatLog");
@@ -692,29 +984,172 @@ var source = function() {
 						if (bpOverlay.firstRun) {
 							generateActorConditions();
 
+
 							// Set firstRun to false so a new box is not created every time there's a turn change
 							bpOverlay.firstRun = false;
+
+							document.getElementById("adventureMessages").innerHTML="";
+							sendAdventureMessage("Hark, the wheel turns yet again!", "rgb(10,200,150)");					
+				
+							
+							bpOverlay.adventureFirstRun=true;
 						}
 
-						// Chatbox autofocus code
-						if (bpOverlay.autoFocus) {
-							if (channel.data.actors[actor].authId === window.app.user.authId) {
-								// If it's the user's turn, set focusNext to true so the next time
-								// setActivePlayerIndex fires, we set focus to the chatbox
-								bpOverlay.focusNext = true;
-							} else if (bpOverlay.focusNext) {
+						//invisible break
+						sendAdventureMessage("break", "rgb(20,20,20");
+												
+
+						// Chatbox autofocus code && hijacked for textAdventure
+						// Which creates a strange conundrum of double checking the bpOverlay.autoFocus, but hey. Smaller code.
+						// Nested checks ahoy because laziness.
+						if (bpOverlay.autoFocus || bpOverlay.adventureTextMode) {
+
+								//I'm afraid to have these recalculations elsewhere, they aren't that costly anyhow.
+								//Player info
+								var playerLives=0;
+								var playerLetters=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v"];					
+								var playerIndex = 200;
+								//What level? How many letters?
+								for(i=0; i < channel.data.actors.length; i++) {
+									if(channel.data.actors[i].authId === window.app.user.authId) {
+										playerLives = channel.data.actors[i].lives;
+										playerLetters = channel.data.actors[i].lockedLetters;
+										playerIndex = i;
+									}
+								}
+
+								if(playerIndex == 200) {
+									var level = 0;
+								} else if(bpOverlay.flips[playerIndex] > 18) {
+									var level = 18;
+								} else {
+									var level = bpOverlay.flips[playerIndex];
+								}
+
+								var textAdventurePINFO = document.getElementById("adventurePINFO");
+								textAdventurePINFO.innerHTML = window.app.user.displayName + " : a" + bpOverlay.adventureLevels[level];
+
+								var textAdventureEXPINFO = document.getElementById("adventureEXPINFO");
+								var remaining="";					
+								//Player remaining letters
+								for(i in playerLetters) {
+									remaining+=playerLetters[i].toUpperCase();
+								}
+
+								textAdventureEXPINFO.innerHTML = "Experience needed: " + remaining;
+
+								
+
+								
+								//Player health bar
+								var textAdventureHealth = document.getElementById("adventureHealth");
+								textAdventureHealth.style.width = (10 + playerLives * 70) + "px";
+								
+								//Player exp bar
+								var textAdventureExp = document.getElementById("adventureExp");
+								textAdventureExp.style.width= (10 + (21 - playerLetters.length) * 10) + "px";
+								
+
+
+							//There is a very very very small chance that this will not work for the "first shift" of the "first round"
+							//It does work as expected after that though. Almost flawless. People will probably not notice.
+							//Either that or change the code... but who's unlazy enough? I mean
+							//This works 90% of the time for the first shift and 100% after that.
+							if (bpOverlay.focusNext && bpOverlay.autoFocus) {
 								// If focusNext is true (i.e. it's immediately after the player's turn)
 								// We set the focus to the chatbox, and reset focusNext.
 								setTimeout(function() {
 									document.getElementById("ChatInputBox").focus();
 								}, 400);
 								bpOverlay.focusNext = false;
+							
 							}
+							//If first-run, then a small delay is needed to get a correct wordRoot.	
+							if(!bpOverlay.adventureFirstRun) {
+								if (channel.data.actors[actor].authId === window.app.user.authId) {
+									// If it's the user's turn, set focusNext to true so the next time
+									// setActivePlayerIndex fires, we set focus to the chatbox
+									if(bpOverlay.autoFocus) {
+										bpOverlay.focusNext = true;
+									}
+									
+									sendAdventureMessage("It is thy turn, squire. You are facing off against "
+										+ channel.data.wordRoot 
+										+". Do thine worst!", "rgb(90, 250, 0)"
+									);
+		
+								
+								} else {
+							
+									sendAdventureMessage("The heroic, "
+										+ channel.data.actors[actor].displayName
+										+ ", faces the mighty "
+										+ channel.data.wordRoot
+										+ ".", "rgb(255, 165, 0)"
+									);
+
+								}
+							}
+
 						}
 					} finally {
-						// Call the actual game function
+						// Call the actual game function						
 						gameSetActivePlayerIndex(actor);
-					}
+						if(bpOverlay.adventureFirstRun) {
+							bpOverlay.adventureFirstRun = false;
+							//The channel.data.wordRoot needs to update in the first run
+							setTimeout(function() {
+									if (channel.data.actors[actor].authId === window.app.user.authId) {
+										// If it's the user's turn, set focusNext to true so the next time
+										// setActivePlayerIndex fires, we set focus to the chatbox
+										if(bpOverlay.autoFocus) {
+											bpOverlay.focusNext = true;
+										}
+
+										sendAdventureMessage("It is thy turn, squire. You are facing off against "
+											+ channel.data.wordRoot 
+											+". Do thine worst!", "rgb(90, 250, 0)"
+										);
+			
+								
+									} else {
+							
+										sendAdventureMessage("The heroic, "
+											+ channel.data.actors[actor].displayName
+											+ ", faces the mighty "
+											+ channel.data.wordRoot
+											+ ".", "rgb(255, 165, 0)"
+										);
+
+									}
+							}, 100);
+						}
+						//We need to do this shortly after a shift because the channel needs to be updated first, every time.
+						setTimeout(function() {
+							for(i=0; i < channel.data.actors.length; i++) {
+
+									var turns = document.getElementById("adventureTurns");
+									var index = channel.data.activePlayerIndex;
+									if( index == i ) {
+										if(typeof channel.data.actors[index].pictureURL === "undefined") {
+											var imgSource = "http://bombparty.sparklinlabs.com/images/AvatarPlaceholder.png";					
+										} else {
+											var imgSource = channel.data.actors[index].pictureURL;
+										}					
+					
+										var EXP = (21 - channel.data.actors[index].lockedLetters.length);
+										var hearts="";
+										for(j=0; j < channel.data.actors[index].lives; j++) {
+											hearts+="♥";
+										}
+										turns.innerHTML="<img src=' "+ imgSource + "' height='70px' width='70px' style='float:left; margin-right: 10px'></img><div style='float:right;'><p style='color: #DFA'>" + channel.data.actors[i].displayName + "<p style='color: orange'>Lives: <span style='color: red'>" + hearts + "</span></p><p style='color: #A746C7'>EXP: <span style='color: #7D8ADB'>" + EXP + "/21</div>";	
+									}
+								}
+							}, 
+						100);
+	
+						
+					}	
 				});
 
 				// winWord wrapper
@@ -730,7 +1165,7 @@ var source = function() {
 						var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
 						var lockedLetters = t.lockedLetters.slice();
 						var lastWord = t.lastWord.toLowerCase();
-
+						var prevExp = lockedLetters.length;
 						// Remove the letters of the last word that a person used
 						// from the letters they need to flip
 						for (i = 0; i < lastWord.length; i++) {
@@ -739,6 +1174,7 @@ var source = function() {
 								lockedLetters.splice(index, 1);
 							}
 						}
+						var experience = prevExp - lockedLetters.length;
 
 						// If the lockedLetters is empty after removing all those, letters, the player has flipped
 						var flipped = (lockedLetters.length === 0);
@@ -759,7 +1195,35 @@ var source = function() {
 								if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
 									document.getElementById(playerNum + " uFlips").textContent = bpOverlay.uFlips[playerNum];
 								}
+
 							}
+
+							if(bpOverlay.flips[playerNum] > 18) {
+								var level = 18;
+							} else {
+								var level = bpOverlay.flips[playerNum];
+							}
+
+							if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
+								sendAdventureMessage("LEVEL UP: You're now a" + bpOverlay.adventureLevels[level], "rgb(200, 200, 0"); 							
+							} else {
+								sendAdventureMessage(channel.data.actors[playerNum].displayName + " leveled up to a" + bpOverlay.adventureLevels[level], "rgb(200, 200, 0)");							
+							}
+
+						} else {
+							if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
+								sendAdventureMessage("Thou hast slain the beast with your " + t.lastWord.toUpperCase()
+											+ " and gained "
+											+ experience + " EXP!", "rgb(250, 0, 250)"
+								); 						
+
+							} else {							
+								sendAdventureMessage("" + t.displayName 
+											+ " has killed the beast with the mighty shout " + t.lastWord.toUpperCase()
+											+ " and gained "
+											+ experience + " EXP!", "rgb(250, 0, 250)"
+								);
+							} 						
 						}
 
 						// Add one to the word count, and update the box if it's been created
@@ -779,6 +1243,14 @@ var source = function() {
 					try {
 						// Apparently, setPlayerLives is only used for decreasing a player's lives.
 						// It unfortunately doesn't fire when a player flips.
+
+						
+						if(actor.playerAuthId === window.app.user.authId) {
+							sendAdventureMessage("Thine ignorance woundeth and thou hast been hurt", "rgb(255,20,10)");
+						} else {						
+							sendAdventureMessage("Alas... for poor " + channel.data.actorsByAuthId[actor.playerAuthId].displayName + " hath been hurt ", "rgb(255,20,10)");
+						}
+						
 						var t = channel.data.actorsByAuthId[actor.playerAuthId];
 						var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
 
@@ -812,6 +1284,11 @@ var source = function() {
 								if (bpOverlay.hideDead) {
 									tableRow.style.display = "none";
 								}
+								if(actor.playerAuthId === window.app.user.authId) {
+									sendAdventureMessage("and a grave loss for thou art dead. " + channel.data.actorsByAuthId[actor.playerAuthId].displayName + ", may thee rest in piece!", "rgb(255,255,255"); 
+								} else {
+									sendAdventureMessage("and weepeth, thee mourn, for " + channel.data.actorsByAuthId[actor.playerAuthId].displayName + " hath left yonder mortal coil!", "rgb(255,255,255");
+								}							
 							}
 						}
 					} finally {
@@ -827,6 +1304,14 @@ var source = function() {
 						// Set firstRun to true, because we want the box to be redraw next round
 						bpOverlay.firstRun = true;
 
+						if(bpOverlay.adventureTextMode) {
+							document.getElementById("adventureMessages").innerHTML="";
+							document.getElementById("adventureTurns").innerHTML="";
+							sendAdventureMessage("All things must end and so it does with " + channel.data.wordRoot.toUpperCase() + "!", "rgb(204, 255, 204)");
+						}
+
+						
+
 						// Oh, and set the focus to the chatBox if you need to as well
 						if (bpOverlay.autoFocus) {
 							if (bpOverlay.focusNext) {
@@ -837,12 +1322,16 @@ var source = function() {
 							}
 						}
 
+						
 						// Update the time timer as it might be 1 second behind
 						updateTime();
 
 					} finally {
 						// Call the actual game function
 						gameEndGame(actorName);
+						setTimeout(function() {
+							sendAdventureMessage("But rising from the ashes of felled brethren is the victorious " + channel.data.lastWinner + "!", "rgb(24, 24, 255)");
+						}, 100);
 					}
 				});
 
@@ -996,7 +1485,7 @@ var source = function() {
 								infoTableDiv.style.maxHeight = "100px";					
 							} else if (sTabSelect.value === "fitToPlayers") {
 								infoTableDiv.style.maxHeight = "1000px";	//The autoflow whatever takes care of this.
-								
+
 								//Prevent flowing out of page
 								//Let's be lazy and get the window.onresize and run it.
 								var funky = window.onresize;
@@ -1004,8 +1493,42 @@ var source = function() {
 							} else {
 								//Do nothing
 							}
+
 						}
 			);
+
+			// Twitch Emote settings
+			generateSettingsElement("Twitch Emotes", {off: "Off", on: "On"}, "twitchEmoteSelect",
+						function () {
+							var teSelect = document.getElementById("twitchEmoteSelect");
+							
+							if (teSelect.value === "on") {
+								bpOverlay.twitchOn = true;
+							}
+							else if (teSelect.value === "off") {
+								bpOverlay.twitchOff = false;
+							}
+							else {
+							}
+						}
+			);
+	
+		
+			//The text adventure setting
+			generateSettingsElement("Text Adventure BETA", {off: "Off", on: "On"}, "adventureSetting",
+				function() {
+					var sTabSelect = document.getElementById("adventureSetting");
+					if(sTabSelect.value === "on") {
+						toggleTextAdventure(true);
+					} else if(sTabSelect.value === "off") {
+						toggleTextAdventure(false);
+					} else {
+						toggleTextAdventure(false);
+					}
+				}
+			);
+
+									
 
 
 			firstRunProcs();
@@ -1014,8 +1537,7 @@ var source = function() {
 			setInterval(updateTime, 1000);
 
 			// "Update Text"
-			channel.appendToChat("Info", "New Update! (2014-12-09):<br />More bugfixes on the draggable container<br /><br \>Added the option to configure the vertical size of the overlay. This option can be found at the bottom in the \"Settings\" tab under \"Overlay Settings\"");
-		}
+			channel.appendToChat("Info", "New Update! (2014-12-12):<br />Twitch subscriber emotes! Use them like this: channel_name:emote_name<br />(Turn twitch emotes on in the settings tab)<br />Text adventure mode (BETA) added to settings.");		}
 		main();
 	}
 }
