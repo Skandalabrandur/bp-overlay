@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2
+// @version      1.2.1
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -933,7 +933,7 @@ var sendAdventureMessage = function(msg, formatter) {
 
 						if (bpOverlay.twitchOn) {
 							for (i in twitch_global) {
-								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + twitch_global[i].url + "\"><\/img>");
+								message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
 							}
 							// Match subscriber emote patterns
 							var matches = [];
@@ -947,10 +947,12 @@ var sendAdventureMessage = function(msg, formatter) {
 							toReplace = {};
 							for (i = 0; i < matches.length; i++) {
 								var split = matches[i].split(":");
+								var s = split[0].toLowerCase();
+								var e = split[1];
 								if (!toReplace[matches[i]]) {
-									if (twitch_subscriber[split[0]]) {
-										if (twitch_subscriber[split[0]].emotes[split[1]]) {
-											toReplace[matches[i]] = twitch_subscriber[split[0]].emotes[split[1]];
+									if (twitch_subscriber[s]) {
+										if (twitch_subscriber[s].emotes[e]) {
+											toReplace[s+":"+e] = twitch_subscriber[s].emotes[e];
 										}
 									}
 								}
@@ -958,7 +960,7 @@ var sendAdventureMessage = function(msg, formatter) {
 							
 							// Finally, do any replacements
 							for (i in toReplace) {
-								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\"><\/img>");
+								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
 							}
 							
 						}
