@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.1.8
+// @version      1.2
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -372,7 +372,7 @@ var source = function() {
 					textAdventureEXPINFO.className = "adventureMeow";
 					
 					textAdventureEXPINFO.innerHTML = "Experience needed: " + remaining;
-					textAdventureEXPINFO.style.color="rgb(20,20, 200)";
+					textAdventureEXPINFO.style.color="rgb(255,255,255)";
 
 
 					textAdventureDiv.appendChild(textAdventureEXPINFO);
@@ -988,9 +988,10 @@ var sendAdventureMessage = function(msg, formatter) {
 							// Set firstRun to false so a new box is not created every time there's a turn change
 							bpOverlay.firstRun = false;
 
-							document.getElementById("adventureMessages").innerHTML="";
-							sendAdventureMessage("Hark, the wheel turns yet again!", "rgb(10,200,150)");					
-				
+							if(bpOverlay.adventureTextMode) {
+								document.getElementById("adventureMessages").innerHTML="";
+								sendAdventureMessage("Hark, the wheel turns yet again!", "rgb(10,200,150)");					
+							}
 							
 							bpOverlay.adventureFirstRun=true;
 						}
@@ -1004,6 +1005,7 @@ var sendAdventureMessage = function(msg, formatter) {
 						// Nested checks ahoy because laziness.
 						if (bpOverlay.autoFocus || bpOverlay.adventureTextMode) {
 
+							if(bpOverlay.adventureTextMode) {
 								//I'm afraid to have these recalculations elsewhere, they aren't that costly anyhow.
 								//Player info
 								var playerLives=0;
@@ -1049,6 +1051,7 @@ var sendAdventureMessage = function(msg, formatter) {
 								var textAdventureExp = document.getElementById("adventureExp");
 								textAdventureExp.style.width= (10 + (21 - playerLetters.length) * 10) + "px";
 								
+							}
 
 
 							//There is a very very very small chance that this will not work for the "first shift" of the "first round"
@@ -1125,6 +1128,7 @@ var sendAdventureMessage = function(msg, formatter) {
 							}, 100);
 						}
 						//We need to do this shortly after a shift because the channel needs to be updated first, every time.
+						if(bpOverlay.adventureTextMode) {
 						setTimeout(function() {
 							for(i=0; i < channel.data.actors.length; i++) {
 
@@ -1148,7 +1152,7 @@ var sendAdventureMessage = function(msg, formatter) {
 							}, 
 						100);
 	
-						
+						}	
 					}	
 				});
 
