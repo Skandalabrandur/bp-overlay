@@ -527,8 +527,8 @@ var source = function() {
 
 					if(playerIndex == 200) {
 						var level = 0;
-					} else if(bpOverlay.flips[playerIndex] > 18) {
-						var level = 18;
+					} else if(bpOverlay.flips[playerIndex] >= bpOverlay.adventureLevels.length) {
+						var level = bpOverlay.adventureLevels.length - 1;
 					} else {
 						var level = bpOverlay.flips[playerIndex];
 					}
@@ -1201,8 +1201,8 @@ var sendAdventureMessage = function(msg, formatter) {
 
 								if(playerIndex == 200) {
 									var level = 0;
-								} else if(bpOverlay.flips[playerIndex] > 18) {
-									var level = 18;
+								} else if(bpOverlay.flips[playerIndex] >= bpOverlay.adventureLevels.length) {
+									var level = bpOverlay.adventureLevels.length - 1;
 								} else {
 									var level = bpOverlay.flips[playerIndex];
 								}
@@ -1377,8 +1377,8 @@ var sendAdventureMessage = function(msg, formatter) {
 
 							}
 
-							if(bpOverlay.flips[playerNum] > 18) {
-								var level = 18;
+							if(bpOverlay.flips[playerNum] >= bpOverlay.adventureLevels.length) {
+								var level = bpOverlay.adventureLevels.length - 1;
 							} else {
 								var level = bpOverlay.flips[playerNum];
 							}
@@ -1740,3 +1740,4 @@ s.textContent = '(' + source + ')();';
 
 document.body.appendChild(s);
 document.body.removeChild(s);
+
