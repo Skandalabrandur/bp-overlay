@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.4
+// @version      1.2.5
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -171,7 +171,7 @@ var source = function() {
 					],
 					userTurn : [
 						"It is thy turn, squire. You are facing off against {0}. Do thine worst!",
-                                                "A vile horror seeks thee. What is thine plan for {0]?",
+                                                "A vile horror seeks thee. What is thine plan for {0}?",
                                                 "Nay, {0} fixes to tender thine flame. Take action!",
                                                 "A wild {0} appears!",
                                                 "Shalt thou stand and accomplish nothing against {0}?",
@@ -267,7 +267,7 @@ var source = function() {
 						"and weepeth, thee morn, for {0} hath left yonder mortal coil!",
                                                 "{0} exits the stage!",
                                                 "{0} is snuffed like a candle",
-                                                "{0] is no more, like, jeez, got dun dead good!",
+                                                "{0} is no more, like, jeez, got dun dead good!",
                                                 "meow meow meow 'COMPLETELY DEAD' meow meow '{0}'",
                                                 "{0} kicks the bucket, knocks it over and swallows shit!",
                                                 "{0}, oh, in the prime of his 'not being able to answer prompts like the faggot he is', is deceased!",
