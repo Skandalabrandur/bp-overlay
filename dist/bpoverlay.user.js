@@ -119,47 +119,28 @@ var source = function() {
 				adventureTextMode: false,	//Self explanatory boolean for text adventure toggle
 				
 				adventureFirstRun: false,
-				adventureLevels: [" noob", " beginner", " novice", " student of flips", " graduated student of flips", "n expert flipper", "n incredible flipper", " master flipper", " scrub tier immortal", " near immortal", "n immortal", " massive flipping faggot", " strong contender to the 'hang in there kitty'", "n immeasurable faggot of flips", " blackhole tier faggot", " legendary immortal faggot flipper", " supermassive faggot with more flips than a herd of dolphins", "ha! Silly rabbit. Flips are for kids!", "n undefeatable flipping gaylord of +5 anal strength", "n ascended immortal queen faggot cockmunch godly overlord of flips", " zip zop zippety boop flip floop", "nd now yo're the gayest man on earth", "ren't you fagged out after all that flipping?", " lifesize johnboat", " lifesize catboat", " Jesus figure in the underworld of extreme flip fetish", "re you on fliproids?", "aah! Why don't you slip into something more comfortable... like a coma?", " divine elder scrub god that manifests himself as fine-cuisine salt", " nice guy. Didn't expect that did you?", " heart hoarder. Get help! Now!", " bird in the hand is worth zemstvo in the quush", "ll right all right... you're good. Actually very good. Goddamn", "nd still going. Holy crap!", "n anaconda that doesn't want none unless you got equivocations hun", " budding plenipotentiary", "ntidisestablishmentarinism in the flesh", " sufferer of pseudopseudohypoparathyroidism", "rrete les flips tu connard!", " disciple of Pingu", " man of a thousand flips... well... 40", "llah, the god of bombparty", "t 42 flips... insert Douglas Adams reference here", "lpaca. Yes. An alpaca. The flippest of animals besides giraffes", " giraffe. The flippest of the animals in the animal kingdom", "t this point you deserve a movie about you. The title 'Rainman' is taken tho", "choo! Bless me. Btw If faggots were mountains, you'd be a volcano!"],
+				adventureLevels: ["A noob", "A beginner", "A novice", "A student of flips", "A graduated student of flips", "An expert flipper", "An incredible flipper", "A master flipper", "A scrub tier immortal", "A near immortal", "An immortal", "A massive flipping faggot", "A strong contender to the 'hang in there kitty'", "An immeasurable faggot of flips", "A blackhole tier faggot", "A legendary immortal faggot flipper", "A supermassive faggot with more flips than a herd of dolphins", "Silly rabbit. Flips are for kids!", "An undefeatable flipping gaylord of +5 anal strength", "An ascended immortal queen faggot cockmunch godly overlord of flips", "Zip zop zippety boop flip floop", "You're now the gayest man on earth", "Aren't you fagged out after all that flipping?", "A lifesize Johnboat", "A lifesize Catboat", "The Jesus figure in the underworld of extreme flip fetish", "On fliproids!", "Why don't you slip into something more comfortable... like a coma?", "A divine elder scrub god that manifests himself as fine-cuisine salt", "The nicest guy. Didn't expect that did you?", "Hungry hungry heart hoarder!", "A bird in the hand is worth zemstvo in the quush", "You're good. Actually very good. Goddamn", "Still going. Holy crap!", "Your Anaconda dont want none unless you got equivocations hun", "A budding plenipotentiary", "Antidisestablishmentarinism in the flesh", "Suffering from pseudopseudohypoparathyroidism", "Arrete les flips tu connard!", "A disciple of Pingu", "A man of a thousand flips... well... 40", "The god of bombparty", "Insert Douglas Adams reference here because 42 flips", "An Alpaca. Yes. An Alpaca. The flippest of animals besides giraffes", "A giraffe. The flippest of the animals in the animal kingdom", "You deserve a movie about you. The title 'Rainman' is taken though", "If faggots were mountains, you'd be a volcano!"],
 
 			};
 
 			// Adventure Mode Text formatter!
-			// Use this to have a pool of text messages to randomly choose from.
+			// Use this to have a pool of text messages to randomly choose from. 
 			
 			// USAGE:
 			// adventureTextFormat.chooseText(textBankName, *arguments)
 			// 		textBankName: the text bank you want to choose the text from.
 			// 		*arguments: The arguments you want to fill the empty spaces in your text with.
 			//		(It's not tremendously clear what this does, but I'll try to explain it anyway)
-			
-			// Basically, this "class" attempts to make annoying string formatting easier.
-			// It essentially tries to replicate Python's str.format method...
-			// ...and tries to combine it with random text for the adventure mode at the same time.
-			
 			// You provide it with a string like this:
 			// "The heroic, {0}, faces the mighty {1}."
 			// And then you call adventureTextFormat.chooseText($TextBankWhichTheStringAboveIsIn, "Pingu", "GOS")
 			// It returns "The heroic, Pingu, faces the mighty GOS."
 			// It replaces the numbers inside the braces with the relevant text supplied.
-			
-			// Now, you can have the numbers in any order, so:
+			// You can have the numbers in any order, so:
 			// "A fierce {1} roars greatly at {0}!" -> "A fierce GOS roars greatly at Pingu!"
 			// You can miss out numbers all together, so:
 			// "{0} takes their stand against the foul beast." -> "Pingu takes their stand against the foul beast."
-			// "The hero has failed and {1} is allowed to run rampant!" -> "The hero has failed and GOS is allowed to run rampant!"
-			// etc.
 			
-			// The reason why we have text banks is that chooseText randomly chooses text to display from it.
-			// This way, we can have multiple pieces of text that are randomly chosen for the adventure mode
-			// And the format method makes it so that not all strings are in the format
-			// "The hero " + x + " faces " + y + "."
-			// Which is somewhat limiting as if you wanted a different text to display there you could only replace the parts around x and y
-			// Or write different cases for every string.
-			
-			// I've wittered on for enough
-			// You probably could've figured out most of this for yourself :D
-			// But in case you haven't, I've replaced a lot of the arguments of the SendAdventureMessage functions with this
-			// So you can use those as a reference.
 			var adventureTextFormat = {
 				format: function(format, args) {
 							return format.replace(/{(\d+)}/g, function(match, number) {
@@ -174,50 +155,144 @@ var source = function() {
 					return this.format(chosenString, args);
 				},
 				
-				// Also, you seem to be a lot better at making up humorous messages than me
-				// So I leave the task of adding more text to the text banks to you
-				// (Literally, if you want another text for userTurn, just add it to the array called "userTurn")
-				
 				// These messages will be randomly selected.
+                                // Note: I've never read Shakespeare. If you're a fan of his then you're not of this.
+                                //       You'd think that someone good with words would be good with sentences but it ain't so
 				textBanks : {
 					newRound : [
 						"Hark, the wheel turns yet again!",
+                                                "Lo and behold, a new round has cometh!",
+                                                "The crack of a new bomb, stand ready and begin the new day!",
+                                                "The whole bomb's a stage, and all the men and women merely nerds!",
+                                                "Give heed! The wordgrimage is set about, selectees!",
+                                                "With thine vocable, set forth and slay that which is fragmentary!",
+                                                "Words are swords, prompts be stomped!",
+                                                "Sticks and stones will break thy bones / And prompts will surely kill thee!",
 					],
 					userTurn : [
 						"It is thy turn, squire. You are facing off against {0}. Do thine worst!",
+                                                "A vile horror seeks thee. What is thine plan for {0]?",
+                                                "Nay, {0} fixes to tender thine flame. Take action!",
+                                                "A wild {0} appears!",
+                                                "Shalt thou stand and accomplish nothing against {0}?",
+                                                "{0} is about to wound thee. Time for a curt attack!",
+                                                "Heedeth thou the mighty {0}! Distress or scuffle is forthcoming!",
+                                                "Art thou harefooted or harebrained! Observe, it is {0}!",
 					],
 					playerTurn : [
 						"The heroic, {0}, faces the mighty {1}.",
+                                                "A ferocious roar as {1} corners {0}!",
+                                                "{0} needeth stand firm or be struck by {1}",
+                                                "{1} hath hunger who {0} might satisfy, lest!",
+                                                "{0} faces down the rat that is {1}!",
+                                                "{0} challenges the verminous {1}!",
+                                                "Behold the ravenous {1}! Will {0} succeed?",
+                                                "{0} versus {1}! The trepidation is palpable!",
+                                                
 					],
 					userLevelUp : [
-						"LEVEL UP: You're now a{0}",
+						"LEVEL UP: Thou art now {0}",
+                                                "UPLEVEL : Now thou art {0}",
+                                                "RISE SIR, AS '{0}'",
+                                                "YOU FIT A NEW TITLE: {0}",
+                                                "THOU HAST EVOLVED INTO {0}",
+                                                "EXPERIENCE MOLDS YOU INTO {0}",
+                                                "YOU FEEL STRONGER: You become '{0}'",
+                                                "REJOICE, YOU ARE: {0}",                                         
 					],
 					levelUp : [
-						"{0} levelled up to a{1}",
+						"{0} levelled up to {1}",
+                                                "{0} has become {1}",
+                                                "{0} is now titled {1}",
+                                                "{0} has a new name: {1}",
+                                                "There is now a '{1}' among us",
+                                                "{0} is levelling up. What's your excuse, faggoth?",
+                                                "Out of his cocoon, {0} crawls like a majestic buttefly. How can I compare 'levelling up' to a summer's day?",
+                                                "{0} is evolving! Don't cream your pants, Pokémon faggots!",
 					],
 					userWinWord : [
 						"Thou hast slain the beast with your {0} and gained {1} EXP!",
+                                                "The hellion shatters for thine knowledge is vast. A well deserved {1} EXP!",
+                                                "Smite triumphed over bite! The prompt is no more. You gain {1} EXP!",
+                                                "Twas foolish of the beast to underestimate you. You gain {1} EXP",
+                                                "By Jove, the miscreant is rend like a brittle biscuit from your wallop. I say, good show!",
+                                                "No mercy have thou for these ogres. Let {0} be a lesson. You gain {1} EXP",
+                                                "Blasted vermin recoil in fear at thine mighty {0}. {1} EXP to thee!",
+                                                "Idle barking is met with a firm {0}.",
 					],
 					winWord : [
 						"{0} has killed the beast with the mighty shout {1} and gained {2} EXP!",
+                                                "{0} fears no ghosts. His guiding {1} has fled them from the shadows!",
+                                                "{1}, an apt warcry from {0} who gained {2} EXP!",
+                                                "{0} decimates the hoodlum with {1} and gains {2} EXP",
+                                                "{1}, and then the dragon is no more! {0} feels stronger by {2} points!",
+                                                "{0} delivers the final blow to the whale with his {1}!",
+                                                "{1} was {0}'s weapon of choice and he earns {2} EXP",
+                                                "{0} shows no mercy and swings his {1}!",
 					],
 					userLostLife : [
 						"Thine ignorance woundeth and thou hast been hurt",
+                                                "Incompetent fool, you were lacerated by a mere rodent!",
+                                                "Thou areth assrapeth so fervently you lose heart!",
+                                                "If thy stuttereth again, thou shalt surely receive another blow such as this!",
+                                                "Nay, thou hast been set upon and crushed by that wild thing!",
+                                                "Is thy fighting as good as thy 'not-being-a-faggot' skill? Thine heart bleeds!",
+                                                "Thine tongue utters nothing and so thou art skewered like a pig! The agony!",
+                                                "Thou art badly contused by the assailing prompt. Man up or die, cutter!",
 					],
 					lostLife : [
 						"Alas... for poor {0} hath been hurt",
+                                                "{0} has been struck to the ground!",  
+                                                "{0} cries can be heard echoing through these halls!", 
+                                                "{0} receives hefty damage!",
+                                                "The horror kill and goes forth to claim its next victim",
+                                                "Sacre bleu. Les monstrosite c'est trop. {0} ne pas victoirement!",
+                                                "Don't look. {0} was badly mauled!",
+                                                "Oh lord gawd. {0} got roughed up!",
+                                                "{0} was generously harmed!",
 					],
 					userDeath : [
-						"and a grave loss for thou art dead. {0}, may thee rest in peace!",  // Uh, not sure if "may thee rest in piece!" is an intentional misspelling or not
+						"and a grave loss for thou art dead. {0}, may thee rest in peace!",  // Uh, not sure if "may thee rest in piece!" is an intentional misspelling or not. 
+                                                                                                                     //Meoweth, thy scoundrel be informeth that 'thee' tis the objective case of 'thou'.
+                                                                                                                     //But it's probably wrong anyways :D
+                                                "yet-th, thineth lifeth hateth endeth. Noth. Whyth?",
+                                                "but this is the end for you. Rest in pieces, sweet prince",
+                                                "however you face oblivion.",
+                                                "and thine life flasheth before thine eyes and thou realizes what a dead faggot thou art!",
+                                                "now you have left the realm of the living and enter the realm of spectators!",
+                                                "here, you expire like milk and smell like it too! Smelly dead {0}!",
+                                                "but bonk bonk you conk into the casket. The wonk was too stronk!",
 					],
 					death : [
 						"and weepeth, thee morn, for {0} hath left yonder mortal coil!",
+                                                "{0} exits the stage!",
+                                                "{0} is snuffed like a candle",
+                                                "{0] is no more, like, jeez, got dun dead good!",
+                                                "meow meow meow 'COMPLETELY DEAD' meow meow '{0}'",
+                                                "{0} kicks the bucket, knocks it over and swallows shit!",
+                                                "{0}, oh, in the prime of his 'not being able to answer prompts like the faggot he is', is deceased!",
+                                                "{0}, bites the dust, goes the way of all flesh, gives up the ghost, drops off. You know what I mean",
 					],
 					endRound : [
 						"All things must end and so it does with {0}!",
+                                                "The ordeal is over!",
+                                                "{0} was the death of all but one!",
+                                                "The seemingly unending wave of prompts comes to a halt!",
+                                                "Now, caged are the dogs of war!",     
+                                                "And on that bombshell, {0}, we have to end!",
+                                                "Many have fallen! But not all!",      
+                                                "Nothing lasts forever!, Yet...",
+                                            
 					],
 					winner : [
-						"But rising from the ashes of felled brethren is the victorious {0}!",
+						"Rising from the ashes of felled brethren is the victorious {0}!",
+                                                "A knight in tested armor, still breathing, the glorious {0}!",
+                                                "Praise be the heroic {0} for that human/otherkin/refridgerator has not be vanquished!",
+                                                "The surviving faggot was indeed {0}",
+                                                "Ahoyhoy and a hullo for the indissoluble {0}",
+                                                "Is it a bird? Is it a plane? Whatever it is, it's {0}",
+                                                "Doctors hate {0}! The secret doctors don't want you to know is \"don't be a scrub\"!",
+                                                "{0} the unending, the ceaseless, the permanent, the unfading; the sole survivor!",
 					],
 				},
 			}
@@ -458,7 +533,7 @@ var source = function() {
 						var level = bpOverlay.flips[playerIndex];
 					}
 
-					textAdventurePINFO.innerHTML = window.app.user.displayName + " : a" + bpOverlay.adventureLevels[level];
+					textAdventurePINFO.innerHTML = window.app.user.displayName + " : " + bpOverlay.adventureLevels[level];
 					textAdventurePINFO.style.color="rgb(255, 255, 51)";
 
 					var remaining="";					
@@ -1133,7 +1208,7 @@ var sendAdventureMessage = function(msg, formatter) {
 								}
 
 								var textAdventurePINFO = document.getElementById("adventurePINFO");
-								textAdventurePINFO.innerHTML = window.app.user.displayName + " : a" + bpOverlay.adventureLevels[level];
+								textAdventurePINFO.innerHTML = window.app.user.displayName + " : " + bpOverlay.adventureLevels[level];
 
 								var textAdventureEXPINFO = document.getElementById("adventureEXPINFO");
 								var remaining="";					
@@ -1654,7 +1729,7 @@ var sendAdventureMessage = function(msg, formatter) {
 			setInterval(updateTime, 1000);
 
 			// "Update Text"
-			channel.appendToChat("Info", "New Update! (2014-12-12):<br />Twitch subscriber emotes! Use them like this: channel_name:emote_name<br />(Turn twitch emotes on in the settings tab)<br />Text adventure mode (BETA) added to settings.");		}
+			channel.appendToChat("Info", "New Update! (2014-12-13):<br />Twitch subscriber emotes! Use them like this: channel_name:emote_name<br />(Turn twitch emotes on in the settings tab)<br />Text adventure mode (BETA) now has more text.");		}
 		main();
 	}
 }
