@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.2
+// @version      1.2.3
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -123,6 +123,106 @@ var source = function() {
 
 			};
 
+			// Adventure Mode Text formatter!
+			// Use this to have a pool of text messages to randomly choose from.
+			
+			// USAGE:
+			// adventureTextFormat.chooseText(textBankName, *arguments)
+			// 		textBankName: the text bank you want to choose the text from.
+			// 		*arguments: The arguments you want to fill the empty spaces in your text with.
+			//		(It's not tremendously clear what this does, but I'll try to explain it anyway)
+			
+			// Basically, this "class" attempts to make annoying string formatting easier.
+			// It essentially tries to replicate Python's str.format method...
+			// ...and tries to combine it with random text for the adventure mode at the same time.
+			
+			// You provide it with a string like this:
+			// "The heroic, {0}, faces the mighty {1}."
+			// And then you call adventureTextFormat.chooseText($TextBankWhichTheStringAboveIsIn, "Pingu", "GOS")
+			// It returns "The heroic, Pingu, faces the mighty GOS."
+			// It replaces the numbers inside the braces with the relevant text supplied.
+			
+			// Now, you can have the numbers in any order, so:
+			// "A fierce {1} roars greatly at {0}!" -> "A fierce GOS roars greatly at Pingu!"
+			// You can miss out numbers all together, so:
+			// "{0} takes their stand against the foul beast." -> "Pingu takes their stand against the foul beast."
+			// "The hero has failed and {1} is allowed to run rampant!" -> "The hero has failed and GOS is allowed to run rampant!"
+			// etc.
+			
+			// The reason why we have text banks is that chooseText randomly chooses text to display from it.
+			// This way, we can have multiple pieces of text that are randomly chosen for the adventure mode
+			// And the format method makes it so that not all strings are in the format
+			// "The hero " + x + " faces " + y + "."
+			// Which is somewhat limiting as if you wanted a different text to display there you could only replace the parts around x and y
+			// Or write different cases for every string.
+			
+			// I've wittered on for enough
+			// You probably could've figured out most of this for yourself :D
+			// But in case you haven't, I've replaced a lot of the arguments of the SendAdventureMessage functions with this
+			// So you can use those as a reference.
+			var adventureTextFormat = {
+				format: function(format, args) {
+							return format.replace(/{(\d+)}/g, function(match, number) {
+								return typeof args[number] != 'undefined' ? args[number] : match;
+							});
+						},
+				
+				chooseText : function (textBankName) {
+					var args = Array.prototype.slice.call(arguments, 1);
+					var textBank = this.textBanks[textBankName];
+					var chosenString = textBank[Math.floor(Math.random() * textBank.length)];
+					return this.format(chosenString, args);
+				},
+				
+				// Also, you seem to be a lot better at making up humorous messages than me
+				// So I leave the task of adding more text to the text banks to you
+				// (Literally, if you want another text for userTurn, just add it to the array called "userTurn")
+				
+				// These messages will be randomly selected.
+				textBanks : {
+					newRound : [
+						"Hark, the wheel turns yet again!",
+					],
+					userTurn : [
+						"It is thy turn, squire. You are facing off against {0}. Do thine worst!",
+					],
+					playerTurn : [
+						"The heroic, {0}, faces the mighty {1}.",
+					],
+					userLevelUp : [
+						"LEVEL UP: You're now a{0}",
+					],
+					levelUp : [
+						"{0} levelled up to a{1}",
+					],
+					userWinWord : [
+						"Thou hast slain the beast with your {0} and gained {1} EXP!",
+					],
+					winWord : [
+						"{0} has killed the beast with the mighty shout {1} and gained {2} EXP!",
+					],
+					userLostLife : [
+						"Thine ignorance woundeth and thou hast been hurt",
+					],
+					lostLife : [
+						"Alas... for poor {0} hath been hurt",
+					],
+					userDeath : [
+						"and a grave loss for thou art dead. {0}, may thee rest in peace!",  // Uh, not sure if "may thee rest in piece!" is an intentional misspelling or not
+					],
+					death : [
+						"and weepeth, thee morn, for {0} hath left yonder mortal coil!",
+					],
+					endRound : [
+						"All things must end and so it does with {0}!",
+					],
+					winner : [
+						"But rising from the ashes of felled brethren is the victorious {0}!",
+					],
+				},
+			}
+			
+			
 			//I'm so proud of this ugly node constructor
 			//I'm certain it's unconventional, but it works so... yippee
 			//It allows for creating images as nodes within an object and
@@ -929,35 +1029,40 @@ var sendAdventureMessage = function(msg, formatter) {
 						});
 
 						if (bpOverlay.twitchOn) {
-							for (i in twitch_global) {
-								message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
-							}
-							// Match subscriber emote patterns
-							var matches = [];
-							var found;
-							var reg = /\b\w+:\w+\b/g
-							while (found = reg.exec(message)) {
-								matches.push(found[0]);
-							}
-							
-							// Check if any of the patterns we've found are actual emotes
-							toReplace = {};
-							for (i = 0; i < matches.length; i++) {
-								var split = matches[i].split(":");
-								var s = split[0].toLowerCase();
-								var e = split[1];
-								if (!toReplace[matches[i]]) {
-									if (twitch_subscriber[s]) {
-										if (twitch_subscriber[s].emotes[e]) {
-											toReplace[s+":"+e] = twitch_subscriber[s].emotes[e];
-										}
-									}
+							if (window.hasOwnProperty("twitch_global")) {
+								for (i in twitch_global) {
+									message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
 								}
 							}
 							
-							// Finally, do any replacements
-							for (i in toReplace) {
-								message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
+							if (window.hasOwnProperty("twitch_subscriber")) {
+								// Match subscriber emote patterns
+								var matches = [];
+								var found;
+								var reg = /\b\w+:\w+\b/g
+								while (found = reg.exec(message)) {
+									matches.push(found[0]);
+								}
+								
+								// Check if any of the patterns we've found are actual emotes
+								toReplace = {};
+								for (i = 0; i < matches.length; i++) {
+									var split = matches[i].split(":");
+									var s = split[0].toLowerCase();
+									var e = split[1];
+									if (!toReplace[matches[i]]) {
+										if (twitch_subscriber[s]) {
+											if (twitch_subscriber[s].emotes[e]) {
+												toReplace[s+":"+e] = twitch_subscriber[s].emotes[e];
+											}
+										}
+									}
+								}
+								
+								// Finally, do any replacements
+								for (i in toReplace) {
+									message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
+								}
 							}
 							
 						}
@@ -989,7 +1094,7 @@ var sendAdventureMessage = function(msg, formatter) {
 
 							if(bpOverlay.adventureTextMode) {
 								document.getElementById("adventureMessages").innerHTML="";
-								sendAdventureMessage("Hark, the wheel turns yet again!", "rgb(10,200,150)");					
+								sendAdventureMessage(adventureTextFormat.chooseText("newRound"), "rgb(10,200,150)");					
 							}
 							
 							bpOverlay.adventureFirstRun=true;
@@ -1075,19 +1180,17 @@ var sendAdventureMessage = function(msg, formatter) {
 										bpOverlay.focusNext = true;
 									}
 									
-									sendAdventureMessage("It is thy turn, squire. You are facing off against "
-										+ channel.data.wordRoot 
-										+". Do thine worst!", "rgb(90, 250, 0)"
+									sendAdventureMessage(
+										adventureTextFormat.chooseText("userTurn", channel.data.wordRoot),
+										"rgb(90, 250, 0)"
 									);
 		
 								
 								} else {
 							
-									sendAdventureMessage("The heroic, "
-										+ channel.data.actors[actor].displayName
-										+ ", faces the mighty "
-										+ channel.data.wordRoot
-										+ ".", "rgb(255, 165, 0)"
+									sendAdventureMessage(
+										adventureTextFormat.chooseText("playerTurn", channel.data.actors[actor].displayName, channel.data.wordRoot),
+										"rgb(255, 165, 0)"
 									);
 
 								}
@@ -1108,19 +1211,17 @@ var sendAdventureMessage = function(msg, formatter) {
 											bpOverlay.focusNext = true;
 										}
 
-										sendAdventureMessage("It is thy turn, squire. You are facing off against "
-											+ channel.data.wordRoot 
-											+". Do thine worst!", "rgb(90, 250, 0)"
+										sendAdventureMessage(
+											adventureTextFormat.chooseText("userTurn", channel.data.wordRoot),
+											"rgb(90, 250, 0)"
 										);
 			
 								
 									} else {
 							
-										sendAdventureMessage("The heroic, "
-											+ channel.data.actors[actor].displayName
-											+ ", faces the mighty "
-											+ channel.data.wordRoot
-											+ ".", "rgb(255, 165, 0)"
+										sendAdventureMessage(
+											adventureTextFormat.chooseText("playerTurn", channel.data.actors[actor].displayName, channel.data.wordRoot),
+											"rgb(255, 165, 0)"
 										);
 
 									}
@@ -1208,23 +1309,26 @@ var sendAdventureMessage = function(msg, formatter) {
 							}
 
 							if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
-								sendAdventureMessage("LEVEL UP: You're now a" + bpOverlay.adventureLevels[level], "rgb(200, 200, 0"); 							
+								sendAdventureMessage(
+									adventureTextFormat.chooseText("userLevelUp", bpOverlay.adventureLevels[level]),
+									"rgb(200, 200, 0"
+								); 							
 							} else {
-								sendAdventureMessage(channel.data.actors[playerNum].displayName + " leveled up to a" + bpOverlay.adventureLevels[level], "rgb(200, 200, 0)");							
+								sendAdventureMessage(
+									adventureTextFormat.chooseText("levelUp", channel.data.actors[playerNum].displayName, bpOverlay.adventureLevels[level]),
+									"rgb(200, 200, 0)"
+								);							
 							}
 
 						} else {
 							if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
-								sendAdventureMessage("Thou hast slain the beast with your " + t.lastWord.toUpperCase()
-											+ " and gained "
-											+ experience + " EXP!", "rgb(250, 0, 250)"
+								sendAdventureMessage(adventureTextFormat.chooseText("userWinWord", t.lastWord.toUpperCase(), experience),
+								"rgb(250, 0, 250)"
 								); 						
 
 							} else {							
-								sendAdventureMessage("" + t.displayName 
-											+ " has killed the beast with the mighty shout " + t.lastWord.toUpperCase()
-											+ " and gained "
-											+ experience + " EXP!", "rgb(250, 0, 250)"
+								sendAdventureMessage(adventureTextFormat.chooseText("winWord", t.displayName, t.lastWord.toUpperCase(), experience), 
+								"rgb(250, 0, 250)"
 								);
 							} 						
 						}
@@ -1249,9 +1353,10 @@ var sendAdventureMessage = function(msg, formatter) {
 
 						
 						if(actor.playerAuthId === window.app.user.authId) {
-							sendAdventureMessage("Thine ignorance woundeth and thou hast been hurt", "rgb(255,20,10)");
+							sendAdventureMessage(adventureTextFormat.chooseText("userLostLife"), "rgb(255,20,10)");
 						} else {						
-							sendAdventureMessage("Alas... for poor " + channel.data.actorsByAuthId[actor.playerAuthId].displayName + " hath been hurt ", "rgb(255,20,10)");
+							sendAdventureMessage(adventureTextFormat.chooseText("lostLife", channel.data.actorsByAuthId[actor.playerAuthId].displayName),
+							"rgb(255,20,10)");
 						}
 						
 						var t = channel.data.actorsByAuthId[actor.playerAuthId];
@@ -1288,9 +1393,11 @@ var sendAdventureMessage = function(msg, formatter) {
 									tableRow.style.display = "none";
 								}
 								if(actor.playerAuthId === window.app.user.authId) {
-									sendAdventureMessage("and a grave loss for thou art dead. " + channel.data.actorsByAuthId[actor.playerAuthId].displayName + ", may thee rest in piece!", "rgb(255,255,255"); 
+									sendAdventureMessage(adventureTextFormat.chooseText("userDeath", channel.data.actorsByAuthId[actor.playerAuthId].displayName)
+									, "rgb(255,255,255"); 
 								} else {
-									sendAdventureMessage("and weepeth, thee mourn, for " + channel.data.actorsByAuthId[actor.playerAuthId].displayName + " hath left yonder mortal coil!", "rgb(255,255,255");
+									sendAdventureMessage(adventureTextFormat.chooseText("death", channel.data.actorsByAuthId[actor.playerAuthId].displayName),
+									"rgb(255,255,255");
 								}							
 							}
 						}
@@ -1310,7 +1417,8 @@ var sendAdventureMessage = function(msg, formatter) {
 						if(bpOverlay.adventureTextMode) {
 							document.getElementById("adventureMessages").innerHTML="";
 							document.getElementById("adventureTurns").innerHTML="";
-							sendAdventureMessage("All things must end and so it does with " + channel.data.wordRoot.toUpperCase() + "!", "rgb(204, 255, 204)");
+							sendAdventureMessage(adventureTextFormat.chooseText("endRound", channel.data.wordRoot.toUpperCase()),
+							"rgb(204, 255, 204)");
 						}
 
 						
@@ -1333,7 +1441,8 @@ var sendAdventureMessage = function(msg, formatter) {
 						// Call the actual game function
 						gameEndGame(actorName);
 						setTimeout(function() {
-							sendAdventureMessage("But rising from the ashes of felled brethren is the victorious " + channel.data.lastWinner + "!", "rgb(24, 24, 255)");
+							sendAdventureMessage(adventureTextFormatter.chooseText("winner", channel.data.lastWinner),
+							"rgb(24, 24, 255)");
 						}, 100);
 					}
 				});
