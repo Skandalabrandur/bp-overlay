@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.6
+// @version      1.2.5
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -527,980 +527,980 @@ var source = function() {
 
 					if(playerIndex == 200) {
 						var level = 0;
-                                            } else if(bpOverlay.flips[playerIndex] >= bpOverlay.adventureLevels.length) {
-                                                    var level = bpOverlay.adventureLevels.length - 1;
-                                            } else {
-                                                    var level = bpOverlay.flips[playerIndex];
-                                            }
-
-                                            textAdventurePINFO.innerHTML = window.app.user.displayName + " : " + bpOverlay.adventureLevels[level];
-                                            textAdventurePINFO.style.color="rgb(255, 255, 51)";
-
-                                            var remaining="";					
-                                            //Player remaining letters
-                                            for(i in playerLetters) {
-                                                    remaining+=playerLetters[i].toUpperCase();
-                                            }
-
-                                            var textAdventureEXPINFO = document.createElement("DIV");
-                                            textAdventureEXPINFO.id="adventureEXPINFO";
-                                            textAdventureEXPINFO.className = "adventureMeow";
-                                            
-                                            textAdventureEXPINFO.innerHTML = "Experience needed: " + remaining;
-                                            textAdventureEXPINFO.style.color="rgb(255,255,255)";
-
-
-                                            textAdventureDiv.appendChild(textAdventureEXPINFO);
-                                            textAdventureDiv.appendChild(textAdventurePINFO);
-
-                                            //Player Container
-                                            var textAdventurePlayer = document.createElement("DIV");
-                                            textAdventurePlayer.id = "adventurePlayer";
-                                            textAdventurePlayer.className="adventureMeow";
-                                            textAdventurePlayer.style = "position: relative";
-                                            textAdventureDiv.appendChild(textAdventurePlayer);
-
-                                            //Player image container
-                                            var textAdventureAvatar = document.createElement("IMG");
-                                            textAdventureAvatar.id = "adventureAvatar";
-                                            textAdventureAvatar.className = "adventureMeow";
-                                            if(typeof window.app.user.pictureURL === "undefined") {
-                                                    textAdventureAvatar.src = "http://bombparty.sparklinlabs.com/images/AvatarPlaceholder.png";					
-                                            } else {
-                                                    textAdventureAvatar.src = window.app.user.pictureURL;
-                                            }					
-                                            textAdventureAvatar.style = "position: relative; float: right";
-                                            textAdventurePlayer.appendChild(textAdventureAvatar);
-
-                                            //Player bar container
-                                            var textAdventureBars = document.createElement("DIV");
-                                            textAdventureBars.id = "adventureBars";
-                                            textAdventureBars.className = "adventureMeow";
-                                            textAdventureBars.style="position: relative; float: right;";
-                                            textAdventurePlayer.appendChild(textAdventureBars);
-
-                                            //Player health bar
-                                            var textAdventureHealth = document.createElement("DIV");
-                                            textAdventureHealth.id = "adventureHealth";
-                                            textAdventureHealth.className = "adventureMeow";
-                                            textAdventureHealth.style="position: absolute;";
-                                            textAdventureHealth.style.width= (10 + playerLives * 70) + "px";
-                                            textAdventureBars.appendChild(textAdventureHealth);
-
-                                            //Player exp bar
-                                            var textAdventureExp = document.createElement("DIV");
-                                            textAdventureExp.id = "adventureExp";
-                                            textAdventureExp.className = "adventureMeow";
-                                            textAdventureExp.style="position: absolute;";
-                                            textAdventureExp.style.width= (10 + (21 - playerLetters.length) * 10) + "px";
-                                            textAdventureBars.appendChild(textAdventureExp);
-
-                                            //Turn container
-                                            var textAdventureTurns = document.createElement("DIV");
-                                            textAdventureTurns.id = "adventureTurns";
-                                            textAdventureTurns.className = "adventureMeow";
-                                            textAdventureTurns.style = "position: relative; float: right; color: #FFF";
-                                            textAdventurePlayer.appendChild(textAdventureTurns);
-
-                                            //Message container
-                                            var textAdventureMessages = document.createElement("DIV");
-                                            textAdventureMessages.id = "adventureMessages";
-                                            textAdventureMessages.className="adventureMeow";
-                                            textAdventureMessages.align="center";
-                                            textAdventureMessages.style="position: relative;";
-                                            textAdventureDiv.appendChild(textAdventureMessages);
-
-                                            //We need input... and on the project too. Like, comment and subscribe. How? Magic.
-                                            //Or maybe not. Let's keep this though if we wanna customize more later.					
-                                            //var textAdventureInput = document.createElement("INPUT");
-                                            //textAdventureInput.id="adventureInput";
-                                            //textAdventureInput.className="adventureMeow";
-                                            //textAdventureInput.style.outline="none";
-                                            //textAdventureInput.style.border="none";
-                                            //textAdventureInput.style.backgroundColor="rgb(20,20,20)";
-                                            //textAdventureInput.style.color="rgb(90, 249, 12)";
-                                            //textAdventureMessages.appendChild(textAdventureInput);
-                                    
-                                            gameCanvas.parentNode.insertBefore(textAdventureDiv, gameCanvas);
-
-                                            //I hate CSS. This seems to only work after
-                                            textAdventureMessages.style.marginLeft="40px";
-                                            textAdventureMessages.style.marginTop="40px";
-                                            textAdventureMessages.style.clear="both";
-                                            textAdventurePlayer.style.marginLeft="40px";
-                                            textAdventurePlayer.style.marginTop="5px"
-                                            textAdventurePlayer.style.overflow="hidden";
-                                            textAdventurePINFO.style.marginLeft="40px";
-                                            textAdventureEXPINFO.style.marginLeft="40px";
-                                            textAdventureEXPINFO.style.marginTop="40px";
-                                            textAdventureAvatar.style.height="76px";
-                                            textAdventureAvatar.style.width="76px";		
-                                            textAdventureAvatar.style.float="left";
-                                            textAdventureBars.style.marginLeft="10px";
-                                            textAdventureBars.style.height="75px";
-                                            textAdventureBars.style.width="400px";
-                                            textAdventureBars.style.border="1px solid #141414";
-                                            textAdventureBars.style.float="left";
-                                            textAdventureHealth.style.backgroundColor="rgb(255,255,0)";
-                                            textAdventureHealth.style.border="10px solid red";
-                                            textAdventureHealth.style.marginTop="8px";
-                                            textAdventureHealth.style.marginBottom="14px";
-                                            textAdventureExp.style.backgroundColor="rgb(0,0,204)";
-                                            textAdventureExp.style.border="10px solid blue";
-                                            textAdventureExp.style.marginTop="14px";
-                                            textAdventureExp.style.marginBottom="8px";
-                                            textAdventureTurns.style.marginLeft="20px";
-                                            textAdventureTurns.style.float="left";		
-                                            
-                                    } else {
-                                            
-                                            bpOverlay.adventureTextMode = false;
-                                            bpOverlay.adventureFirstRun = false; //Probably not needed but I like symmetry					
-                                            
-                                            //Out with the old
-                                            var old = document.getElementsByClassName("adventureMeow");
-                                            for(i = 0; i < old.length; i++) {	
-                                                    old[i].parentNode.removeChild(old[i]);
-                                            }
-
-                                            //In with the previously old, ehhh.... default.
-                                            //Pretty neat that you can reset this with an empty string. Oh boy.		
-                                            var gameCanvas = document.getElementById("GameCanvas");
-                                            gameCanvas.parentNode.style.backgroundColor="";
-                                            gameCanvas.style.display="";
-                                    
-            }
-
-
-    }
-
-    //msg is the string to be displayed
-    //formatter is a color code on the form "rgb(x,y,z)" where 0<=x,y,z<=255
-    var sendAdventureMessage = function(msg, formatter) {
-            if(bpOverlay.adventureTextMode) {
-                    var textAdventureMessages = document.getElementById("adventureMessages");	
-                    var textAdventureMsg = document.createElement("P");
-                    textAdventureMsg.style.color=formatter;
-                    textAdventureMsg.innerHTML=msg;
-            
-                    //We don't want the messages to extend out of the page... now do we?
-                    if(textAdventureMessages.children.length > 10) {
-                            textAdventureMessages.appendChild(textAdventureMsg);	
-                            textAdventureMessages.removeChild(textAdventureMessages.firstChild);
-                    } else {
-                            textAdventureMessages.appendChild(textAdventureMsg);
-                    }
-            
-
-            }
-    }
-                            //////////////////////////////////////////////
-                            //END functions for the adventure text thing
-
-                            // This function is called whenever a new round begins.
-                            var generateActorConditions = function() {
-                                    // If there is already a box, get rid of it
-                                    if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
-                                            var infoBox = document.getElementById("infoBox");
-
-                                            //remove infoBox from wherever it is
-                                            var meow = infoBox.parentNode;
-                                            meow.removeChild(infoBox);
-
-                                            //If if then more lines hence both.
-                                            bpOverlay.boxHasBeenCreated = false;
-                                            bpOverlay.dragBoxHasBeenCreated = false;
-                                    }
-
-                                    // Shift current round's variables onto previous round's variables
-                                    bpOverlay.prevPlayerNames = bpOverlay.playerNames;
-                                    bpOverlay.prevLostLives = bpOverlay.lostLives;
-                                    bpOverlay.prevFlips = bpOverlay.flips;
-                                    bpOverlay.prevUFlips = bpOverlay.uFlips;
-                                    bpOverlay.prevTimeText = bpOverlay.timeText;
-                                    bpOverlay.prevWordCount = bpOverlay.wordCount;
-
-                                    // Reset current round variables
-                                    bpOverlay.playerNames = {};
-                                    bpOverlay.playerAuthId = {};
-                                    bpOverlay.lostLives = {};
-                                    bpOverlay.flips = {};
-                                    bpOverlay.uFlips = {};
-
-                                    actors = channel.data.actors;
-
-                                    // Loop through current round's actors and log data accordingly
-                                    for (i = 0; i < actors.length; i++) {
-                                            bpOverlay.playerNames[i] = actors[i].displayName;
-                                            bpOverlay.playerAuthId[actors[i].authId] = i;
-                                            bpOverlay.flips[i] = 0;
-                                            bpOverlay.uFlips[i] = 0;
-                                            bpOverlay.lostLives[i] = 0;
-                                    }
-
-                                    // More resetting...
-                                    bpOverlay.wordCount = 0;
-                                    bpOverlay.timeText = "Elapsed time | 0:00";
-
-                                    var d = new Date();
-                                    bpOverlay.startTime = d.getTime();
-
-                                    // Create the infoBox.
-                                    var infoBox = document.createElement("DIV");
-                                    infoBox.id = "infoBox";
-
-                                    // Create the time text display
-                                    var timeElement = document.createElement("H2");
-                                    timeElement.id = "infoBoxTimer";
-                                    timeElement.align = "center"; //Might get overridden if not in drag-mode but who cares :D
-                                    timeElement.style.color = "rgb(200,200,200)"; //this as well but that's a good thing
-                                    timeElement.textContent = bpOverlay.timeText;
-                                    infoBox.appendChild(timeElement);
-
-                                    // Create the word counter display
-                                    var wordCounterElement = document.createElement("H2");
-                                    wordCounterElement.align = "center";
-                                    wordCounterElement.id = "infoWordCounter";
-                                    wordCounterElement.style.color = "rgb(200,200,200)";
-                                    wordCounterElement.textContent = "Word Count: 0";
-                                    infoBox.appendChild(wordCounterElement);
-
-                                    // Oh boy, a horizontal rule!	Gee willikers!
-                                    var horizontalRule = document.createElement("hr");
-                                    infoBox.appendChild(horizontalRule);
-
-                                    // Contain the scoreboard table in a div to allow for scrolling
-                                    var infoTableDiv = document.createElement("DIV");
-                                    infoTableDiv.className = "infoTableDiv";
-                                    infoTableDiv.align = "center"
-                                    
-                                    //Retain choices between rounds from the settings meow
-                                    var cont = document.getElementById("containerSelect");
-                                    if(cont.value === "fitToPlayers") {
-                                            infoTableDiv.style.maxHeight = "1000px"; //autoflow hinders big meow meow meow yappety yak
-                                    } else {
-                                            infoTableDiv.style.maxHeight = "100px";				
-                                    }
-                                    infoTableDiv.style.overflowY = "auto";
-
-                                    // Make the actual scoreboard table
-                                    var infoTable = document.createElement("table");
-                                    infoTableDiv.appendChild(infoTable);
-
-                                    // First row is a button and column headers.
-                                    var firstRow = document.createElement("tr");
-
-                                    // The first element in the first row is a container for the show/hide button
-                                    var showHideContainer = document.createElement("td");
-
-                                    // Make the show_hide button
-                                    var showHideButton = document.createElement("BUTTON");
-                                    var showHideButtonDiv = document.createElement("DIV");
-                                    showHideButtonDiv.className = "headerButtonDiv";
-                                    showHideButton.id = "autoFocusButton";
-                                    showHideButton.className = "headerButton";
-                                    showHideButton.title = "Show/Hide dead players.";
-
-                                    showHideButton.onclick = function() {
-                                            // Flip the state of hideDead
-                                            bpOverlay.hideDead = !bpOverlay.hideDead;
-
-                                            if (bpOverlay.hideDead) {
-                                                    // if hideDead is true, remove the off state image and add the on state image
-                                                    showHideButton.removeChild(bpOverlayImgs.hideDeadOff);
-                                                    showHideButton.appendChild(bpOverlayImgs.hideDeadOn);
-
-                                                    // Hide all the grayed out players
-                                                    // A bit of a hack, storing information in colours
-                                                    var rows = document.getElementsByClassName("playerRow");
-                                                    for (i = 0; i < rows.length; i++) {
-                                                            if (rows[i].style.color == "rgb(102, 102, 102)") {
-                                                                    rows[i].style.display = "none";
-                                                            }
-                                                    }
-                                            } else {			
-                                                    // if hideDead is false, remove the on state image and add the off state image
-                                                    showHideButton.removeChild(bpOverlayImgs.hideDeadOn);
-                                                    showHideButton.appendChild(bpOverlayImgs.hideDeadOff);
-
-                                                    // Since showing the overlay will scroll the chat up, we might want to check if
-                                                    // the user needs to have the chat scrolled down after expansion
-                                                    var chatLog = document.getElementById("ChatLog");
-                                                    var scrollDown = (bpOverlay.autoScroll || chatLog.scrollTop == chatLog.scrollHeight)
-
-                                                    // Show all the hidden rows
-                                                    var rows = document.getElementsByClassName("playerRow");
-                                                    for (i = 0; i < rows.length; i++) {
-                                                            if (rows[i].style.display == "none") {
-                                                                    rows[i].style.display = "table-row";
-                                                            }
-                                                    }
-
-                                                    //Let's add a call to the window.onresize if this is done while the dragon is at the bottom
-                                                    //This prevents overflow
-                                                    var funky = window.onresize;
-                                                    funky();
-
-                                                    // If the chat does need scrolling down then scroll it down
-                                                    if (scrollDown) {
-                                                            chatLog.scrollTop = chatLog.scrollHeight;
-                                                    }
-                                            }
-                                    };
-
-                                    // Add the appropriate image based on the current setting of hideDead
-                                    if (bpOverlay.hideDead) {
-                                            showHideButton.appendChild(bpOverlayImgs.hideDeadOn);
-                                    } else {
-                                            showHideButton.appendChild(bpOverlayImgs.hideDeadOff);
-                                    }
-
-                                    // ...and append it all into the first row. Phew!
-                                    showHideButtonDiv.appendChild(showHideButton);
-                                    showHideContainer.appendChild(showHideButtonDiv);
-                                    firstRow.appendChild(showHideContainer);
-
-                                    // Make headers for the columns, and append to the first row
-                                    var flipColumnHeader = document.createElement("td");
-                                    flipColumnHeader.textContent = "Flips";
-                                    flipColumnHeader.style.color = "rgb(200,200,200)";
-                                    flipColumnHeader.align = "center";
-                                    flipColumnHeader.style.padding = "2px";
-                                    flipColumnHeader.style.fontSize = "11px";
-                                    flipColumnHeader.style.width = "40px";
-                                    flipColumnHeader.title = "Lives gained by using all the bonus letters.";
-                                    firstRow.appendChild(flipColumnHeader);
-                                    var uFlipColumnHeader = document.createElement("td");
-                                    uFlipColumnHeader.textContent = "U-Flips";
-                                    uFlipColumnHeader.style.color = "rgb(200,200,200)";
-                                    uFlipColumnHeader.align = "center";
-                                    uFlipColumnHeader.style.padding = "2px";
-                                    uFlipColumnHeader.style.fontSize = "11px";
-                                    uFlipColumnHeader.style.width = "40px";
-                                    uFlipColumnHeader.title = "Lives gained whilst already at 3 lives, making the \"flip\" unnecessary.";
-                                    firstRow.appendChild(uFlipColumnHeader);
-                                    var lostLivesColumnHeader = document.createElement("td");
-                                    lostLivesColumnHeader.textContent = "Deaths";
-                                    lostLivesColumnHeader.style.color = "rgb(200,200,200)";
-                                    lostLivesColumnHeader.align = "center";
-                                    lostLivesColumnHeader.style.padding = "2px";
-                                    lostLivesColumnHeader.style.fontSize = "11px";
-                                    lostLivesColumnHeader.style.width = "40px";
-                                    lostLivesColumnHeader.title = "Lives lost in this game.";
-                                    firstRow.appendChild(lostLivesColumnHeader);
-                                    infoTable.appendChild(firstRow);
-
-                                    // Loop through the players, making a new row for each one
-                                    for (i = 0; i < actors.length; i++) {
-                                            var playerRow = document.createElement("tr");
-                                            playerRow.id = i + " row"; // Used to reference this row later on
-                                            playerRow.className = "playerRow";
-
-                                            // If the player this row represents is dead, grey it out
-                                            if (actors[i].state == "dead") {
-                                                    playerRow.style.color = "#666";
-                                                    if (bpOverlay.hideDead) {
-                                                            playerRow.style.display = "none";
-                                                    }
-                                            } else {
-                                                    playerRow.style.color = "rgb(210,210,210)";
-                                            }
-
-                                            // Make the cell containing the name
-                                            var nameData = document.createElement("td");
-                                            var name = bpOverlay.playerNames[i]
-
-                                            // Shorten player display names if they're too long
-                                            if (name.length > 18) {
-                                                    name = name.slice(0, 15) + "...";
-                                            }
-
-                                            nameData.textContent = name;
-                                            nameData.align = "center";
-                                            playerRow.appendChild(nameData)
-
-                                            // Make the cell containing the number of flips
-                                            var flipData = document.createElement("td");
-                                            flipData.id = i + " flips"; // used to reference this cell later
-                                            flipData.textContent = "0";
-                                            flipData.align = "center";
-                                            playerRow.appendChild(flipData);
-
-                                            // Make the cell containing the # of u-flips
-                                            var uFlipData = document.createElement("td");
-                                            uFlipData.id = i + " uFlips"; // used to reference this cell later
-                                            uFlipData.textContent = "0";
-                                            uFlipData.align = "center";
-                                            playerRow.appendChild(uFlipData);
-
-                                            // Make the cell containing the # of deaths
-                                            var lostLivesData = document.createElement("td");
-                                            lostLivesData.id = i + " lives"; // used to reference this cell later
-                                            lostLivesData.textContent = "0";
-                                            lostLivesData.align = "center";
-                                            playerRow.appendChild(lostLivesData);
-
-                                            // Append the row to the table
-                                            infoTable.appendChild(playerRow);
-                                    }
-
-                                    // Append the table to the container...
-                                    infoBox.appendChild(infoTableDiv);
-
-
-
-                                    //Creates either a docked infoBox or a draggable one
-                                    if (bpOverlay.dragonDrop) {
-                                            //Created if user wishes dragonDrop
-                                            var deDragonDrop = document.getElementById("dragonDrop");
-                                            deDragonDrop.appendChild(infoBox);
-                                            bpOverlay.dragBoxHasBeenCreated = true;
-                                            
-
-                                    } else {
-                                            //otherwise this is created
-                                            var sideBar = document.getElementById("Sidebar");
-                                            sideBar.insertBefore(infoBox, sideBar.firstChild);
-
-                                            bpOverlay.boxHasBeenCreated = true;
-                                    }
-
-                                    //And yet another check of overflow needed in case the dragon is on the bottom and a new round starts
-                                    //with more players than the previous round. This is outside the if(bpOverlay.dragonDrop) because the user might wish
-                                    //to switch sides after starting a new round in docked mode. Bugfixes ahoy hoy yay yay
-                                    var funky = window.onresize;
-                                    funky();
-
-                                    // ..and finally, if autoScrolling is on, scroll the chat back down since this would've caused the chat to scroll up
-                                    if (bpOverlay.autoScroll) {
-                                            var chatLog = document.getElementById("ChatLog");
-                                            chatLog.scrollTop = chatLog.scrollHeight;
-                                    }
-
-                            }
-
-                            //Usage: 	generateSettingsElement(itemText, options, selectId, settingsFunction)
-                            //string	'itemText' is the text to the right of the drop down options pane
-                            //object	'options' is an object {value: Text, value2: Text2, ... , valueN: TextN}
-                            //			'value, ..., valueN' are the value we can compare from selectElement.value
-                            //			'Text, ..., TextN' are the strings that the user see when selecting options
-                            //string	'selectId': for your function you probably want to use document.getElementById(selectId)
-                            //function	'settingsFunction' is the function that is called on selectElement.onchange
-                            var generateSettingsElement = function(itemText, options, selectId, settingsFunction) {
-                                    //Create the text item
-                                    //Oh god the horrors of navigating the dom DOM DOOOOM
-                                    
-                                    // Made it so it keeps appending rows to the same table
-                                    // As far as I'm aware, I don't think you need a tbody element here
-                                    var sTabTable = document.getElementById("overlaySettingsTable");
-                                    var sTabTr = document.createElement("TR");
-                                    sTabTable.appendChild(sTabTr);
-                                    var sTabTd = document.createElement("TD");
-                                    sTabTd.textContent = itemText;
-                                    sTabTr.appendChild(sTabTd);
-                    
-                                    //Create the options DOM DOM POMPOM
-                                    var sTabOptionsTd = document.createElement("TD");
-                                    sTabTr.appendChild(sTabOptionsTd);
-                                    var sTabSelect = document.createElement("SELECT");
-                                    sTabSelect.id = selectId;
-                                    sTabOptionsTd.appendChild(sTabSelect);
-            
-                                    //Populate the select field with {Value: text} from options which is an object
-                                    for(x in options) {
-                                            var op = document.createElement("OPTION");
-                                            op.textContent = options[x];
-                                            op.value = x;
-                                            sTabSelect.appendChild(op);	
-                                    }
-
-                                    //Add the function to the onchange listener for the newly created select
-                                    sTabSelect.onchange = settingsFunction;
-                            
-                                    //OPTIONAL: Reflect on your lifechoices, such as programming when you should be studying	
-                            }
-
-                            //Usage: function(onSrc, offSrc, buttonId, buttonMessage, defaultState, buttonFunction)
-                            //img		onSrc  is the image for the on- state
-                            //img		offSrc is the image for the off-state
-                            //string	buttonId is the id for the created button item in the header
-                            //string	buttonMessage is the hovermessage presented by the button
-                            //boolean	defaultState: if true, then the button is created with the onSrc image, else the offSrc image
-                            //function	buttonFunction is the function that is called when the button is clicked
-                            var makeHeaderButton = function(onSrc, offSrc, buttonId, buttonMessage, defaultState, buttonFunction) {
-
-                                    // Actually make the button, and its container div
-                                    var button = document.createElement("BUTTON");
-                                    var buttonDiv = document.createElement("DIV");
-                                    buttonDiv.className = "headerButtonDiv";
-
-                                    // Insert the button container div into the header
-                                    var header = document.getElementsByTagName("header")[0];
-                                    var lastChild = header.lastChild;
-                                    header.insertBefore(buttonDiv, lastChild);
-
-                                    var onElement = document.createElement("img");
-                                    onElement = onSrc;
-
-                                    var offElement = document.createElement("img");
-                                    offElement = offSrc;
-
-                                    // General "stylistic touches"
-                                    button.id = buttonId;
-                                    button.className = "headerButton";
-                                    button.title = buttonMessage;
-
-                                    button.onclick = buttonFunction;
-
-                                    //Depending on defaultState, have the button start with the "on" image or the "off"
-                                    if (defaultState) {
-                                            button.appendChild(onSrc);
-                                    } else {
-                                            button.appendChild(offSrc);
-                                    }
-
-                                    buttonDiv.appendChild(button);
-                            };
-
-
-                            // This function is called regularly to update the time text
-                            var updateTime = function() {
-                                    // Don't bother doing anything if there's no game or the infoBox hasn't been created
-                                    if (channel.data.state === 'playing' && (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated)) {
-                                            // Timer code
-                                            // Copied directly from Ice's bot
-                                            var d = new Date();
-                                            var seconds = Math.floor((d.getTime() - bpOverlay.startTime) / 1000);
-                                            if ((seconds % 60) < 10) {
-                                                    var formatter = "0";
-                                            } else {
-                                                    var formatter = "";
-                                            }
-
-                                            bpOverlay.timeText = "Elapsed time | " + Math.floor(seconds / 60) + ":" + formatter + "" + (seconds % 60) + "";
-
-                                            // Umm, hmm, this if statement is redundant.
-                                            // It looks like it anyway.
-                                            // Yus - It most certainly is. I don't know what was going on
-                                            //if (bpOverlay.boxHasBeenCreated) {
-                                            // Update the infoBox timer text
-                                            document.getElementById("infoBoxTimer").textContent = bpOverlay.timeText;
-                                            //}
-                                    }
-                            }
-
-                            // Since a lot of the functions the bot needs to do has to happen before the game updates the state of everything
-                            // We wrap the default game functions to force them to be called after our custom code.
-                            var wrapGameFunctions = function() {
-
-                                    // Chat message wrapper
-                                    var gameChat = channel.appendToChat;
-                                    channel.appendToChat = function(header, message) {
-                                            // This stuff's in a try block because I want the default functions to go through even if my custom code fails
-                                            try {
-                                                    // Link using the autolinker library any links in the message.
-                                                    message = Autolinker.link(message, {
-                                                            className: "chatMessageLink"
-                                                    });
-
-                                                    if (bpOverlay.twitchOn) {
-                                                            if (window.hasOwnProperty("twitch_global")) {
-                                                                    for (i in twitch_global) {
-                                                                            message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
-                                                                    }
-                                                            }
-                                                            
-                                                            if (window.hasOwnProperty("twitch_subscriber")) {
-                                                                    // Match subscriber emote patterns
-                                                                    var matches = [];
-                                                                    var found;
-                                                                    var reg = /\b\w+:\w+\b/g
-                                                                    while (found = reg.exec(message)) {
-                                                                            matches.push(found[0]);
-                                                                    }
-                                                                    
-                                                                    // Check if any of the patterns we've found are actual emotes
-                                                                    toReplace = {};
-                                                                    for (i = 0; i < matches.length; i++) {
-                                                                            var split = matches[i].split(":");
-                                                                            var s = split[0].toLowerCase();
-                                                                            var e = split[1];
-                                                                            if (!toReplace[matches[i]]) {
-                                                                                    if (twitch_subscriber[s]) {
-                                                                                            if (twitch_subscriber[s].emotes[e]) {
-                                                                                                    toReplace[s+":"+e] = twitch_subscriber[s].emotes[e];
-                                                                                            }
-                                                                                    }
-                                                                            }
-                                                                    }
-                                                                    
-                                                                    // Finally, do any replacements
-                                                                    for (i in toReplace) {
-                                                                            message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
-                                                                    }
-                                                            }
-                                                            
-                                                    }
-                                                    
-
-                                                    // Scroll the chat down.
-                                                    if (bpOverlay.autoScroll) {
-                                                            var chatLog = document.getElementById("ChatLog");
-                                                            chatLog.scrollTop = chatLog.scrollHeight;
-                                                    }
-                                            } finally {
-                                                    // Do the actual default chat message function
-                                                    gameChat(header, message);
-                                            }
-                                    };
-
-                                    // setActivePlayerIndex wrapper
-                                    var gameSetActivePlayerIndex = channel.socket.listeners("setActivePlayerIndex").shift();
-                                    channel.socket.on("setActivePlayerIndex", function(actor) {
-                                            try {
-                                                    // Since the first event that fires when a game starts is the setActivePlayerIndex event,
-                                                    // We create the infoBox and any other first-run procedures here
-                                                    if (bpOverlay.firstRun) {
-                                                            generateActorConditions();
-
-
-                                                            // Set firstRun to false so a new box is not created every time there's a turn change
-                                                            bpOverlay.firstRun = false;
-
-                                                            if(bpOverlay.adventureTextMode) {
-                                                                    document.getElementById("adventureMessages").innerHTML="";
-                                                                    sendAdventureMessage(adventureTextFormat.chooseText("newRound"), "rgb(10,200,150)");					
-                                                            }
-                                                            
-                                                            bpOverlay.adventureFirstRun=true;
-                                                    }
-
-                                                    //invisible break
-                                                    sendAdventureMessage("break", "rgb(20,20,20");
-                                                                                                    
-
-                                                    // Chatbox autofocus code && hijacked for textAdventure
-                                                    // Which creates a strange conundrum of double checking the bpOverlay.autoFocus, but hey. Smaller code.
-                                                    // Nested checks ahoy because laziness.
-                                                    if (bpOverlay.autoFocus || bpOverlay.adventureTextMode) {
-
-                                                            if(bpOverlay.adventureTextMode) {
-                                                                    //I'm afraid to have these recalculations elsewhere, they aren't that costly anyhow.
-                                                                    //Player info
-                                                                    var playerLives=0;
-                                                                    var playerLetters=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v"];					
-                                                                    var playerIndex = 200;
-                                                                    //What level? How many letters?
-                                                                    for(i=0; i < channel.data.actors.length; i++) {
-                                                                            if(channel.data.actors[i].authId === window.app.user.authId) {
-                                                                                    playerLives = channel.data.actors[i].lives;
-                                                                                    playerLetters = channel.data.actors[i].lockedLetters;
-                                                                                    playerIndex = i;
-                                                                            }
-                                                                    }
-
-                                                                    if(playerIndex == 200) {
-                                                                            var level = 0;
-                                                                    } else if(bpOverlay.flips[playerIndex] >= bpOverlay.adventureLevels.length) {
-                                                                            var level = bpOverlay.adventureLevels.length - 1;
-                                                                    } else {
-                                                                            var level = bpOverlay.flips[playerIndex];
-                                                                    }
-
-                                                                    var textAdventurePINFO = document.getElementById("adventurePINFO");
-                                                                    textAdventurePINFO.innerHTML = window.app.user.displayName + " : " + bpOverlay.adventureLevels[level];
-
-                                                                    var textAdventureEXPINFO = document.getElementById("adventureEXPINFO");
-                                                                    var remaining="";					
-                                                                    //Player remaining letters
-                                                                    for(i in playerLetters) {
-                                                                            remaining+=playerLetters[i].toUpperCase();
-                                                                    }
-
-                                                                    textAdventureEXPINFO.innerHTML = "Experience needed: " + remaining;
-
-                                                                    
-
-                                                                    
-                                                                    //Player health bar
-                                                                    var textAdventureHealth = document.getElementById("adventureHealth");
-                                                                    textAdventureHealth.style.width = (10 + playerLives * 70) + "px";
-                                                                    
-                                                                    //Player exp bar
-                                                                    var textAdventureExp = document.getElementById("adventureExp");
-                                                                    textAdventureExp.style.width= (10 + (21 - playerLetters.length) * 10) + "px";
-                                                                    
-                                                            }
-
-
-                                                            //There is a very very very small chance that this will not work for the "first shift" of the "first round"
-                                                            //It does work as expected after that though. Almost flawless. People will probably not notice.
-                                                            //Either that or change the code... but who's unlazy enough? I mean
-                                                            //This works 90% of the time for the first shift and 100% after that.
-                                                            if (bpOverlay.focusNext && bpOverlay.autoFocus) {
-                                                                    // If focusNext is true (i.e. it's immediately after the player's turn)
-                                                                    // We set the focus to the chatbox, and reset focusNext.
-                                                                    setTimeout(function() {
-                                                                            document.getElementById("ChatInputBox").focus();
-                                                                    }, 400);
-                                                                    bpOverlay.focusNext = false;
-                                                            
-                                                            }
-                                                            //If first-run, then a small delay is needed to get a correct wordRoot.	
-                                                            if(!bpOverlay.adventureFirstRun) {
-                                                                    if (channel.data.actors[actor].authId === window.app.user.authId) {
-                                                                            // If it's the user's turn, set focusNext to true so the next time
-                                                                            // setActivePlayerIndex fires, we set focus to the chatbox
-                                                                            if(bpOverlay.autoFocus) {
-                                                                                    bpOverlay.focusNext = true;
-                                                                            }
-                                                                            
-                                                                            sendAdventureMessage(
-                                                                                    adventureTextFormat.chooseText("userTurn", channel.data.wordRoot),
-                                                                                    "rgb(90, 250, 0)"
-                                                                            );
-                    
-                                                                    
-                                                                    } else {
-                                                            
-                                                                            sendAdventureMessage(
-                                                                                    adventureTextFormat.chooseText("playerTurn", channel.data.actors[actor].displayName, channel.data.wordRoot),
-                                                                                    "rgb(255, 165, 0)"
-                                                                            );
-
-                                                                    }
-                                                            }
-
-                                                    }
-                                            } finally {
-                                                    // Call the actual game function						
-                                                    gameSetActivePlayerIndex(actor);
-                                                    if(bpOverlay.adventureFirstRun) {
-                                                            bpOverlay.adventureFirstRun = false;
-                                                            //The channel.data.wordRoot needs to update in the first run
-                                                            setTimeout(function() {
-                                                                            if (channel.data.actors[actor].authId === window.app.user.authId) {
-                                                                                    // If it's the user's turn, set focusNext to true so the next time
-                                                                                    // setActivePlayerIndex fires, we set focus to the chatbox
-                                                                                    if(bpOverlay.autoFocus) {
-                                                                                            bpOverlay.focusNext = true;
-                                                                                    }
-
-                                                                                    sendAdventureMessage(
-                                                                                            adventureTextFormat.chooseText("userTurn", channel.data.wordRoot),
-                                                                                            "rgb(90, 250, 0)"
-                                                                                    );
-                            
-                                                                    
-                                                                            } else {
-                                                            
-                                                                                    sendAdventureMessage(
-                                                                                            adventureTextFormat.chooseText("playerTurn", channel.data.actors[actor].displayName, channel.data.wordRoot),
-                                                                                            "rgb(255, 165, 0)"
-                                                                                    );
-
-                                                                            }
-                                                            }, 100);
-                                                    }
-                                                    //We need to do this shortly after a shift because the channel needs to be updated first, every time.
-                                                    if(bpOverlay.adventureTextMode) {
-                                                    setTimeout(function() {
-                                                            for(i=0; i < channel.data.actors.length; i++) {
-
-                                                                            var turns = document.getElementById("adventureTurns");
-                                                                            var index = channel.data.activePlayerIndex;
-                                                                            if( index == i ) {
-                                                                                    if(typeof channel.data.actors[index].pictureURL === "undefined") {
-                                                                                            var imgSource = "http://bombparty.sparklinlabs.com/images/AvatarPlaceholder.png";					
-                                                                                    } else {
-                                                                                            var imgSource = channel.data.actors[index].pictureURL;
-                                                                                    }					
-                                            
-                                                                                    var EXP = (21 - channel.data.actors[index].lockedLetters.length);
-                                                                                    var hearts="";
-                                                                                    for(j=0; j < channel.data.actors[index].lives; j++) {
-                                                                                            hearts+="♥";
-                                                                                    }
-                                                                                    turns.innerHTML="<img src=' "+ imgSource + "' height='70px' width='70px' style='float:left; margin-right: 10px'></img><div style='float:right;'><p style='color: #DFA'>" + channel.data.actors[i].displayName + "<p style='color: orange'>Lives: <span style='color: red'>" + hearts + "</span></p><p style='color: #A746C7'>EXP: <span style='color: #7D8ADB'>" + EXP + "/21</div>";	
-                                                                            }
-                                                                    }
-                                                            }, 
-                                                    100);
-            
-                                                    }	
-                                            }	
-                                    });
-
-                                    // winWord wrapper
-                                    var gameWinWord = channel.socket.listeners("winWord").shift();
-                                    channel.socket.on("winWord", function(actor) {
-                                            try {
-                                                    // We have to manually determine if the user flips, because apparently there's no event
-                                                    // that fires when a player flips.
-
-                                                    // t is the player we're considering.
-                                                    // Why t? I have no idea.
-                                                    var t = channel.data.actorsByAuthId[actor.playerAuthId];
-                                                    var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
-                                                    var lockedLetters = t.lockedLetters.slice();
-                                                    var lastWord = t.lastWord.toLowerCase();
-                                                    var prevExp = lockedLetters.length;
-                                                    // Remove the letters of the last word that a person used
-                                                    // from the letters they need to flip
-                                                    for (i = 0; i < lastWord.length; i++) {
-                                                            var index;
-                                                            if ((index = lockedLetters.indexOf(lastWord[i])) != -1) {
-                                                                    lockedLetters.splice(index, 1);
-                                                            }
-                                                    }
-                                                    var experience = prevExp - lockedLetters.length;
-
-                                                    // If the lockedLetters is empty after removing all those, letters, the player has flipped
-                                                    var flipped = (lockedLetters.length === 0);
-
-                                                    if (flipped) {
-                                                            // Append one to the flip counter
-                                                            bpOverlay.flips[playerNum] += 1;
-
-                                                            // If the box is created, update it too
-                                                            if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
-                                                                    document.getElementById(playerNum + " flips").textContent = bpOverlay.flips[playerNum];
-                                                            }
-
-                                                            if (t.lives === 3) {
-                                                                    // If the flip happened when the player's lives is already at three, it's an u-flip
-                                                                    // Increment and update
-                                                                    bpOverlay.uFlips[playerNum] += 1;
-                                                                    if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
-                                                                            document.getElementById(playerNum + " uFlips").textContent = bpOverlay.uFlips[playerNum];
-                                                                    }
-
-                                                            }
-
-                                                            if(bpOverlay.flips[playerNum] >= bpOverlay.adventureLevels.length) {
-                                                                    var level = bpOverlay.adventureLevels.length - 1;
-                                                            } else {
-                                                                    var level = bpOverlay.flips[playerNum];
-                                                            }
-
-                                                            if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
-                                                                    sendAdventureMessage(
-                                                                            adventureTextFormat.chooseText("userLevelUp", bpOverlay.adventureLevels[level]),
-                                                                            "rgb(200, 200, 0"
-                                                                    ); 							
-                                                            } else {
-                                                                    sendAdventureMessage(
-                                                                            adventureTextFormat.chooseText("levelUp", channel.data.actors[playerNum].displayName, bpOverlay.adventureLevels[level]),
-                                                                            "rgb(200, 200, 0)"
-                                                                    );							
-                                                            }
-
-                                                    } else {
-                                                            if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
-                                                                    sendAdventureMessage(adventureTextFormat.chooseText("userWinWord", t.lastWord.toUpperCase(), experience),
-                                                                    "rgb(250, 0, 250)"
-                                                                    ); 						
-
-                                                            } else {							
-                                                                    sendAdventureMessage(adventureTextFormat.chooseText("winWord", t.displayName, t.lastWord.toUpperCase(), experience), 
-                                                                    "rgb(250, 0, 250)"
-                                                                    );
-                                                            } 						
-                                                    }
-
-                                                    // Add one to the word count, and update the box if it's been created
-                                                    bpOverlay.wordCount += 1;
-                                                    if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
-                                                            document.getElementById("infoWordCounter").textContent = "Word Count: " + bpOverlay.wordCount;
-                                                    }
-                                            } finally {
-                                                    // Call the actual game function
-                                                    gameWinWord(actor);
-                                            }
-                                    });
-
-                                    // setPlayerLives wrapper
-                                    var gameSetPlayerLives = channel.socket.listeners("setPlayerLives").shift();
-                                    channel.socket.on("setPlayerLives", function(actor) {
-                                            try {
-                                                    // Apparently, setPlayerLives is only used for decreasing a player's lives.
-                                                    // It unfortunately doesn't fire when a player flips.
-
-                                                    
-                                                    if(actor.playerAuthId === window.app.user.authId) {
-                                                            sendAdventureMessage(adventureTextFormat.chooseText("userLostLife"), "rgb(255,20,10)");
-                                                    } else {						
-                                                            sendAdventureMessage(adventureTextFormat.chooseText("lostLife", channel.data.actorsByAuthId[actor.playerAuthId].displayName),
-                                                            "rgb(255,20,10)");
-                                                    }
-                                                    
-                                                    var t = channel.data.actorsByAuthId[actor.playerAuthId];
-                                                    var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
-
-                                                    // if the game data's lives is larger than the updated actor's lives, then the player lost a life
-                                                    if (t.lives > actor.lives) {
-                                                            // Increment and update
-                                                            bpOverlay.lostLives[playerNum] += 1;
-                                                            if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
-                                                                    document.getElementById(playerNum + " lives").textContent = bpOverlay.lostLives[playerNum];
-                                                            }
-                                                    }
-                                            } finally {
-                                                    // Call the actual game function
-                                                    gameSetPlayerLives(actor);
-                                            }
-                                    });
-
-                                    // setPlayerState wrapper
-                                    var gameSetPlayerState = channel.socket.listeners("setPlayerState").shift();
-                                    channel.socket.on("setPlayerState", function(actor) {
-                                            // setPlayerState is really only used to make a player dead.
-                                            try {
-                                                    if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
-                                                            if (actor.state == "dead") {
-                                                                    // This code basically just greys out the dead player's row on the scoreboard
-                                                                    var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
-                                                                    var tableRow = document.getElementById(playerNum + " row");
-                                                                    tableRow.style.color = "#666";
-
-                                                                    // and if hideDead is true, it hides 'em too
-                                                                    if (bpOverlay.hideDead) {
-                                                                            tableRow.style.display = "none";
-                                                                    }
-                                                                    if(actor.playerAuthId === window.app.user.authId) {
-                                                                            sendAdventureMessage(adventureTextFormat.chooseText("userDeath", channel.data.actorsByAuthId[actor.playerAuthId].displayName)
-                                                                            , "rgb(255,255,255"); 
-                                                                    } else {
-                                                                            sendAdventureMessage(adventureTextFormat.chooseText("death", channel.data.actorsByAuthId[actor.playerAuthId].displayName),
-                                                                            "rgb(255,255,255");
-                                                                    }							
-                                                            }
-                                                    }
-                                            } finally {
-                                                    // Call the actual game function
-                                                    gameSetPlayerState(actor);
-                                            }
-                                    });
-
-                                    // endGame wrapper
-                                    var gameEndGame = channel.socket.listeners("endGame").shift();
-                                    channel.socket.on("endGame", function(actorName) {
-                                            try {
-                                                    // Set firstRun to true, because we want the box to be redraw next round
-                                                    bpOverlay.firstRun = true;
-
-                                                    if(bpOverlay.adventureTextMode) {
-                                                            document.getElementById("adventureMessages").innerHTML="";
-                                                            document.getElementById("adventureTurns").innerHTML="";
-                                                            sendAdventureMessage(adventureTextFormat.chooseText("endRound", channel.data.wordRoot.toUpperCase()),
-                                                            "rgb(204, 255, 204)");
-                                                    }
-
-                                                    
-
-                                                    // Oh, and set the focus to the chatBox if you need to as well
-                                                    if (bpOverlay.autoFocus) {
-                                                            if (bpOverlay.focusNext) {
+					} else if(bpOverlay.flips[playerIndex] > 18) {
+						var level = 18;
+					} else {
+						var level = bpOverlay.flips[playerIndex];
+					}
+
+					textAdventurePINFO.innerHTML = window.app.user.displayName + " : " + bpOverlay.adventureLevels[level];
+					textAdventurePINFO.style.color="rgb(255, 255, 51)";
+
+					var remaining="";					
+					//Player remaining letters
+					for(i in playerLetters) {
+						remaining+=playerLetters[i].toUpperCase();
+					}
+
+					var textAdventureEXPINFO = document.createElement("DIV");
+					textAdventureEXPINFO.id="adventureEXPINFO";
+					textAdventureEXPINFO.className = "adventureMeow";
+					
+					textAdventureEXPINFO.innerHTML = "Experience needed: " + remaining;
+					textAdventureEXPINFO.style.color="rgb(255,255,255)";
+
+
+					textAdventureDiv.appendChild(textAdventureEXPINFO);
+					textAdventureDiv.appendChild(textAdventurePINFO);
+
+					//Player Container
+					var textAdventurePlayer = document.createElement("DIV");
+					textAdventurePlayer.id = "adventurePlayer";
+					textAdventurePlayer.className="adventureMeow";
+					textAdventurePlayer.style = "position: relative";
+					textAdventureDiv.appendChild(textAdventurePlayer);
+
+					//Player image container
+					var textAdventureAvatar = document.createElement("IMG");
+					textAdventureAvatar.id = "adventureAvatar";
+					textAdventureAvatar.className = "adventureMeow";
+					if(typeof window.app.user.pictureURL === "undefined") {
+						textAdventureAvatar.src = "http://bombparty.sparklinlabs.com/images/AvatarPlaceholder.png";					
+					} else {
+						textAdventureAvatar.src = window.app.user.pictureURL;
+					}					
+					textAdventureAvatar.style = "position: relative; float: right";
+					textAdventurePlayer.appendChild(textAdventureAvatar);
+
+					//Player bar container
+					var textAdventureBars = document.createElement("DIV");
+					textAdventureBars.id = "adventureBars";
+					textAdventureBars.className = "adventureMeow";
+					textAdventureBars.style="position: relative; float: right;";
+					textAdventurePlayer.appendChild(textAdventureBars);
+
+					//Player health bar
+					var textAdventureHealth = document.createElement("DIV");
+					textAdventureHealth.id = "adventureHealth";
+					textAdventureHealth.className = "adventureMeow";
+					textAdventureHealth.style="position: absolute;";
+					textAdventureHealth.style.width= (10 + playerLives * 70) + "px";
+					textAdventureBars.appendChild(textAdventureHealth);
+
+					//Player exp bar
+					var textAdventureExp = document.createElement("DIV");
+					textAdventureExp.id = "adventureExp";
+					textAdventureExp.className = "adventureMeow";
+					textAdventureExp.style="position: absolute;";
+					textAdventureExp.style.width= (10 + (21 - playerLetters.length) * 10) + "px";
+					textAdventureBars.appendChild(textAdventureExp);
+
+					//Turn container
+					var textAdventureTurns = document.createElement("DIV");
+					textAdventureTurns.id = "adventureTurns";
+					textAdventureTurns.className = "adventureMeow";
+					textAdventureTurns.style = "position: relative; float: right; color: #FFF";
+					textAdventurePlayer.appendChild(textAdventureTurns);
+
+					//Message container
+					var textAdventureMessages = document.createElement("DIV");
+					textAdventureMessages.id = "adventureMessages";
+					textAdventureMessages.className="adventureMeow";
+					textAdventureMessages.align="center";
+					textAdventureMessages.style="position: relative;";
+					textAdventureDiv.appendChild(textAdventureMessages);
+
+					//We need input... and on the project too. Like, comment and subscribe. How? Magic.
+					//Or maybe not. Let's keep this though if we wanna customize more later.					
+					//var textAdventureInput = document.createElement("INPUT");
+					//textAdventureInput.id="adventureInput";
+					//textAdventureInput.className="adventureMeow";
+					//textAdventureInput.style.outline="none";
+					//textAdventureInput.style.border="none";
+					//textAdventureInput.style.backgroundColor="rgb(20,20,20)";
+					//textAdventureInput.style.color="rgb(90, 249, 12)";
+					//textAdventureMessages.appendChild(textAdventureInput);
+				
+					gameCanvas.parentNode.insertBefore(textAdventureDiv, gameCanvas);
+
+					//I hate CSS. This seems to only work after
+					textAdventureMessages.style.marginLeft="40px";
+					textAdventureMessages.style.marginTop="40px";
+					textAdventureMessages.style.clear="both";
+					textAdventurePlayer.style.marginLeft="40px";
+					textAdventurePlayer.style.marginTop="5px"
+					textAdventurePlayer.style.overflow="hidden";
+					textAdventurePINFO.style.marginLeft="40px";
+					textAdventureEXPINFO.style.marginLeft="40px";
+					textAdventureEXPINFO.style.marginTop="40px";
+					textAdventureAvatar.style.height="76px";
+					textAdventureAvatar.style.width="76px";		
+					textAdventureAvatar.style.float="left";
+					textAdventureBars.style.marginLeft="10px";
+					textAdventureBars.style.height="75px";
+					textAdventureBars.style.width="400px";
+					textAdventureBars.style.border="1px solid #141414";
+					textAdventureBars.style.float="left";
+					textAdventureHealth.style.backgroundColor="rgb(255,255,0)";
+					textAdventureHealth.style.border="10px solid red";
+					textAdventureHealth.style.marginTop="8px";
+					textAdventureHealth.style.marginBottom="14px";
+					textAdventureExp.style.backgroundColor="rgb(0,0,204)";
+					textAdventureExp.style.border="10px solid blue";
+					textAdventureExp.style.marginTop="14px";
+					textAdventureExp.style.marginBottom="8px";
+					textAdventureTurns.style.marginLeft="20px";
+					textAdventureTurns.style.float="left";		
+					
+				} else {
+					
+					bpOverlay.adventureTextMode = false;
+					bpOverlay.adventureFirstRun = false; //Probably not needed but I like symmetry					
+					
+					//Out with the old
+					var old = document.getElementsByClassName("adventureMeow");
+					for(i = 0; i < old.length; i++) {	
+						old[i].parentNode.removeChild(old[i]);
+					}
+
+					//In with the previously old, ehhh.... default.
+					//Pretty neat that you can reset this with an empty string. Oh boy.		
+					var gameCanvas = document.getElementById("GameCanvas");
+					gameCanvas.parentNode.style.backgroundColor="";
+					gameCanvas.style.display="";
+				
+	}
+
+
+}
+
+//msg is the string to be displayed
+//formatter is a color code on the form "rgb(x,y,z)" where 0<=x,y,z<=255
+var sendAdventureMessage = function(msg, formatter) {
+	if(bpOverlay.adventureTextMode) {
+		var textAdventureMessages = document.getElementById("adventureMessages");	
+		var textAdventureMsg = document.createElement("P");
+		textAdventureMsg.style.color=formatter;
+		textAdventureMsg.innerHTML=msg;
+	
+		//We don't want the messages to extend out of the page... now do we?
+		if(textAdventureMessages.children.length > 10) {
+			textAdventureMessages.appendChild(textAdventureMsg);	
+			textAdventureMessages.removeChild(textAdventureMessages.firstChild);
+		} else {
+			textAdventureMessages.appendChild(textAdventureMsg);
+		}
+	
+
+	}
+}
+			//////////////////////////////////////////////
+			//END functions for the adventure text thing
+
+			// This function is called whenever a new round begins.
+			var generateActorConditions = function() {
+				// If there is already a box, get rid of it
+				if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+					var infoBox = document.getElementById("infoBox");
+
+					//remove infoBox from wherever it is
+					var meow = infoBox.parentNode;
+					meow.removeChild(infoBox);
+
+					//If if then more lines hence both.
+					bpOverlay.boxHasBeenCreated = false;
+					bpOverlay.dragBoxHasBeenCreated = false;
+				}
+
+				// Shift current round's variables onto previous round's variables
+				bpOverlay.prevPlayerNames = bpOverlay.playerNames;
+				bpOverlay.prevLostLives = bpOverlay.lostLives;
+				bpOverlay.prevFlips = bpOverlay.flips;
+				bpOverlay.prevUFlips = bpOverlay.uFlips;
+				bpOverlay.prevTimeText = bpOverlay.timeText;
+				bpOverlay.prevWordCount = bpOverlay.wordCount;
+
+				// Reset current round variables
+				bpOverlay.playerNames = {};
+				bpOverlay.playerAuthId = {};
+				bpOverlay.lostLives = {};
+				bpOverlay.flips = {};
+				bpOverlay.uFlips = {};
+
+				actors = channel.data.actors;
+
+				// Loop through current round's actors and log data accordingly
+				for (i = 0; i < actors.length; i++) {
+					bpOverlay.playerNames[i] = actors[i].displayName;
+					bpOverlay.playerAuthId[actors[i].authId] = i;
+					bpOverlay.flips[i] = 0;
+					bpOverlay.uFlips[i] = 0;
+					bpOverlay.lostLives[i] = 0;
+				}
+
+				// More resetting...
+				bpOverlay.wordCount = 0;
+				bpOverlay.timeText = "Elapsed time | 0:00";
+
+				var d = new Date();
+				bpOverlay.startTime = d.getTime();
+
+				// Create the infoBox.
+				var infoBox = document.createElement("DIV");
+				infoBox.id = "infoBox";
+
+				// Create the time text display
+				var timeElement = document.createElement("H2");
+				timeElement.id = "infoBoxTimer";
+				timeElement.align = "center"; //Might get overridden if not in drag-mode but who cares :D
+				timeElement.style.color = "rgb(200,200,200)"; //this as well but that's a good thing
+				timeElement.textContent = bpOverlay.timeText;
+				infoBox.appendChild(timeElement);
+
+				// Create the word counter display
+				var wordCounterElement = document.createElement("H2");
+				wordCounterElement.align = "center";
+				wordCounterElement.id = "infoWordCounter";
+				wordCounterElement.style.color = "rgb(200,200,200)";
+				wordCounterElement.textContent = "Word Count: 0";
+				infoBox.appendChild(wordCounterElement);
+
+				// Oh boy, a horizontal rule!	Gee willikers!
+				var horizontalRule = document.createElement("hr");
+				infoBox.appendChild(horizontalRule);
+
+				// Contain the scoreboard table in a div to allow for scrolling
+				var infoTableDiv = document.createElement("DIV");
+				infoTableDiv.className = "infoTableDiv";
+				infoTableDiv.align = "center"
+				
+				//Retain choices between rounds from the settings meow
+				var cont = document.getElementById("containerSelect");
+				if(cont.value === "fitToPlayers") {
+					infoTableDiv.style.maxHeight = "1000px"; //autoflow hinders big meow meow meow yappety yak
+				} else {
+					infoTableDiv.style.maxHeight = "100px";				
+				}
+				infoTableDiv.style.overflowY = "auto";
+
+				// Make the actual scoreboard table
+				var infoTable = document.createElement("table");
+				infoTableDiv.appendChild(infoTable);
+
+				// First row is a button and column headers.
+				var firstRow = document.createElement("tr");
+
+				// The first element in the first row is a container for the show/hide button
+				var showHideContainer = document.createElement("td");
+
+				// Make the show_hide button
+				var showHideButton = document.createElement("BUTTON");
+				var showHideButtonDiv = document.createElement("DIV");
+				showHideButtonDiv.className = "headerButtonDiv";
+				showHideButton.id = "autoFocusButton";
+				showHideButton.className = "headerButton";
+				showHideButton.title = "Show/Hide dead players.";
+
+				showHideButton.onclick = function() {
+					// Flip the state of hideDead
+					bpOverlay.hideDead = !bpOverlay.hideDead;
+
+					if (bpOverlay.hideDead) {
+						// if hideDead is true, remove the off state image and add the on state image
+						showHideButton.removeChild(bpOverlayImgs.hideDeadOff);
+						showHideButton.appendChild(bpOverlayImgs.hideDeadOn);
+
+						// Hide all the grayed out players
+						// A bit of a hack, storing information in colours
+						var rows = document.getElementsByClassName("playerRow");
+						for (i = 0; i < rows.length; i++) {
+							if (rows[i].style.color == "rgb(102, 102, 102)") {
+								rows[i].style.display = "none";
+							}
+						}
+					} else {			
+						// if hideDead is false, remove the on state image and add the off state image
+						showHideButton.removeChild(bpOverlayImgs.hideDeadOn);
+						showHideButton.appendChild(bpOverlayImgs.hideDeadOff);
+
+						// Since showing the overlay will scroll the chat up, we might want to check if
+						// the user needs to have the chat scrolled down after expansion
+						var chatLog = document.getElementById("ChatLog");
+						var scrollDown = (bpOverlay.autoScroll || chatLog.scrollTop == chatLog.scrollHeight)
+
+						// Show all the hidden rows
+						var rows = document.getElementsByClassName("playerRow");
+						for (i = 0; i < rows.length; i++) {
+							if (rows[i].style.display == "none") {
+								rows[i].style.display = "table-row";
+							}
+						}
+
+						//Let's add a call to the window.onresize if this is done while the dragon is at the bottom
+						//This prevents overflow
+						var funky = window.onresize;
+						funky();
+
+						// If the chat does need scrolling down then scroll it down
+						if (scrollDown) {
+							chatLog.scrollTop = chatLog.scrollHeight;
+						}
+					}
+				};
+
+				// Add the appropriate image based on the current setting of hideDead
+				if (bpOverlay.hideDead) {
+					showHideButton.appendChild(bpOverlayImgs.hideDeadOn);
+				} else {
+					showHideButton.appendChild(bpOverlayImgs.hideDeadOff);
+				}
+
+				// ...and append it all into the first row. Phew!
+				showHideButtonDiv.appendChild(showHideButton);
+				showHideContainer.appendChild(showHideButtonDiv);
+				firstRow.appendChild(showHideContainer);
+
+				// Make headers for the columns, and append to the first row
+				var flipColumnHeader = document.createElement("td");
+				flipColumnHeader.textContent = "Flips";
+				flipColumnHeader.style.color = "rgb(200,200,200)";
+				flipColumnHeader.align = "center";
+				flipColumnHeader.style.padding = "2px";
+				flipColumnHeader.style.fontSize = "11px";
+				flipColumnHeader.style.width = "40px";
+				flipColumnHeader.title = "Lives gained by using all the bonus letters.";
+				firstRow.appendChild(flipColumnHeader);
+				var uFlipColumnHeader = document.createElement("td");
+				uFlipColumnHeader.textContent = "U-Flips";
+				uFlipColumnHeader.style.color = "rgb(200,200,200)";
+				uFlipColumnHeader.align = "center";
+				uFlipColumnHeader.style.padding = "2px";
+				uFlipColumnHeader.style.fontSize = "11px";
+				uFlipColumnHeader.style.width = "40px";
+				uFlipColumnHeader.title = "Lives gained whilst already at 3 lives, making the \"flip\" unnecessary.";
+				firstRow.appendChild(uFlipColumnHeader);
+				var lostLivesColumnHeader = document.createElement("td");
+				lostLivesColumnHeader.textContent = "Deaths";
+				lostLivesColumnHeader.style.color = "rgb(200,200,200)";
+				lostLivesColumnHeader.align = "center";
+				lostLivesColumnHeader.style.padding = "2px";
+				lostLivesColumnHeader.style.fontSize = "11px";
+				lostLivesColumnHeader.style.width = "40px";
+				lostLivesColumnHeader.title = "Lives lost in this game.";
+				firstRow.appendChild(lostLivesColumnHeader);
+				infoTable.appendChild(firstRow);
+
+				// Loop through the players, making a new row for each one
+				for (i = 0; i < actors.length; i++) {
+					var playerRow = document.createElement("tr");
+					playerRow.id = i + " row"; // Used to reference this row later on
+					playerRow.className = "playerRow";
+
+					// If the player this row represents is dead, grey it out
+					if (actors[i].state == "dead") {
+						playerRow.style.color = "#666";
+						if (bpOverlay.hideDead) {
+							playerRow.style.display = "none";
+						}
+					} else {
+						playerRow.style.color = "rgb(210,210,210)";
+					}
+
+					// Make the cell containing the name
+					var nameData = document.createElement("td");
+					var name = bpOverlay.playerNames[i]
+
+					// Shorten player display names if they're too long
+					if (name.length > 18) {
+						name = name.slice(0, 15) + "...";
+					}
+
+					nameData.textContent = name;
+					nameData.align = "center";
+					playerRow.appendChild(nameData)
+
+					// Make the cell containing the number of flips
+					var flipData = document.createElement("td");
+					flipData.id = i + " flips"; // used to reference this cell later
+					flipData.textContent = "0";
+					flipData.align = "center";
+					playerRow.appendChild(flipData);
+
+					// Make the cell containing the # of u-flips
+					var uFlipData = document.createElement("td");
+					uFlipData.id = i + " uFlips"; // used to reference this cell later
+					uFlipData.textContent = "0";
+					uFlipData.align = "center";
+					playerRow.appendChild(uFlipData);
+
+					// Make the cell containing the # of deaths
+					var lostLivesData = document.createElement("td");
+					lostLivesData.id = i + " lives"; // used to reference this cell later
+					lostLivesData.textContent = "0";
+					lostLivesData.align = "center";
+					playerRow.appendChild(lostLivesData);
+
+					// Append the row to the table
+					infoTable.appendChild(playerRow);
+				}
+
+				// Append the table to the container...
+				infoBox.appendChild(infoTableDiv);
+
+
+
+				//Creates either a docked infoBox or a draggable one
+				if (bpOverlay.dragonDrop) {
+					//Created if user wishes dragonDrop
+					var deDragonDrop = document.getElementById("dragonDrop");
+					deDragonDrop.appendChild(infoBox);
+					bpOverlay.dragBoxHasBeenCreated = true;
+					
+
+				} else {
+					//otherwise this is created
+					var sideBar = document.getElementById("Sidebar");
+					sideBar.insertBefore(infoBox, sideBar.firstChild);
+
+					bpOverlay.boxHasBeenCreated = true;
+				}
+
+				//And yet another check of overflow needed in case the dragon is on the bottom and a new round starts
+				//with more players than the previous round. This is outside the if(bpOverlay.dragonDrop) because the user might wish
+				//to switch sides after starting a new round in docked mode. Bugfixes ahoy hoy yay yay
+				var funky = window.onresize;
+				funky();
+
+				// ..and finally, if autoScrolling is on, scroll the chat back down since this would've caused the chat to scroll up
+				if (bpOverlay.autoScroll) {
+					var chatLog = document.getElementById("ChatLog");
+					chatLog.scrollTop = chatLog.scrollHeight;
+				}
+
+			}
+
+			//Usage: 	generateSettingsElement(itemText, options, selectId, settingsFunction)
+			//string	'itemText' is the text to the right of the drop down options pane
+			//object	'options' is an object {value: Text, value2: Text2, ... , valueN: TextN}
+			//			'value, ..., valueN' are the value we can compare from selectElement.value
+			//			'Text, ..., TextN' are the strings that the user see when selecting options
+			//string	'selectId': for your function you probably want to use document.getElementById(selectId)
+			//function	'settingsFunction' is the function that is called on selectElement.onchange
+			var generateSettingsElement = function(itemText, options, selectId, settingsFunction) {
+				//Create the text item
+				//Oh god the horrors of navigating the dom DOM DOOOOM
+				
+				// Made it so it keeps appending rows to the same table
+				// As far as I'm aware, I don't think you need a tbody element here
+				var sTabTable = document.getElementById("overlaySettingsTable");
+				var sTabTr = document.createElement("TR");
+				sTabTable.appendChild(sTabTr);
+				var sTabTd = document.createElement("TD");
+				sTabTd.textContent = itemText;
+				sTabTr.appendChild(sTabTd);
+		
+				//Create the options DOM DOM POMPOM
+				var sTabOptionsTd = document.createElement("TD");
+				sTabTr.appendChild(sTabOptionsTd);
+				var sTabSelect = document.createElement("SELECT");
+				sTabSelect.id = selectId;
+				sTabOptionsTd.appendChild(sTabSelect);
+	
+				//Populate the select field with {Value: text} from options which is an object
+				for(x in options) {
+					var op = document.createElement("OPTION");
+					op.textContent = options[x];
+					op.value = x;
+					sTabSelect.appendChild(op);	
+				}
+
+				//Add the function to the onchange listener for the newly created select
+				sTabSelect.onchange = settingsFunction;
+			
+				//OPTIONAL: Reflect on your lifechoices, such as programming when you should be studying	
+			}
+
+			//Usage: function(onSrc, offSrc, buttonId, buttonMessage, defaultState, buttonFunction)
+			//img		onSrc  is the image for the on- state
+			//img		offSrc is the image for the off-state
+			//string	buttonId is the id for the created button item in the header
+			//string	buttonMessage is the hovermessage presented by the button
+			//boolean	defaultState: if true, then the button is created with the onSrc image, else the offSrc image
+			//function	buttonFunction is the function that is called when the button is clicked
+			var makeHeaderButton = function(onSrc, offSrc, buttonId, buttonMessage, defaultState, buttonFunction) {
+
+				// Actually make the button, and its container div
+				var button = document.createElement("BUTTON");
+				var buttonDiv = document.createElement("DIV");
+				buttonDiv.className = "headerButtonDiv";
+
+				// Insert the button container div into the header
+				var header = document.getElementsByTagName("header")[0];
+				var lastChild = header.lastChild;
+				header.insertBefore(buttonDiv, lastChild);
+
+				var onElement = document.createElement("img");
+				onElement = onSrc;
+
+				var offElement = document.createElement("img");
+				offElement = offSrc;
+
+				// General "stylistic touches"
+				button.id = buttonId;
+				button.className = "headerButton";
+				button.title = buttonMessage;
+
+				button.onclick = buttonFunction;
+
+				//Depending on defaultState, have the button start with the "on" image or the "off"
+				if (defaultState) {
+					button.appendChild(onSrc);
+				} else {
+					button.appendChild(offSrc);
+				}
+
+				buttonDiv.appendChild(button);
+			};
+
+
+			// This function is called regularly to update the time text
+			var updateTime = function() {
+				// Don't bother doing anything if there's no game or the infoBox hasn't been created
+				if (channel.data.state === 'playing' && (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated)) {
+					// Timer code
+					// Copied directly from Ice's bot
+					var d = new Date();
+					var seconds = Math.floor((d.getTime() - bpOverlay.startTime) / 1000);
+					if ((seconds % 60) < 10) {
+						var formatter = "0";
+					} else {
+						var formatter = "";
+					}
+
+					bpOverlay.timeText = "Elapsed time | " + Math.floor(seconds / 60) + ":" + formatter + "" + (seconds % 60) + "";
+
+					// Umm, hmm, this if statement is redundant.
+					// It looks like it anyway.
+					// Yus - It most certainly is. I don't know what was going on
+					//if (bpOverlay.boxHasBeenCreated) {
+					// Update the infoBox timer text
+					document.getElementById("infoBoxTimer").textContent = bpOverlay.timeText;
+					//}
+				}
+			}
+
+			// Since a lot of the functions the bot needs to do has to happen before the game updates the state of everything
+			// We wrap the default game functions to force them to be called after our custom code.
+			var wrapGameFunctions = function() {
+
+				// Chat message wrapper
+				var gameChat = channel.appendToChat;
+				channel.appendToChat = function(header, message) {
+					// This stuff's in a try block because I want the default functions to go through even if my custom code fails
+					try {
+						// Link using the autolinker library any links in the message.
+						message = Autolinker.link(message, {
+							className: "chatMessageLink"
+						});
+
+						if (bpOverlay.twitchOn) {
+							if (window.hasOwnProperty("twitch_global")) {
+								for (i in twitch_global) {
+									message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
+								}
+							}
+							
+							if (window.hasOwnProperty("twitch_subscriber")) {
+								// Match subscriber emote patterns
+								var matches = [];
+								var found;
+								var reg = /\b\w+:\w+\b/g
+								while (found = reg.exec(message)) {
+									matches.push(found[0]);
+								}
+								
+								// Check if any of the patterns we've found are actual emotes
+								toReplace = {};
+								for (i = 0; i < matches.length; i++) {
+									var split = matches[i].split(":");
+									var s = split[0].toLowerCase();
+									var e = split[1];
+									if (!toReplace[matches[i]]) {
+										if (twitch_subscriber[s]) {
+											if (twitch_subscriber[s].emotes[e]) {
+												toReplace[s+":"+e] = twitch_subscriber[s].emotes[e];
+											}
+										}
+									}
+								}
+								
+								// Finally, do any replacements
+								for (i in toReplace) {
+									message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
+								}
+							}
+							
+						}
+						
+
+						// Scroll the chat down.
+						if (bpOverlay.autoScroll) {
+							var chatLog = document.getElementById("ChatLog");
+							chatLog.scrollTop = chatLog.scrollHeight;
+						}
+					} finally {
+						// Do the actual default chat message function
+						gameChat(header, message);
+					}
+				};
+
+				// setActivePlayerIndex wrapper
+				var gameSetActivePlayerIndex = channel.socket.listeners("setActivePlayerIndex").shift();
+				channel.socket.on("setActivePlayerIndex", function(actor) {
+					try {
+						// Since the first event that fires when a game starts is the setActivePlayerIndex event,
+						// We create the infoBox and any other first-run procedures here
+						if (bpOverlay.firstRun) {
+							generateActorConditions();
+
+
+							// Set firstRun to false so a new box is not created every time there's a turn change
+							bpOverlay.firstRun = false;
+
+							if(bpOverlay.adventureTextMode) {
+								document.getElementById("adventureMessages").innerHTML="";
+								sendAdventureMessage(adventureTextFormat.chooseText("newRound"), "rgb(10,200,150)");					
+							}
+							
+							bpOverlay.adventureFirstRun=true;
+						}
+
+						//invisible break
+						sendAdventureMessage("break", "rgb(20,20,20");
+												
+
+						// Chatbox autofocus code && hijacked for textAdventure
+						// Which creates a strange conundrum of double checking the bpOverlay.autoFocus, but hey. Smaller code.
+						// Nested checks ahoy because laziness.
+						if (bpOverlay.autoFocus || bpOverlay.adventureTextMode) {
+
+							if(bpOverlay.adventureTextMode) {
+								//I'm afraid to have these recalculations elsewhere, they aren't that costly anyhow.
+								//Player info
+								var playerLives=0;
+								var playerLetters=["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v"];					
+								var playerIndex = 200;
+								//What level? How many letters?
+								for(i=0; i < channel.data.actors.length; i++) {
+									if(channel.data.actors[i].authId === window.app.user.authId) {
+										playerLives = channel.data.actors[i].lives;
+										playerLetters = channel.data.actors[i].lockedLetters;
+										playerIndex = i;
+									}
+								}
+
+								if(playerIndex == 200) {
+									var level = 0;
+								} else if(bpOverlay.flips[playerIndex] > 18) {
+									var level = 18;
+								} else {
+									var level = bpOverlay.flips[playerIndex];
+								}
+
+								var textAdventurePINFO = document.getElementById("adventurePINFO");
+								textAdventurePINFO.innerHTML = window.app.user.displayName + " : " + bpOverlay.adventureLevels[level];
+
+								var textAdventureEXPINFO = document.getElementById("adventureEXPINFO");
+								var remaining="";					
+								//Player remaining letters
+								for(i in playerLetters) {
+									remaining+=playerLetters[i].toUpperCase();
+								}
+
+								textAdventureEXPINFO.innerHTML = "Experience needed: " + remaining;
+
+								
+
+								
+								//Player health bar
+								var textAdventureHealth = document.getElementById("adventureHealth");
+								textAdventureHealth.style.width = (10 + playerLives * 70) + "px";
+								
+								//Player exp bar
+								var textAdventureExp = document.getElementById("adventureExp");
+								textAdventureExp.style.width= (10 + (21 - playerLetters.length) * 10) + "px";
+								
+							}
+
+
+							//There is a very very very small chance that this will not work for the "first shift" of the "first round"
+							//It does work as expected after that though. Almost flawless. People will probably not notice.
+							//Either that or change the code... but who's unlazy enough? I mean
+							//This works 90% of the time for the first shift and 100% after that.
+							if (bpOverlay.focusNext && bpOverlay.autoFocus) {
+								// If focusNext is true (i.e. it's immediately after the player's turn)
+								// We set the focus to the chatbox, and reset focusNext.
+								setTimeout(function() {
+									document.getElementById("ChatInputBox").focus();
+								}, 400);
+								bpOverlay.focusNext = false;
+							
+							}
+							//If first-run, then a small delay is needed to get a correct wordRoot.	
+							if(!bpOverlay.adventureFirstRun) {
+								if (channel.data.actors[actor].authId === window.app.user.authId) {
+									// If it's the user's turn, set focusNext to true so the next time
+									// setActivePlayerIndex fires, we set focus to the chatbox
+									if(bpOverlay.autoFocus) {
+										bpOverlay.focusNext = true;
+									}
+									
+									sendAdventureMessage(
+										adventureTextFormat.chooseText("userTurn", channel.data.wordRoot),
+										"rgb(90, 250, 0)"
+									);
+		
+								
+								} else {
+							
+									sendAdventureMessage(
+										adventureTextFormat.chooseText("playerTurn", channel.data.actors[actor].displayName, channel.data.wordRoot),
+										"rgb(255, 165, 0)"
+									);
+
+								}
+							}
+
+						}
+					} finally {
+						// Call the actual game function						
+						gameSetActivePlayerIndex(actor);
+						if(bpOverlay.adventureFirstRun) {
+							bpOverlay.adventureFirstRun = false;
+							//The channel.data.wordRoot needs to update in the first run
+							setTimeout(function() {
+									if (channel.data.actors[actor].authId === window.app.user.authId) {
+										// If it's the user's turn, set focusNext to true so the next time
+										// setActivePlayerIndex fires, we set focus to the chatbox
+										if(bpOverlay.autoFocus) {
+											bpOverlay.focusNext = true;
+										}
+
+										sendAdventureMessage(
+											adventureTextFormat.chooseText("userTurn", channel.data.wordRoot),
+											"rgb(90, 250, 0)"
+										);
+			
+								
+									} else {
+							
+										sendAdventureMessage(
+											adventureTextFormat.chooseText("playerTurn", channel.data.actors[actor].displayName, channel.data.wordRoot),
+											"rgb(255, 165, 0)"
+										);
+
+									}
+							}, 100);
+						}
+						//We need to do this shortly after a shift because the channel needs to be updated first, every time.
+						if(bpOverlay.adventureTextMode) {
+						setTimeout(function() {
+							for(i=0; i < channel.data.actors.length; i++) {
+
+									var turns = document.getElementById("adventureTurns");
+									var index = channel.data.activePlayerIndex;
+									if( index == i ) {
+										if(typeof channel.data.actors[index].pictureURL === "undefined") {
+											var imgSource = "http://bombparty.sparklinlabs.com/images/AvatarPlaceholder.png";					
+										} else {
+											var imgSource = channel.data.actors[index].pictureURL;
+										}					
+					
+										var EXP = (21 - channel.data.actors[index].lockedLetters.length);
+										var hearts="";
+										for(j=0; j < channel.data.actors[index].lives; j++) {
+											hearts+="♥";
+										}
+										turns.innerHTML="<img src=' "+ imgSource + "' height='70px' width='70px' style='float:left; margin-right: 10px'></img><div style='float:right;'><p style='color: #DFA'>" + channel.data.actors[i].displayName + "<p style='color: orange'>Lives: <span style='color: red'>" + hearts + "</span></p><p style='color: #A746C7'>EXP: <span style='color: #7D8ADB'>" + EXP + "/21</div>";	
+									}
+								}
+							}, 
+						100);
+	
+						}	
+					}	
+				});
+
+				// winWord wrapper
+				var gameWinWord = channel.socket.listeners("winWord").shift();
+				channel.socket.on("winWord", function(actor) {
+					try {
+						// We have to manually determine if the user flips, because apparently there's no event
+						// that fires when a player flips.
+
+						// t is the player we're considering.
+						// Why t? I have no idea.
+						var t = channel.data.actorsByAuthId[actor.playerAuthId];
+						var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
+						var lockedLetters = t.lockedLetters.slice();
+						var lastWord = t.lastWord.toLowerCase();
+						var prevExp = lockedLetters.length;
+						// Remove the letters of the last word that a person used
+						// from the letters they need to flip
+						for (i = 0; i < lastWord.length; i++) {
+							var index;
+							if ((index = lockedLetters.indexOf(lastWord[i])) != -1) {
+								lockedLetters.splice(index, 1);
+							}
+						}
+						var experience = prevExp - lockedLetters.length;
+
+						// If the lockedLetters is empty after removing all those, letters, the player has flipped
+						var flipped = (lockedLetters.length === 0);
+
+						if (flipped) {
+							// Append one to the flip counter
+							bpOverlay.flips[playerNum] += 1;
+
+							// If the box is created, update it too
+							if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+								document.getElementById(playerNum + " flips").textContent = bpOverlay.flips[playerNum];
+							}
+
+							if (t.lives === 3) {
+								// If the flip happened when the player's lives is already at three, it's an u-flip
+								// Increment and update
+								bpOverlay.uFlips[playerNum] += 1;
+								if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+									document.getElementById(playerNum + " uFlips").textContent = bpOverlay.uFlips[playerNum];
+								}
+
+							}
+
+							if(bpOverlay.flips[playerNum] > 18) {
+								var level = 18;
+							} else {
+								var level = bpOverlay.flips[playerNum];
+							}
+
+							if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
+								sendAdventureMessage(
+									adventureTextFormat.chooseText("userLevelUp", bpOverlay.adventureLevels[level]),
+									"rgb(200, 200, 0"
+								); 							
+							} else {
+								sendAdventureMessage(
+									adventureTextFormat.chooseText("levelUp", channel.data.actors[playerNum].displayName, bpOverlay.adventureLevels[level]),
+									"rgb(200, 200, 0)"
+								);							
+							}
+
+						} else {
+							if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
+								sendAdventureMessage(adventureTextFormat.chooseText("userWinWord", t.lastWord.toUpperCase(), experience),
+								"rgb(250, 0, 250)"
+								); 						
+
+							} else {							
+								sendAdventureMessage(adventureTextFormat.chooseText("winWord", t.displayName, t.lastWord.toUpperCase(), experience), 
+								"rgb(250, 0, 250)"
+								);
+							} 						
+						}
+
+						// Add one to the word count, and update the box if it's been created
+						bpOverlay.wordCount += 1;
+						if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+							document.getElementById("infoWordCounter").textContent = "Word Count: " + bpOverlay.wordCount;
+						}
+					} finally {
+						// Call the actual game function
+						gameWinWord(actor);
+					}
+				});
+
+				// setPlayerLives wrapper
+				var gameSetPlayerLives = channel.socket.listeners("setPlayerLives").shift();
+				channel.socket.on("setPlayerLives", function(actor) {
+					try {
+						// Apparently, setPlayerLives is only used for decreasing a player's lives.
+						// It unfortunately doesn't fire when a player flips.
+
+						
+						if(actor.playerAuthId === window.app.user.authId) {
+							sendAdventureMessage(adventureTextFormat.chooseText("userLostLife"), "rgb(255,20,10)");
+						} else {						
+							sendAdventureMessage(adventureTextFormat.chooseText("lostLife", channel.data.actorsByAuthId[actor.playerAuthId].displayName),
+							"rgb(255,20,10)");
+						}
+						
+						var t = channel.data.actorsByAuthId[actor.playerAuthId];
+						var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
+
+						// if the game data's lives is larger than the updated actor's lives, then the player lost a life
+						if (t.lives > actor.lives) {
+							// Increment and update
+							bpOverlay.lostLives[playerNum] += 1;
+							if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+								document.getElementById(playerNum + " lives").textContent = bpOverlay.lostLives[playerNum];
+							}
+						}
+					} finally {
+						// Call the actual game function
+						gameSetPlayerLives(actor);
+					}
+				});
+
+				// setPlayerState wrapper
+				var gameSetPlayerState = channel.socket.listeners("setPlayerState").shift();
+				channel.socket.on("setPlayerState", function(actor) {
+					// setPlayerState is really only used to make a player dead.
+					try {
+						if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
+							if (actor.state == "dead") {
+								// This code basically just greys out the dead player's row on the scoreboard
+								var playerNum = bpOverlay.playerAuthId[actor.playerAuthId];
+								var tableRow = document.getElementById(playerNum + " row");
+								tableRow.style.color = "#666";
+
+								// and if hideDead is true, it hides 'em too
+								if (bpOverlay.hideDead) {
+									tableRow.style.display = "none";
+								}
+								if(actor.playerAuthId === window.app.user.authId) {
+									sendAdventureMessage(adventureTextFormat.chooseText("userDeath", channel.data.actorsByAuthId[actor.playerAuthId].displayName)
+									, "rgb(255,255,255"); 
+								} else {
+									sendAdventureMessage(adventureTextFormat.chooseText("death", channel.data.actorsByAuthId[actor.playerAuthId].displayName),
+									"rgb(255,255,255");
+								}							
+							}
+						}
+					} finally {
+						// Call the actual game function
+						gameSetPlayerState(actor);
+					}
+				});
+
+				// endGame wrapper
+				var gameEndGame = channel.socket.listeners("endGame").shift();
+				channel.socket.on("endGame", function(actorName) {
+					try {
+						// Set firstRun to true, because we want the box to be redraw next round
+						bpOverlay.firstRun = true;
+
+						if(bpOverlay.adventureTextMode) {
+							document.getElementById("adventureMessages").innerHTML="";
+							document.getElementById("adventureTurns").innerHTML="";
+							sendAdventureMessage(adventureTextFormat.chooseText("endRound", channel.data.wordRoot.toUpperCase()),
+							"rgb(204, 255, 204)");
+						}
+
+						
+
+						// Oh, and set the focus to the chatBox if you need to as well
+						if (bpOverlay.autoFocus) {
+							if (bpOverlay.focusNext) {
 								setTimeout(function() {
 									document.getElementById("ChatInputBox").focus();
 								}, 400);
@@ -1516,7 +1516,7 @@ var source = function() {
 						// Call the actual game function
 						gameEndGame(actorName);
 						setTimeout(function() {
-							sendAdventureMessage(adventureTextFormat.chooseText("winner", channel.data.lastWinner),
+							sendAdventureMessage(adventureTextFormatter.chooseText("winner", channel.data.lastWinner),
 							"rgb(24, 24, 255)");
 						}, 100);
 					}
