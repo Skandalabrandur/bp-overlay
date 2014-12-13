@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.1
+// @version      1.2.2
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -66,7 +66,7 @@ var source = function() {
 			// Since this is running via a script loaded on page load, it's difficult ensure the overlay runs after everything has loaded
 			// This piece of code makes sure that all relevant things are loaded before executing the rest of the code
 			// We may need to add more to this long-ass if statement if we add more features in the future
-			if (!(window.hasOwnProperty("channel") && channel.socket && channel.data && channel.appendToChat && channel.socket.listeners("setActivePlayerIndex").length && channel.socket.listeners("winWord").length && channel.socket.listeners("setPlayerLives").length && channel.socket.listeners("setPlayerState").length && channel.socket.listeners("endGame").length)) {
+			if (!(window.hasOwnProperty("channel") && channel.socket && channel.data && channel.appendToChat && channel.socket.listeners("setActivePlayerIndex").length && channel.socket.listeners("winWord").length && channel.socket.listeners("setPlayerLives").length && channel.socket.listeners("setPlayerState").length && channel.socket.listeners("endGame").length && document.getElementById("Sidebar") && document.getElementById("ChatLog") && document.getElementById("SettingsTab"))) {
 				console.log("Everything's not loaded yet, trying again in a second...");
 				setTimeout(main, 1000);
 				return;
@@ -114,7 +114,7 @@ var source = function() {
 
 				focusNext: false, // If true, it is the user's turn (and so we should focus to the chatBox if autoFocus is true after the user's turn)
 
-				twitchOn: false,  // If true, twitch emoticons will be displayed.				
+				twitchOn: true,  // If true, twitch emoticons will be displayed.				
 
 				adventureTextMode: false,	//Self explanatory boolean for text adventure toggle
 				
@@ -329,7 +329,7 @@ var source = function() {
 					var textAdventureDiv = document.createElement("DIV");
 					textAdventureDiv.id="adventure";
 					textAdventureDiv.className="adventureMeow";
-					textAdventureDiv.style="position: relative; padding: 0.25em; -webkit-box-flex: 1; -moz-box-flex: 1; -o-box-flex: 1; box-flex: 1;  -webkit-flex: 1;  -ms-flex: 1;  flex: 1;   -webkit-box-orient: vertical; -moz-box-orient: vertical; -o-box-orient: vertical; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; text-align: left;";
+					//textAdventureDiv.style="position: relative; padding: 0.25em; -webkit-box-flex: 1; -moz-box-flex: 1; -o-box-flex: 1; box-flex: 1;  -webkit-flex: 1;  -ms-flex: 1;  flex: 1;   -webkit-box-orient: vertical; -moz-box-orient: vertical; -o-box-orient: vertical; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; text-align: left;";
 					textAdventureDiv.style.backgroundColor="rgb(20,20,20)";
 
 					
@@ -812,17 +812,14 @@ var sendAdventureMessage = function(msg, formatter) {
 			//string	'selectId': for your function you probably want to use document.getElementById(selectId)
 			//function	'settingsFunction' is the function that is called on selectElement.onchange
 			var generateSettingsElement = function(itemText, options, selectId, settingsFunction) {
-				//Locate the settings tab
-				var settingsTab = document.getElementById("SettingsTab");
-	
 				//Create the text item
 				//Oh god the horrors of navigating the dom DOM DOOOOM
-				var sTabTable = document.createElement("TABLE");
-				settingsTab.appendChild(sTabTable);	
-				var sTabTbody = document.createElement("TBODY");
-				sTabTable.appendChild(sTabTbody);
+				
+				// Made it so it keeps appending rows to the same table
+				// As far as I'm aware, I don't think you need a tbody element here
+				var sTabTable = document.getElementById("overlaySettingsTable");
 				var sTabTr = document.createElement("TR");
-				sTabTbody.appendChild(sTabTr);
+				sTabTable.appendChild(sTabTr);
 				var sTabTd = document.createElement("TD");
 				sTabTd.textContent = itemText;
 				sTabTr.appendChild(sTabTd);
@@ -1479,6 +1476,11 @@ var sendAdventureMessage = function(msg, formatter) {
 			bpOverlayH2.textContent = "Overlay Settings";
 			var settingsTab = document.getElementById("SettingsTab");
 			settingsTab.appendChild(bpOverlayH2);
+			
+			// Moved over the settings tab things to here
+			var sTabTable = document.createElement("TABLE");
+			sTabTable.id = "overlaySettingsTable";
+			settingsTab.appendChild(sTabTable);
 
 			generateSettingsElement("Container Size", {compact: "Compact size", fitToPlayers: "Fit To Players"}, "containerSelect", 
 						function () {
@@ -1504,7 +1506,7 @@ var sendAdventureMessage = function(msg, formatter) {
 			);
 
 			// Twitch Emote settings
-			generateSettingsElement("Twitch Emotes", {off: "Off", on: "On"}, "twitchEmoteSelect",
+			generateSettingsElement("Twitch Emotes", {on: "On", off: "Off"}, "twitchEmoteSelect",
 						function () {
 							var teSelect = document.getElementById("twitchEmoteSelect");
 							
