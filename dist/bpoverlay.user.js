@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.9
+// @version      1.2.10
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -1514,7 +1514,7 @@ var source = function() {
 						// Call the actual game function
 						gameEndGame(actorName);
 						setTimeout(function() {
-							sendAdventureMessage(adventureTextFormatter.chooseText("winner", channel.data.lastWinner),
+							sendAdventureMessage(adventureTextFormat.chooseText("winner", channel.data.lastWinner),
 							"rgb(24, 24, 255)");
 						}, 100);
 					}
