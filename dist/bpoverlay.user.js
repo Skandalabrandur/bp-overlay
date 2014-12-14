@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.8
+// @version      1.2.9
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -1060,7 +1060,7 @@ var source = function() {
 				if (bpOverlay.twitchOn) {
 					if (window.hasOwnProperty("twitch_global")) {
 						for (i in twitch_global) {
-							message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
+							message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\" style=\"margin-bottom:-6px\"><\/img>");
 						}
 					}
 					
@@ -1090,7 +1090,7 @@ var source = function() {
 						
 						// Finally, do any replacements
 						for (i in toReplace) {
-							message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
+							message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\" style=\"margin-bottom:-6px\"><\/img>");
 						}
 					}
 					
