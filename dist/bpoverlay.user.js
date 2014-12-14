@@ -1,60 +1,27 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.7
+// @version      1.2.8
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
 // @downloadURL  https://github.com/MrInanimated/bp-overlay/raw/master/dist/bpoverlay.user.js
 // @author       Tianlin Zhang
 // @match        http://bombparty.sparklinlabs.com/play/*
-// @grant        GM_xmlhttpRequest
+// @resource     twitch_global http://twitchemotes.com/global.json
+// @resource     twitch_subscriber http://twitchemotes.com/subscriber.json
+// @grant        GM_getResourceText
 // ==/UserScript==
 
 
-// Grab the twitch global emotes
-GM_xmlhttpRequest({
-	method: "GET",
-	url: "http://twitchemotes.com/global.json",
-	onload: function(response) {
-		var s = document.createElement('script');
-		s.setAttribute("type", "application/javascript");
-		s.textContent = 'var twitch_global = ' + response.responseText + ';';
+// Grab the twitch emotes
+var tg = GM_getResourceText("twitch_global");
+var ts = GM_getResourceText("twitch_subscriber");
 
-		document.body.appendChild(s);
-		document.body.removeChild(s);
-	},
-	onerror : function (response) {
-		var s = document.createElement('script');
-		s.setAttribute("type", "application/javascript");
-		s.textContent = 'channel.appendToChat("Info", "Couldn\'t fetch twitch global emotes :(");';
-		
-		document.body.appendChild(s);
-		document.body.removeChild(s);
-	},
-});
-
-// Grab the twitch subscriber emote
-GM_xmlhttpRequest({
-	method: "GET",
-	url: "http://twitchemotes.com/subscriber.json",
-	onload: function(response) {
-		var s = document.createElement('script');
-		s.setAttribute("type", "application/javascript");
-		s.textContent = 'var twitch_subscriber = ' + response.responseText + ';';
-
-		document.body.appendChild(s);
-		document.body.removeChild(s);
-	},
-	onerror : function (response) {
-		var s = document.createElement('script');
-		s.setAttribute("type", "application/javascript");
-		s.textContent = 'channel.appendToChat("Info", "Couldn\'t fetch twitch subscriber emotes :(");';
-		
-		document.body.appendChild(s);
-		document.body.removeChild(s);
-	},
-});
-
+var te = document.createElement('script');
+te.setAttribute("type", "application/javascript");
+te.textContent = 'var twitch_global = ' + tg + '; var twitch_subscriber = ' + ts + ';';
+document.body.appendChild(te);
+document.body.removeChild(te);
 
 var source = function() {
 	// If the window already has a BPOverlay, don't run again
@@ -1132,7 +1099,7 @@ var source = function() {
 					// Quick and dirty
 					// Undo the escaping the <b> <i> <s> and <u> tags.
 					// Not sure if this is completely okay, but whatever for now
-					message = message.replace(/&lt;(\/?[bisu])&gt;/g, "<$1>");
+					message = message.replace(/&lt;(\/?[BISUbisu])&gt;/g, "<$1>");
 				}
 				return message;
 			};
@@ -1592,9 +1559,6 @@ var source = function() {
 				hideDeadOff.src = "https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/hideDeadOff.png";
 				bpOverlayImgs.hideDeadOff = hideDeadOff;
 
-				// Wrap game functions, make the autoscroll/focus buttons.
-				wrapGameFunctions();
-
 				//AutoScrollButton made with makeHeaderButton Function
 				//See usage in the declaration-meow for makeHeaderButton
 				makeHeaderButton(bpOverlayImgs.on,
@@ -1683,77 +1647,77 @@ var source = function() {
 						}
 					}
 				);
-			}
+				
+				//We only want this once (I believe) so this is outside of a function
+				//Generate the overlay section and append it to the SettingsTab
+				var bpOverlayH2 = document.createElement("H2");
+				bpOverlayH2.textContent = "Overlay Settings";
+				var settingsTab = document.getElementById("SettingsTab");
+				settingsTab.appendChild(bpOverlayH2);
+				
+				// Moved over the settings tab things to here
+				var sTabTable = document.createElement("TABLE");
+				sTabTable.id = "overlaySettingsTable";
+				settingsTab.appendChild(sTabTable);
 
-			//We only want this once (I believe) so this is outside of a function
-			//Generate the overlay section and append it to the SettingsTab
-			var bpOverlayH2 = document.createElement("H2");
-			bpOverlayH2.textContent = "Overlay Settings";
-			var settingsTab = document.getElementById("SettingsTab");
-			settingsTab.appendChild(bpOverlayH2);
-			
-			// Moved over the settings tab things to here
-			var sTabTable = document.createElement("TABLE");
-			sTabTable.id = "overlaySettingsTable";
-			settingsTab.appendChild(sTabTable);
+				generateSettingsElement("Container Size", {compact: "Compact size", fitToPlayers: "Fit To Players"}, "containerSelect", 
+					function () {
+						//Get the infoTableDiv element and the selector created with the id 'containerSelect'
+						var infoTableDiv = document.getElementsByClassName("infoTableDiv")[0];
+						var sTabSelect = document.getElementById("containerSelect");
+						
+						//Change container.style.maxHeight depending on user choice
+						if(sTabSelect.value === "compact") {
+							infoTableDiv.style.maxHeight = "100px";					
+						} else if (sTabSelect.value === "fitToPlayers") {
+							infoTableDiv.style.maxHeight = "1000px";	//The autoflow whatever takes care of this.
 
-			generateSettingsElement("Container Size", {compact: "Compact size", fitToPlayers: "Fit To Players"}, "containerSelect", 
-						function () {
-							//Get the infoTableDiv element and the selector created with the id 'containerSelect'
-							var infoTableDiv = document.getElementsByClassName("infoTableDiv")[0];
-							var sTabSelect = document.getElementById("containerSelect");
-							
-							//Change container.style.maxHeight depending on user choice
-							if(sTabSelect.value === "compact") {
-								infoTableDiv.style.maxHeight = "100px";					
-							} else if (sTabSelect.value === "fitToPlayers") {
-								infoTableDiv.style.maxHeight = "1000px";	//The autoflow whatever takes care of this.
-
-								//Prevent flowing out of page
-								//Let's be lazy and get the window.onresize and run it.
-								var funky = window.onresize;
-								funky();
-							} else {
-								//Do nothing
-							}
-
+							//Prevent flowing out of page
+							//Let's be lazy and get the window.onresize and run it.
+							var funky = window.onresize;
+							funky();
+						} else {
+							//Do nothing
 						}
-			);
 
-			// Twitch Emote settings
-			generateSettingsElement("Twitch Emotes", {on: "On", off: "Off"}, "twitchEmoteSelect",
-						function () {
-							var teSelect = document.getElementById("twitchEmoteSelect");
-							
-							if (teSelect.value === "on") {
-								bpOverlay.twitchOn = true;
-							}
-							else if (teSelect.value === "off") {
-								bpOverlay.twitchOff = false;
-							}
-							else {
-							}
-						}
-			);
-	
-		
-			//The text adventure setting
-			generateSettingsElement("Text Adventure BETA", {off: "Off", on: "On"}, "adventureSetting",
-				function() {
-					var sTabSelect = document.getElementById("adventureSetting");
-					if(sTabSelect.value === "on") {
-						toggleTextAdventure(true);
-					} else if(sTabSelect.value === "off") {
-						toggleTextAdventure(false);
-					} else {
-						toggleTextAdventure(false);
 					}
-				}
-			);
+				);
 
-									
-
-
+				// Twitch Emote settings
+				generateSettingsElement("Twitch Emotes", {on: "On", off: "Off"}, "twitchEmoteSelect",
+					function () {
+						var teSelect = document.getElementById("twitchEmoteSelect");
+						
+						if (teSelect.value === "on") {
+							bpOverlay.twitchOn = true;
+						}
+						else if (teSelect.value === "off") {
+							bpOverlay.twitchOff = false;
+						}
+						else {
+						}
+					}
+				);
+		
+			
+				//The text adventure setting
+				generateSettingsElement("Text Adventure BETA", {off: "Off", on: "On"}, "adventureSetting",
+					function() {
+						var sTabSelect = document.getElementById("adventureSetting");
+						if(sTabSelect.value === "on") {
+							toggleTextAdventure(true);
+						} else if(sTabSelect.value === "off") {
+							toggleTextAdventure(false);
+						} else {
+							toggleTextAdventure(false);
+						}
+					}
+				);
+				
+				// Wrap game functions, make the autoscroll/focus buttons.
+				wrapGameFunctions();
+			}
+			
 			firstRunProcs();
 
 			// Make updateTime fire every second.
