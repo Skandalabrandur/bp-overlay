@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.5
+// @version      1.2.7
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -66,7 +66,7 @@ var source = function() {
 			// Since this is running via a script loaded on page load, it's difficult ensure the overlay runs after everything has loaded
 			// This piece of code makes sure that all relevant things are loaded before executing the rest of the code
 			// We may need to add more to this long-ass if statement if we add more features in the future
-			if (!(window.hasOwnProperty("channel") && channel.socket && channel.data && channel.appendToChat && channel.socket.listeners("setActivePlayerIndex").length && channel.socket.listeners("winWord").length && channel.socket.listeners("setPlayerLives").length && channel.socket.listeners("setPlayerState").length && channel.socket.listeners("endGame").length && document.getElementById("Sidebar") && document.getElementById("ChatLog") && document.getElementById("SettingsTab"))) {
+			if (!(window.hasOwnProperty("channel") && channel.socket && channel.data && channel.appendToChat && channel.socket.listeners("setActivePlayerIndex").length && channel.socket.listeners("winWord").length && channel.socket.listeners("setPlayerLives").length && channel.socket.listeners("setPlayerState").length && channel.socket.listeners("endGame").length && window.hasOwnProperty("JST") && JST["nuclearnode/chatMessage"] && document.getElementById("Sidebar") && document.getElementById("ChatLog") && document.getElementById("SettingsTab"))) {
 				console.log("Everything's not loaded yet, trying again in a second...");
 				setTimeout(main, 1000);
 				return;
@@ -116,6 +116,8 @@ var source = function() {
 
 				twitchOn: true,  // If true, twitch emoticons will be displayed.				
 
+				markupOn: true,  // A dummy, nothing changes this setting just yet
+				
 				adventureTextMode: false,	//Self explanatory boolean for text adventure toggle
 				
 				adventureFirstRun: false,
@@ -161,138 +163,136 @@ var source = function() {
 				textBanks : {
 					newRound : [
 						"Hark, the wheel turns yet again!",
-                                                "Lo and behold, a new round has cometh!",
-                                                "The crack of a new bomb, stand ready and begin the new day!",
-                                                "The whole bomb's a stage, and all the men and women merely nerds!",
-                                                "Give heed! The wordgrimage is set about, selectees!",
-                                                "With thine vocable, set forth and slay that which is fragmentary!",
-                                                "Words are swords, prompts be stomped!",
-                                                "Sticks and stones will break thy bones / And prompts will surely kill thee!",
+						"Lo and behold, a new round has cometh!",
+						"The crack of a new bomb, stand ready and begin the new day!",
+						"The whole bomb's a stage, and all the men and women merely nerds!",
+						"Give heed! The wordgrimage is set about, selectees!",
+						"With thine vocable, set forth and slay that which is fragmentary!",
+						"Words are swords, prompts be stomped!",
+						"Sticks and stones will break thy bones / And prompts will surely kill thee!",
 					],
 					userTurn : [
 						"It is thy turn, squire. You are facing off against {0}. Do thine worst!",
-                                                "A vile horror seeks thee. What is thine plan for {0}?",
-                                                "Nay, {0} fixes to tender thine flame. Take action!",
-                                                "A wild {0} appears!",
-                                                "Shalt thou stand and accomplish nothing against {0}?",
-                                                "{0} is about to wound thee. Time for a curt attack!",
-                                                "Heedeth thou the mighty {0}! Distress or scuffle is forthcoming!",
-                                                "Art thou harefooted or harebrained! Observe, it is {0}!",
+						"A vile horror seeks thee. What is thine plan for {0}?",
+						"Nay, {0} fixes to tender thine flame. Take action!",
+						"A wild {0} appears!",
+						"Shalt thou stand and accomplish nothing against {0}?",
+						"{0} is about to wound thee. Time for a curt attack!",
+						"Heedeth thou the mighty {0}! Distress or scuffle is forthcoming!",
+						"Art thou harefooted or harebrained! Observe, it is {0}!",
 					],
 					playerTurn : [
 						"The heroic, {0}, faces the mighty {1}.",
-                                                "A ferocious roar as {1} corners {0}!",
-                                                "{0} needeth stand firm or be struck by {1}",
-                                                "{1} hath hunger who {0} might satisfy, lest!",
-                                                "{0} faces down the rat that is {1}!",
-                                                "{0} challenges the verminous {1}!",
-                                                "Behold the ravenous {1}! Will {0} succeed?",
-                                                "{0} versus {1}! The trepidation is palpable!",
+						"A ferocious roar as {1} corners {0}!",
+						"{0} needeth stand firm or be struck by {1}",
+						"{1} hath hunger who {0} might satisfy, lest!",
+						"{0} faces down the rat that is {1}!",
+						"{0} challenges the verminous {1}!",
+						"Behold the ravenous {1}! Will {0} succeed?",
+						"{0} versus {1}! The trepidation is palpable!",
                                                 
 					],
 					userLevelUp : [
 						"LEVEL UP: Thou art now {0}",
-                                                "UPLEVEL : Now thou art {0}",
-                                                "RISE SIR, AS '{0}'",
-                                                "YOU FIT A NEW TITLE: {0}",
-                                                "THOU HAST EVOLVED INTO {0}",
-                                                "EXPERIENCE MOLDS YOU INTO {0}",
-                                                "YOU FEEL STRONGER: You become '{0}'",
-                                                "REJOICE, YOU ARE: {0}",                                         
+						"UPLEVEL : Now thou art {0}",
+						"RISE SIR, AS '{0}'",
+						"YOU FIT A NEW TITLE: {0}",
+						"THOU HAST EVOLVED INTO {0}",
+						"EXPERIENCE MOLDS YOU INTO {0}",
+						"YOU FEEL STRONGER: You become '{0}'",
+						"REJOICE, YOU ARE: {0}",                                         
 					],
 					levelUp : [
 						"{0} levelled up to {1}",
-                                                "{0} has become {1}",
-                                                "{0} is now titled {1}",
-                                                "{0} has a new name: {1}",
-                                                "There is now a '{1}' among us",
-                                                "{0} is levelling up. What's your excuse, faggoth?",
-                                                "Out of his cocoon, {0} crawls like a majestic buttefly. How can I compare 'levelling up' to a summer's day?",
-                                                "{0} is evolving! Don't cream your pants, Pokémon faggots!",
+						"{0} has become {1}",
+						"{0} is now titled {1}",
+						"{0} has a new name: {1}",
+						"There is now a '{1}' among us",
+						"{0} is levelling up. What's your excuse, faggoth?",
+						"Out of his cocoon, {0} crawls like a majestic buttefly. How can I compare 'levelling up' to a summer's day?",
+						"{0} is evolving! Don't cream your pants, Pokémon faggots!",
 					],
 					userWinWord : [
 						"Thou hast slain the beast with your {0} and gained {1} EXP!",
-                                                "The hellion shatters for thine knowledge is vast. A well deserved {1} EXP!",
-                                                "Smite triumphed over bite! The prompt is no more. You gain {1} EXP!",
-                                                "Twas foolish of the beast to underestimate you. You gain {1} EXP",
-                                                "By Jove, the miscreant is rend like a brittle biscuit from your wallop. I say, good show!",
-                                                "No mercy have thou for these ogres. Let {0} be a lesson. You gain {1} EXP",
-                                                "Blasted vermin recoil in fear at thine mighty {0}. {1} EXP to thee!",
-                                                "Idle barking is met with a firm {0}.",
+						"The hellion shatters for thine knowledge is vast. A well deserved {1} EXP!",
+						"Smite triumphed over bite! The prompt is no more. You gain {1} EXP!",
+						"Twas foolish of the beast to underestimate you. You gain {1} EXP",
+						"By Jove, the miscreant is rend like a brittle biscuit from your wallop. I say, good show!",
+						"No mercy have thou for these ogres. Let {0} be a lesson. You gain {1} EXP",
+						"Blasted vermin recoil in fear at thine mighty {0}. {1} EXP to thee!",
+						"Idle barking is met with a firm {0}.",
 					],
 					winWord : [
 						"{0} has killed the beast with the mighty shout {1} and gained {2} EXP!",
-                                                "{0} fears no ghosts. His guiding {1} has fled them from the shadows!",
-                                                "{1}, an apt warcry from {0} who gained {2} EXP!",
-                                                "{0} decimates the hoodlum with {1} and gains {2} EXP",
-                                                "{1}, and then the dragon is no more! {0} feels stronger by {2} points!",
-                                                "{0} delivers the final blow to the whale with his {1}!",
-                                                "{1} was {0}'s weapon of choice and he earns {2} EXP",
-                                                "{0} shows no mercy and swings his {1}!",
+						"{0} fears no ghosts. His guiding {1} has fled them from the shadows!",
+						"{1}, an apt warcry from {0} who gained {2} EXP!",
+						"{0} decimates the hoodlum with {1} and gains {2} EXP",
+						"{1}, and then the dragon is no more! {0} feels stronger by {2} points!",
+						"{0} delivers the final blow to the whale with his {1}!",
+						"{1} was {0}'s weapon of choice and he earns {2} EXP",
+						"{0} shows no mercy and swings his {1}!",
 					],
 					userLostLife : [
 						"Thine ignorance woundeth and thou hast been hurt",
-                                                "Incompetent fool, you were lacerated by a mere rodent!",
-                                                "Thou areth assrapeth so fervently you lose heart!",
-                                                "If thy stuttereth again, thou shalt surely receive another blow such as this!",
-                                                "Nay, thou hast been set upon and crushed by that wild thing!",
-                                                "Is thy fighting as good as thy 'not-being-a-faggot' skill? Thine heart bleeds!",
-                                                "Thine tongue utters nothing and so thou art skewered like a pig! The agony!",
-                                                "Thou art badly contused by the assailing prompt. Man up or die, cutter!",
+						"Incompetent fool, you were lacerated by a mere rodent!",
+						"Thou areth assrapeth so fervently you lose heart!",
+						"If thy stuttereth again, thou shalt surely receive another blow such as this!",
+						"Nay, thou hast been set upon and crushed by that wild thing!",
+						"Is thy fighting as good as thy 'not-being-a-faggot' skill? Thine heart bleeds!",
+						"Thine tongue utters nothing and so thou art skewered like a pig! The agony!",
+						"Thou art badly contused by the assailing prompt. Man up or die, cutter!",
 					],
 					lostLife : [
 						"Alas... for poor {0} hath been hurt",
-                                                "{0} has been struck to the ground!",  
-                                                "{0} cries can be heard echoing through these halls!", 
-                                                "{0} receives hefty damage!",
-                                                "The horror kill and goes forth to claim its next victim",
-                                                "Sacre bleu. Les monstrosite c'est trop. {0} ne pas victoirement!",
-                                                "Don't look. {0} was badly mauled!",
-                                                "Oh lord gawd. {0} got roughed up!",
-                                                "{0} was generously harmed!",
+						"{0} has been struck to the ground!",  
+						"{0} cries can be heard echoing through these halls!", 
+						"{0} receives hefty damage!",
+						"The horror kill and goes forth to claim its next victim",
+						"Sacre bleu. Les monstrosite c'est trop. {0} ne pas victoirement!",
+						"Don't look. {0} was badly mauled!",
+						"Oh lord gawd. {0} got roughed up!",
+						"{0} was generously harmed!",
 					],
 					userDeath : [
-						"and a grave loss for thou art dead. {0}, may thee rest in peace!",  // Uh, not sure if "may thee rest in piece!" is an intentional misspelling or not. 
-                                                                                                                     //Meoweth, thy scoundrel be informeth that 'thee' tis the objective case of 'thou'.
-                                                                                                                     //But it's probably wrong anyways :D
-                                                "yet-th, thineth lifeth hateth endeth. Noth. Whyth?",
-                                                "but this is the end for you. Rest in pieces, sweet prince",
-                                                "however you face oblivion.",
-                                                "and thine life flasheth before thine eyes and thou realizes what a dead faggot thou art!",
-                                                "now you have left the realm of the living and enter the realm of spectators!",
-                                                "here, you expire like milk and smell like it too! Smelly dead {0}!",
-                                                "but bonk bonk you conk into the casket. The wonk was too stronk!",
+						"and a grave loss for thou art dead. {0}, may thee rest in peace!", 
+						"yet-th, thineth lifeth hateth endeth. Noth. Whyth?",
+						"but this is the end for you. Rest in pieces, sweet prince",
+						"however you face oblivion.",
+						"and thine life flasheth before thine eyes and thou realizes what a dead faggot thou art!",
+						"now you have left the realm of the living and enter the realm of spectators!",
+						"here, you expire like milk and smell like it too! Smelly dead {0}!",
+						"but bonk bonk you conk into the casket. The wonk was too stronk!",
 					],
 					death : [
 						"and weepeth, thee morn, for {0} hath left yonder mortal coil!",
-                                                "{0} exits the stage!",
-                                                "{0} is snuffed like a candle",
-                                                "{0} is no more, like, jeez, got dun dead good!",
-                                                "meow meow meow 'COMPLETELY DEAD' meow meow '{0}'",
-                                                "{0} kicks the bucket, knocks it over and swallows shit!",
-                                                "{0}, oh, in the prime of his 'not being able to answer prompts like the faggot he is', is deceased!",
-                                                "{0}, bites the dust, goes the way of all flesh, gives up the ghost, drops off. You know what I mean",
+						"{0} exits the stage!",
+						"{0} is snuffed like a candle",
+						"{0} is no more, like, jeez, got dun dead good!",
+						"meow meow meow 'COMPLETELY DEAD' meow meow '{0}'",
+						"{0} kicks the bucket, knocks it over and swallows shit!",
+						"{0}, oh, in the prime of his 'not being able to answer prompts like the faggot he is', is deceased!",
+						"{0}, bites the dust, goes the way of all flesh, gives up the ghost, drops off. You know what I mean",
 					],
 					endRound : [
 						"All things must end and so it does with {0}!",
-                                                "The ordeal is over!",
-                                                "{0} was the death of all but one!",
-                                                "The seemingly unending wave of prompts comes to a halt!",
-                                                "Now, caged are the dogs of war!",     
-                                                "And on that bombshell, {0}, we have to end!",
-                                                "Many have fallen! But not all!",      
-                                                "Nothing lasts forever!, Yet...",
+						"The ordeal is over!",
+						"{0} was the death of all but one!",
+						"The seemingly unending wave of prompts comes to a halt!",
+						"Now, caged are the dogs of war!",     
+						"And on that bombshell, {0}, we have to end!",
+						"Many have fallen! But not all!",      
+						"Nothing lasts forever!, Yet...",
                                             
 					],
 					winner : [
 						"Rising from the ashes of felled brethren is the victorious {0}!",
-                                                "A knight in tested armor, still breathing, the glorious {0}!",
-                                                "Praise be the heroic {0} for that human/otherkin/refridgerator has not be vanquished!",
-                                                "The surviving faggot was indeed {0}",
-                                                "Ahoyhoy and a hullo for the indissoluble {0}",
-                                                "Is it a bird? Is it a plane? Whatever it is, it's {0}",
-                                                "Doctors hate {0}! The secret doctors don't want you to know is \"don't be a scrub\"!",
-                                                "{0} the unending, the ceaseless, the permanent, the unfading; the sole survivor!",
+						"A knight in tested armor, still breathing, the glorious {0}!",
+						"Praise be the heroic {0} for that human/otherkin/refridgerator has not be vanquished!",
+						"The surviving faggot was indeed {0}",
+						"Ahoyhoy and a hullo for the indissoluble {0}",
+						"Is it a bird? Is it a plane? Whatever it is, it's {0}",
+						"Doctors hate {0}! The secret doctors don't want you to know is \"don't be a scrub\"!",
+						"{0} the unending, the ceaseless, the permanent, the unfading; the sole survivor!",
 					],
 				},
 			}
@@ -669,31 +669,30 @@ var source = function() {
 					gameCanvas.parentNode.style.backgroundColor="";
 					gameCanvas.style.display="";
 				
-	}
+				}
 
+			}
 
-}
+			//msg is the string to be displayed
+			//formatter is a color code on the form "rgb(x,y,z)" where 0<=x,y,z<=255
+			var sendAdventureMessage = function(msg, formatter) {
+				if(bpOverlay.adventureTextMode) {
+					var textAdventureMessages = document.getElementById("adventureMessages");	
+					var textAdventureMsg = document.createElement("P");
+					textAdventureMsg.style.color=formatter;
+					textAdventureMsg.innerHTML=msg;
+				
+					//We don't want the messages to extend out of the page... now do we?
+					if(textAdventureMessages.children.length > 10) {
+						textAdventureMessages.appendChild(textAdventureMsg);	
+						textAdventureMessages.removeChild(textAdventureMessages.firstChild);
+					} else {
+						textAdventureMessages.appendChild(textAdventureMsg);
+					}
+				
 
-//msg is the string to be displayed
-//formatter is a color code on the form "rgb(x,y,z)" where 0<=x,y,z<=255
-var sendAdventureMessage = function(msg, formatter) {
-	if(bpOverlay.adventureTextMode) {
-		var textAdventureMessages = document.getElementById("adventureMessages");	
-		var textAdventureMsg = document.createElement("P");
-		textAdventureMsg.style.color=formatter;
-		textAdventureMsg.innerHTML=msg;
-	
-		//We don't want the messages to extend out of the page... now do we?
-		if(textAdventureMessages.children.length > 10) {
-			textAdventureMessages.appendChild(textAdventureMsg);	
-			textAdventureMessages.removeChild(textAdventureMessages.firstChild);
-		} else {
-			textAdventureMessages.appendChild(textAdventureMsg);
-		}
-	
-
-	}
-}
+				}
+			}
 			//////////////////////////////////////////////
 			//END functions for the adventure text thing
 
@@ -1089,10 +1088,75 @@ var sendAdventureMessage = function(msg, formatter) {
 				}
 			}
 
+			// It now makes more sense to have the twitch emotes in a separate function
+			var twitchify = function (message) {
+				if (bpOverlay.twitchOn) {
+					if (window.hasOwnProperty("twitch_global")) {
+						for (i in twitch_global) {
+							message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
+						}
+					}
+					
+					if (window.hasOwnProperty("twitch_subscriber")) {
+						// Match subscriber emote patterns
+						var matches = [];
+						var found;
+						var reg = /\b\w+:\w+\b/g
+						while (found = reg.exec(message)) {
+							matches.push(found[0]);
+						}
+						
+						// Check if any of the patterns we've found are actual emotes
+						toReplace = {};
+						for (i = 0; i < matches.length; i++) {
+							var split = matches[i].split(":");
+							var s = split[0].toLowerCase();
+							var e = split[1];
+							if (!toReplace[matches[i]]) {
+								if (twitch_subscriber[s]) {
+									if (twitch_subscriber[s].emotes[e]) {
+										toReplace[s+":"+e] = twitch_subscriber[s].emotes[e];
+									}
+								}
+							}
+						}
+						
+						// Finally, do any replacements
+						for (i in toReplace) {
+							message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
+						}
+					}
+					
+				}
+				if (bpOverlay.markupOn) {
+					// Quick and dirty
+					// Undo the escaping the <b> <i> <s> and <u> tags.
+					// Not sure if this is completely okay, but whatever for now
+					message = message.replace(/&lt;(\/?[bisu])&gt;/g, "<$1>");
+				}
+				return message;
+			};
+			
 			// Since a lot of the functions the bot needs to do has to happen before the game updates the state of everything
 			// We wrap the default game functions to force them to be called after our custom code.
 			var wrapGameFunctions = function() {
 
+				// Screw your function for handling chat messages, Elisee
+				// I'm going to make a better one! With blackjack! And hookers!
+				JST["nuclearnode/chatMessage"] = function (e) {
+					var t;
+					var a = [];
+					var n = e || {};
+					return function (e, n) {
+						a.push(
+							(null == (t = e) ? "" : t) +
+							':  <span class="Content">' +
+							twitchify(jade.escape(null == (t = n) ? "" : t)) +  // This function is literally the exact same as before except for this line
+							"</span>")
+					}.call(this, "author" in n ? n.author : "undefined" != typeof author ? author : void 0, "text" in n ? n.text : "undefined" != typeof text ? text : void 0), a.join("")
+				};
+
+			
 				// Chat message wrapper
 				var gameChat = channel.appendToChat;
 				channel.appendToChat = function(header, message) {
@@ -1102,47 +1166,14 @@ var sendAdventureMessage = function(msg, formatter) {
 						message = Autolinker.link(message, {
 							className: "chatMessageLink"
 						});
-
-						if (bpOverlay.twitchOn) {
-							if (window.hasOwnProperty("twitch_global")) {
-								for (i in twitch_global) {
-									message = message.replace(new RegExp("\\b" + i + "\\b", "g"), "<img src=\"http:" + twitch_global[i].url + "\" title=\"" + i + "\"><\/img>");
-								}
-							}
-							
-							if (window.hasOwnProperty("twitch_subscriber")) {
-								// Match subscriber emote patterns
-								var matches = [];
-								var found;
-								var reg = /\b\w+:\w+\b/g
-								while (found = reg.exec(message)) {
-									matches.push(found[0]);
-								}
-								
-								// Check if any of the patterns we've found are actual emotes
-								toReplace = {};
-								for (i = 0; i < matches.length; i++) {
-									var split = matches[i].split(":");
-									var s = split[0].toLowerCase();
-									var e = split[1];
-									if (!toReplace[matches[i]]) {
-										if (twitch_subscriber[s]) {
-											if (twitch_subscriber[s].emotes[e]) {
-												toReplace[s+":"+e] = twitch_subscriber[s].emotes[e];
-											}
-										}
-									}
-								}
-								
-								// Finally, do any replacements
-								for (i in toReplace) {
-									message = message.replace(new RegExp(i, "g"), "<img src=\"http:" + toReplace[i] + "\" title=\"" + i + "\"><\/img>");
-								}
-							}
-							
+						// That should be fine, because I don't think the Autolinker library disturbs existing tags
+						
+						// Since Info messages don't go through JST
+						// This is needed
+						if (header === "Info" && message.indexOf("class=\"User\"") === -1) {
+							message = twitchify(message);
 						}
 						
-
 						// Scroll the chat down.
 						if (bpOverlay.autoScroll) {
 							var chatLog = document.getElementById("ChatLog");
@@ -1729,7 +1760,10 @@ var sendAdventureMessage = function(msg, formatter) {
 			setInterval(updateTime, 1000);
 
 			// "Update Text"
-			channel.appendToChat("Info", "New Update! (2014-12-13):<br />Twitch subscriber emotes! Use them like this: channel_name:emote_name<br />(Turn twitch emotes on in the settings tab)<br />Text adventure mode (BETA) now has more text.");		}
+			// The <span class=\"User\"> is there to escape the *one* instance where I don't want twitch emotes/formatting in a chat message :P
+			// You can remove it once you get rid of the latter part of the update text.
+			channel.appendToChat("Info", "<span class=\"User\"></span>New Update! (2014-12-14):<br />Twitch emotes should now only show up in the content of chat messages. Thanks for ruining it Hooray.<br /><b>Formatting</b> <i>is</i> <u>now</u> <s>a thing</s>. Enclose messages in tags &lt;b&gt;like this&lt;/b&gt;. You can use &lt;b&gt;bold&lt;/b&gt;, &lt;i&gt;italic&lt;/i&gt;, &lt;s&gt;strikethrough&lt;/s&gt; and &lt;u&gt;underline&lt;/u&gt;. Let me know if you can break it somehow.");
+		}
 		main();
 	}
 }
