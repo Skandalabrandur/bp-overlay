@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.10
+// @version      1.2.11
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -346,34 +346,37 @@ var source = function() {
 			
 			//Called when browser is resized
 			function resize() {
-				//Let's get the window size
-				var height = window.innerHeight,
-					width = window.innerWidth;
+				//Let's patch this to do nothing if the box hasn't been created. 
+				//Hooray for avoiding erors. HOORAY!
+				if(bpOverlay.dragboxHasBeenCreated) {
+					//Let's get the window size
+					var height = window.innerHeight,
+						width = window.innerWidth;
 
-				//Let's get the dragOn size
-				var infoBox = document.getElementById("infoBox");
-				var dragW = infoBox.clientWidth;
-				var dragH = infoBox.clientHeight;
+					//Let's get the dragOn size
+					var infoBox = document.getElementById("infoBox");
+					var dragW = infoBox.clientWidth;
+					var dragH = infoBox.clientHeight;
 				
-				//Let's get the dragOn... wrawrrr
-				var dragOn = document.getElementById("dragonDrop");
+					//Let's get the dragOn... wrawrrr
+					var dragOn = document.getElementById("dragonDrop");
 
-				//... and his coordinates. Nifty. We can use parseInt direclty. directly*
-				var dragX = parseInt(dragOn.style.left);
-				var dragY = parseInt(dragOn.style.top);
+					//... and his coordinates. Nifty. We can use parseInt direclty. directly*
+					var dragX = parseInt(dragOn.style.left);
+					var dragY = parseInt(dragOn.style.top);
 
-				//Resize widthwise
-				if(dragW + dragX > width) {
-					dragOn.style.left = width - dragW + 'px';
+					//Resize widthwise
+					if(dragW + dragX > width) {
+						dragOn.style.left = width - dragW + 'px';
+					}
+
+					//Resize heightwise (also pushing it beyond check which isn't needed on the widthwise
+					if(dragY < 0) {
+						dragOn.style.top = "0px";
+					} else if (dragH + dragY > height) {
+						dragOn.style.top = height - dragH + 'px';
+					}
 				}
-
-				//Resize heightwise (also pushing it beyond check which isn't needed on the widthwise
-				if(dragY < 0) {
-					dragOn.style.top = "0px";
-				} else if (dragH + dragY > height) {
-					dragOn.style.top = height - dragH + 'px';
-				}
-				
 			}
 
 			//a: establish the drag and the starting parameters
