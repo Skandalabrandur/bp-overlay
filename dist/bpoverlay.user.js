@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Glitchy as fuck unofficial BombParty Overlay Fork
-// @version      9001
+// @version      9002
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -1665,6 +1665,9 @@ var source = function() {
 				overlaySettingsTab.id="overlaySettingsTab";
 				overlaySettingsTab.setAttribute("class", "");
 				overlaySettingsTab.innerHTML="";	//Empty the innerHTML
+				
+				//Also, let's clone the style from the settingstab
+				overlaySettingsTab.style=window.getComputedStyle(sideTabs.children[1]);
 
 				//Make a clone of a tab button and change it to what we want
 				var overlaySettingsButton = sideButtons.children[0].cloneNode(true);	//clone whatever
