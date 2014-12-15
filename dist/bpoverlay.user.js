@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.12
+// @version      1.2.13
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -1667,7 +1667,6 @@ var source = function() {
 				sTabTable.id = "overlaySettingsTable";
 				settingsTab.appendChild(sTabTable);
 
-				bpOverlay.containerElementCreated = true;
 				generateSettingsElement("Container Size", {compact: "Compact size", fitToPlayers: "Fit To Players"}, "containerSelect", 
 					function () {
 						//Get the infoTableDiv element and the selector created with the id 'containerSelect'
@@ -1690,7 +1689,9 @@ var source = function() {
 
 					}
 				);
-
+				//It's supposed to be here, duuuuuuuh.				
+				bpOverlay.containerElementCreated = true;
+				
 				// Twitch Emote settings
 				generateSettingsElement("Twitch Emotes", {on: "On", off: "Off"}, "twitchEmoteSelect",
 					function () {
