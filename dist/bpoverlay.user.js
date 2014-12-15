@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Glitchy as fuck unofficial BombParty Overlay Fork
-// @version      9002
+// @version      9004
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -965,6 +965,7 @@ var source = function() {
 				// Made it so it keeps appending rows to the same table
 				// As far as I'm aware, I don't think you need a tbody element here
 				var sTabTable = document.getElementById("overlaySettingsTable");
+				
 				var sTabTr = document.createElement("TR");
 				sTabTable.appendChild(sTabTr);
 				var sTabTd = document.createElement("TD");
@@ -988,6 +989,7 @@ var source = function() {
 
 				//Add the function to the onchange listener for the newly created select
 				sTabSelect.onchange = settingsFunction;
+
 			
 				//OPTIONAL: Reflect on your lifechoices, such as programming when you should be studying	
 			}
@@ -1666,9 +1668,6 @@ var source = function() {
 				overlaySettingsTab.setAttribute("class", "");
 				overlaySettingsTab.innerHTML="";	//Empty the innerHTML
 				
-				//Also, let's clone the style from the settingstab
-				overlaySettingsTab.style=window.getComputedStyle(sideTabs.children[1]);
-
 				//Make a clone of a tab button and change it to what we want
 				var overlaySettingsButton = sideButtons.children[0].cloneNode(true);	//clone whatever
 				overlaySettingsButton.id="overlaySettingsButton";
@@ -1694,6 +1693,13 @@ var source = function() {
 
 				}
 				overlaySettingsButton.onclick=overlaySettingsFunction;
+
+
+				// TEMP STYLESHEET TO FORMAT THE OVERLAYSETTINGSTAB THE SAME WAY AS THE SETTINGSTAB
+				var style2 = document.createElement('style');
+				style2.appendChild(document.createTextNode('#overlaySettingsTab{text-align:left;overflow-y:auto}#overlaySettingsTab h2{padding:.5em .5em 0;opacity:.5;-ms-filter:"alpha(Opacity=50)";filter:alpha(opacity=50)}#overlaySettingsTab table{width:100%;padding:.5em}#overlaySettingsTab table tr td:nth-child(1){width:40%}#overlaySettingsTab table tr td:nth-child(2){width:60%}#overlaySettingsTab table button:not(.UnbanUser),#overlaySettingsTab table input,#overlaySettingsTab table select,#overlaySettingsTab table textarea{width:100%;background:#444;border:none;padding:.25em;color:#fff;font:inherit}#overlaySettingsTab table textarea{resize:vertical;min-height:3em}#overlaySettingsTab table ul{list-style:none}'));
+				document.getElementsByTagName('head')[0].appendChild(style2);
+
 				
 				//We only want this once (I believe) so this is outside of a function
 				//Generate the overlay section and append it to the SettingsTab
