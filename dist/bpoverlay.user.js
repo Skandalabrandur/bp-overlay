@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.14
+// @version      1.2.15
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -33,7 +33,7 @@ var source = function() {
 			// Since this is running via a script loaded on page load, it's difficult ensure the overlay runs after everything has loaded
 			// This piece of code makes sure that all relevant things are loaded before executing the rest of the code
 			// We may need to add more to this long-ass if statement if we add more features in the future
-			if (!(window.hasOwnProperty("channel") && channel.socket && channel.data && channel.appendToChat && channel.socket.listeners("setActivePlayerIndex").length && channel.socket.listeners("winWord").length && channel.socket.listeners("setPlayerLives").length && channel.socket.listeners("setPlayerState").length && channel.socket.listeners("endGame").length && window.hasOwnProperty("JST") && JST["nuclearnode/chatMessage"] && document.getElementById("Sidebar") && document.getElementById("ChatLog") && document.getElementById("SettingsTab"))) {
+			if (!(window.hasOwnProperty("channel") && channel.socket && channel.data && channel.appendToChat && channel.socket.listeners("setActivePlayerIndex").length && channel.socket.listeners("winWord").length && channel.socket.listeners("setPlayerLives").length && channel.socket.listeners("setPlayerState").length && channel.socket.listeners("endGame").length && window.hasOwnProperty("JST") && JST["nuclearnode/chatMessage"] && document.getElementById("Sidebar") && document.getElementById("ChatLog") && document.getElementById("LeaderboardTab"))) {
 				console.log("Everything's not loaded yet, trying again in a second...");
 				setTimeout(main, 1000);
 				return;
@@ -1552,6 +1552,11 @@ var source = function() {
 				style.appendChild(document.createTextNode('.headerButtonDiv {  display: -webkit-box;  display: -moz-box;  display: -webkit-flex;  display: -ms-flexbox;  display: box;  display: flex;  opacity: 0.3;  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";  filter: alpha(opacity=30);} .headerButtonDiv:hover {  opacity: 1;  -ms-filter: none;  filter: none;} button.headerButton {  border: none;  background: none;  cursor: pointer;  opacity: 0.5;  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";  filter: alpha(opacity=50);  display: -webkit-box;  display: -moz-box;  display: -webkit-flex;  display: -ms-flexbox;  display: box;  display: flex;} button.headerButton:hover {  opacity: 0.8;  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";  filter: alpha(opacity=80);} button.headerButton:active {  opacity: 1;  -ms-filter: none;  filter: none;} .infoTableDiv::-webkit-scrollbar { width: 15px; height: 15px; } .infoTableDiv::-webkit-scrollbar-button { height: 0px; width: 0px; } .infoTableDiv::-webkit-scrollbar-track { background-color: rgba(0,0,0,0.05); } .infoTableDiv::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,0.1); border: 3px solid transparent; -webkit-border-radius: 6px; border-radius: 6px; -webkit-background-clip: content; -moz-background-clip: content; background-clip: content-box; } .infoTableDiv::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,0.15); } .infoTableDiv::-webkit-scrollbar-corner { background-color: rgba(255,255,255,0.1); }'));
 				document.getElementsByTagName('head')[0].appendChild(style);
 
+				// TEMP STYLESHEET TO FORMAT THE LEADERBOARDTAB THE SAME WAY AS THE SETTINGSTAB
+				var style2 = document.createElement('style');
+				style2.appendChild(document.createTextNode('#LeaderboardTab{text-align:left;overflow-y:auto}#LeaderboardTab h2{padding:.5em .5em 0;opacity:.5;-ms-filter:"alpha(Opacity=50)";filter:alpha(opacity=50)}#LeaderboardTab table{width:100%;padding:.5em}#LeaderboardTab table tr td:nth-child(1){width:40%}#LeaderboardTab table tr td:nth-child(2){width:60%}#LeaderboardTab table button:not(.UnbanUser),#LeaderboardTab table input,#LeaderboardTab table select,#LeaderboardTab table textarea{width:100%;background:#444;border:none;padding:.25em;color:#fff;font:inherit}#LeaderboardTab table textarea{resize:vertical;min-height:3em}#LeaderboardTab table ul{list-style:none}'));
+				document.getElementsByTagName('head')[0].appendChild(style2);
+				
 				// Load the hideDead on/off images
 				var hideDeadOn = document.createElement("img");
 				hideDeadOn.width = 15;
@@ -1658,7 +1663,7 @@ var source = function() {
 				//Generate the overlay section and append it to the SettingsTab
 				var bpOverlayH2 = document.createElement("H2");
 				bpOverlayH2.textContent = "Overlay Settings";
-				var settingsTab = document.getElementById("SettingsTab");
+				var settingsTab = document.getElementById("LeaderboardTab");
 				settingsTab.appendChild(bpOverlayH2);
 				
 				// Moved over the settings tab things to here
@@ -1730,9 +1735,7 @@ var source = function() {
 			setInterval(updateTime, 1000);
 
 			// "Update Text"
-			// The <span class=\"User\"> is there to escape the *one* instance where I don't want twitch emotes/formatting in a chat message :P
-			// You can remove it once you get rid of the latter part of the update text.
-			channel.appendToChat("Info", "<span class=\"User\"></span>New Update! (2014-12-14):<br />Twitch emotes should now only show up in the content of chat messages. Thanks for ruining it Hooray.<br /><b>Formatting</b> <i>is</i> <u>now</u> <s>a thing</s>. Enclose messages in tags &lt;b&gt;like this&lt;/b&gt;. You can use &lt;b&gt;bold&lt;/b&gt;, &lt;i&gt;italic&lt;/i&gt;, &lt;s&gt;strikethrough&lt;/s&gt; and &lt;u&gt;underline&lt;/u&gt;. Let me know if you can break it somehow.<br>Overlay not loading when joining a game in progress potential bugfix!");
+			channel.appendToChat("Info", "New Update! (2014-12-15):<br />We found the Heisenbug!<br />Unfortunately, the cause of the bug was that the settings tab is overwritten when your user role changes.<br />As a temporary measure, to prevent the bug from happening the overlay settings are in the leaderboards tab until we work out a better solution.");
 		}
 		main();
 	}
