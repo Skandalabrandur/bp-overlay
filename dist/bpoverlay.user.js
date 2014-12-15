@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         BombParty Overlay
-// @version      1.2.13
+// @version      1.2.14
 // @description  Overlay + Utilities for BombParty!
 // @icon         https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon.png
 // @icon64       https://raw.githubusercontent.com/MrInanimated/bp-overlay/master/dist/icon64.png
@@ -89,7 +89,6 @@ var source = function() {
 				
 				adventureFirstRun: false,
 				adventureLevels: ["A noob", "A beginner", "A novice", "A student of flips", "A graduated student of flips", "An expert flipper", "An incredible flipper", "A master flipper", "A scrub tier immortal", "A near immortal", "An immortal", "A massive flipping faggot", "A strong contender to the 'hang in there kitty'", "An immeasurable faggot of flips", "A blackhole tier faggot", "A legendary immortal faggot flipper", "A supermassive faggot with more flips than a herd of dolphins", "Silly rabbit. Flips are for kids!", "An undefeatable flipping gaylord of +5 anal strength", "An ascended immortal queen faggot cockmunch godly overlord of flips", "Zip zop zippety boop flip floop", "You're now the gayest man on earth", "Aren't you fagged out after all that flipping?", "A lifesize Johnboat", "A lifesize Catboat", "The Jesus figure in the underworld of extreme flip fetish", "On fliproids!", "Why don't you slip into something more comfortable... like a coma?", "A divine elder scrub god that manifests himself as fine-cuisine salt", "The nicest guy. Didn't expect that did you?", "Hungry hungry heart hoarder!", "A bird in the hand is worth zemstvo in the quush", "You're good. Actually very good. Goddamn", "Still going. Holy crap!", "Your Anaconda dont want none unless you got equivocations hun", "A budding plenipotentiary", "Antidisestablishmentarinism in the flesh", "Suffering from pseudopseudohypoparathyroidism", "Arrete les flips tu connard!", "A disciple of Pingu", "A man of a thousand flips... well... 40", "The god of bombparty", "Insert Douglas Adams reference here because 42 flips", "An Alpaca. Yes. An Alpaca. The flippest of animals besides giraffes", "A giraffe. The flippest of the animals in the animal kingdom", "You deserve a movie about you. The title 'Rainman' is taken though", "If faggots were mountains, you'd be a volcano!"],
-				containerElementCreated: false,
 
 			};
 
@@ -746,7 +745,7 @@ var source = function() {
 				
 				//Retain choices between rounds from the settings meow
 				//Ah... this may not exist. Let's patch it.
-				if(bpOverlay.containerElementCreated) {
+				if(document.getElementById("containerSelect")) {
 					var cont = document.getElementById("containerSelect");
 					if(cont.value === "fitToPlayers") {
 						infoTableDiv.style.maxHeight = "1000px"; //autoflow hinders big meow meow meow yappety yak
@@ -1689,8 +1688,6 @@ var source = function() {
 
 					}
 				);
-				//It's supposed to be here, duuuuuuuh.				
-				bpOverlay.containerElementCreated = true;
 				
 				// Twitch Emote settings
 				generateSettingsElement("Twitch Emotes", {on: "On", off: "Off"}, "twitchEmoteSelect",
