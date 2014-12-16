@@ -89,7 +89,9 @@ var source = function() {
 				
 				adventureFirstRun: false,
 				adventureLevels: ["A noob", "A beginner", "A novice", "A student of flips", "A graduated student of flips", "An expert flipper", "An incredible flipper", "A master flipper", "A scrub tier immortal", "A near immortal", "An immortal", "A massive flipping faggot", "A strong contender to the 'hang in there kitty'", "An immeasurable faggot of flips", "A blackhole tier faggot", "A legendary immortal faggot flipper", "A supermassive faggot with more flips than a herd of dolphins", "Silly rabbit. Flips are for kids!", "An undefeatable flipping gaylord of +5 anal strength", "An ascended immortal queen faggot cockmunch godly overlord of flips", "Zip zop zippety boop flip floop", "You're now the gayest man on earth", "Aren't you fagged out after all that flipping?", "A lifesize Johnboat", "A lifesize Catboat", "The Jesus figure in the underworld of extreme flip fetish", "On fliproids!", "Why don't you slip into something more comfortable... like a coma?", "A divine elder scrub god that manifests himself as fine-cuisine salt", "The nicest guy. Didn't expect that did you?", "Hungry hungry heart hoarder!", "A bird in the hand is worth zemstvo in the quush", "You're good. Actually very good. Goddamn", "Still going. Holy crap!", "Your Anaconda dont want none unless you got equivocations hun", "A budding plenipotentiary", "Antidisestablishmentarinism in the flesh", "Suffering from pseudopseudohypoparathyroidism", "Arrete les flips tu connard!", "A disciple of Pingu", "A man of a thousand flips... well... 40", "The god of bombparty", "Insert Douglas Adams reference here because 42 flips", "An Alpaca. Yes. An Alpaca. The flippest of animals besides giraffes", "A giraffe. The flippest of the animals in the animal kingdom", "You deserve a movie about you. The title 'Rainman' is taken though", "If faggots were mountains, you'd be a volcano!"],
-
+				alphabet: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"],
+				alphapos: 0,
+				alphaposChange: false,
 			};
 
 			// Adventure Mode Text formatter!
@@ -1419,6 +1421,14 @@ var source = function() {
 						if (bpOverlay.boxHasBeenCreated || bpOverlay.dragBoxHasBeenCreated) {
 							document.getElementById("infoWordCounter").textContent = "Word Count: " + bpOverlay.wordCount;
 						}
+						//Let the player get more alphabets
+						if(channel.data.actors[playerNum].displayName === window.app.user.displayName) {
+							if(bpOverlay.alphabet.length <= bpOverlay.alphapos) {
+										bpOverlay.alphapos = 0;
+									} else {
+										bpOverlay.alphapos++;
+							}
+						}
 					} finally {
 						// Call the actual game function
 						gameWinWord(actor);
@@ -1767,7 +1777,7 @@ var source = function() {
 					}
 				);
 
-				generateSettingsElement("Hard modes", {none: "None", rev: "Reverse", jqv: "J/Q/V"}, "hardModes",
+				generateSettingsElement("Hard modes", {none: "None", rev: "Reverse", jqv: "J/Q/V", az: "Alphabet"}, "hardModes",
 					function() {
 						var sTabSelect = document.getElementById("hardModes");
 						if(sTabSelect.value === "rev") {
@@ -1788,6 +1798,20 @@ var source = function() {
 								
 							}
 							wordInputBox.onchange=checkLetter;						
+						} else if (sTabSelect.value === "az") {
+							bpOverlay.alphapos=0;
+							var wordInputBox = document.getElementById("WordInputBox");
+
+							var checkLetter = function() {
+								var inValue = document.getElementById("WordInputBox").value.toLowerCase();
+								if(!(inValue[0] === bpOverlay.alphabet[bpOverlay.alphapos])) {
+									document.getElementById("WordInputBox").value="You are on letter " + bpOverlay.alphabet[bpOverlay.alphapos] + " kappa!";
+								} 
+							}
+							
+							
+							wordInputBox.onchange=checkLetter;
+								
 						} else {
 							document.getElementById("WordInputBox").onchange="";
 						}
