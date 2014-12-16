@@ -1170,6 +1170,9 @@ var source = function() {
 						// We create the infoBox and any other first-run procedures here
 						if (bpOverlay.firstRun) {
 							generateActorConditions();
+							
+							//reset the alphabet
+							bpOverlay.alphapos=0;
 
 
 							// Set firstRun to false so a new box is not created every time there's a turn change
