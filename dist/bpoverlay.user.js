@@ -1766,6 +1766,33 @@ var source = function() {
 						}
 					}
 				);
+
+				generateSettingsElement("Hard modes", {none: "None", rev: "Reverse", jqv: "J/Q/V"}, "hardModes",
+					function() {
+						var sTabSelect = document.getElementById("hardModes");
+						if(sTabSelect.value === "rev") {
+							var wordInputBox = document.getElementById("WordInputBox");
+
+							var checkLetter = function() {
+								document.getElementById("WordInputBox").value = document.getElementById("WordInputBox").value.split("").reverse().join("");
+							}
+							wordInputBox.onchange=checkLetter;
+						} else if (sTabSelect.value === "jqv") {
+							var wordInputBox = document.getElementById("WordInputBox");
+
+							var checkLetter = function() {
+								var inValue = document.getElementById("WordInputBox").value.toLowerCase();
+								if(!((inValue.indexOf("q") > -1) || (inValue.indexOf("v") > -1) || (inValue.indexOf("j") > -1))) {
+									document.getElementById("WordInputBox").value = "This word didn't contain j, v nor q!";
+								}
+								
+							}
+							wordInputBox.onchange=checkLetter;						
+						} else {
+							document.getElementById("WordInputBox").onchange="";
+						}
+					}
+				);							
 				
 				// Wrap game functions, make the autoscroll/focus buttons.
 				wrapGameFunctions();
